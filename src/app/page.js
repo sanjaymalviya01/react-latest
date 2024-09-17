@@ -1,7 +1,15 @@
-import Hello from "@/app/components/Hello";
+// import Hello from "@/app/components/Hello";
 // import Image from "next/image";
+import Ads from "./components/Ads/Ads";
+import Banner from "./components/Banner/Banner";
+import Categories from "./components/Categories/Categories";
+import Copyright from "./components/Copyright/Copyright";
+import Features from "./components/Features/Features";
+import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import Navbar from "./components/Navbar/Navbar";
+import NewArrival from "./components/NewArrival/NewArrival";
+import Product from "./components/Product/Product";
 
 
 export default function Home() {
@@ -9,7 +17,14 @@ export default function Home() {
     <>
       <Header />
       <Navbar />
-      {/* <Hello /> */}
+      <Banner />
+      <Features />
+      <Categories />
+      <NewArrival />
+      <Ads />
+      <Product />
+      <Footer />
+      <Copyright />
     </>
     // <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
     //   <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
