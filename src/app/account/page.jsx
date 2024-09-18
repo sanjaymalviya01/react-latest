@@ -1,6 +1,6 @@
 import React from "react";
-import BreadCrumb from "./comp/BreadCrumb";
-import AcountWrapper from "./comp/AcountWrapper";
+import BreadCrumb from "../components/Breadcrumb/Breadcrumb";
+import AcountWrapper from "../components/Wrapper/AcountWrapper";
 
 function page() {
   return (

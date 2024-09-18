@@ -30,11 +30,7 @@ export default function RootLayout({ children }) {
       >
         <Header/>
         <Navbar/>
-        <div 
-        // style={{margin:"0px 100px 0px 100px "}}
-        >
         {children}
-        </div>
         <Footer/>
         <Copyright/>
       </body>

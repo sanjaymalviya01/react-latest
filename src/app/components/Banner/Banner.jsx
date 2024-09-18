@@ -7,7 +7,6 @@ const Banner = () => {
     <div
       className="bg-cover bg-no-repeat bg-center py-36"
       style={{backgroundImage:`url(${banner.src})`}}
-    //   style="background-image: url('assets/images/banner-bg.jpg');"
     >
       <div className="container">
         <h1 className="text-6xl text-gray-800 font-medium mb-4 capitalize">
