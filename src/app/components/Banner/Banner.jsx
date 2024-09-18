@@ -1,11 +1,12 @@
 import React from "react";
-import {banner} from '@/app/assets/images/banner-bg.jpg'
+import banner from '@/app/assets/images/banner-bg.jpg'
+import Link from "next/link";
 
 const Banner = () => {
   return (
     <div
       className="bg-cover bg-no-repeat bg-center py-36"
-      style={{backgroundImage:{banner}}}
+      style={{backgroundImage:`url(${banner.src})`}}
     //   style="background-image: url('assets/images/banner-bg.jpg');"
     >
       <div className="container">
@@ -19,13 +20,13 @@ const Banner = () => {
           odio
         </p>
         <div className="mt-12">
-          <a
+          <Link
             href="#"
             className="bg-primary border border-primary text-white px-8 py-3 font-medium 
                     rounded-md hover:bg-transparent hover:text-primary"
           >
             Shop Now
-          </a>
+          </Link>
         </div>
       </div>
     </div>
