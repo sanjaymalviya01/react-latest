@@ -1,10 +1,18 @@
+"use client";
 import Link from "next/link";
 import React from "react";
 import Dropdown from "./Dropdown";
 import Navmenu from "./Navmenu";
-import {FaBars} from 'react-icons/fa'
+import { FaBars } from "react-icons/fa";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
+import Wishlist from "../Header/Wishlist";
 
 const Navbar = () => {
+  const loggedInUser = useSelector((state) => state.userReducer.loggedInUser);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  // console.log(loggedInUser.length);
   return (
     <nav className="bg-gray-800">
       <div className="container flex">
@@ -16,17 +24,29 @@ const Navbar = () => {
             All Categories
           </span>
 
-          <Dropdown/>
+          <Dropdown />
         </div>
 
         <div className="flex items-center justify-between flex-grow md:pl-12 py-5">
-          <Navmenu/>
-          <Link
-            href="/login"
-            className="text-gray-200 hover:text-white transition"
-          >
-            Login
-          </Link>
+          <Navmenu />
+          {loggedInUser.length && searchParams >= 1 ? (
+            <Wishlist />
+          ) : pathname == "/login" ? (
+            <Link
+              href="/register"
+              className="text-gray-200 hover:text-white transition"
+            >
+              Register
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="text-gray-200 hover:text-white transition"
+            >
+              Login
+            </Link>
+          )}
+          {}
         </div>
       </div>
     </nav>

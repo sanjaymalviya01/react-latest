@@ -102,7 +102,7 @@ function ProductDetail() {
             <div className="size-selector">
               <input type="radio" name="size" id="size-xs" className="hidden" />
               <label
-                for="size-xs"
+                htmlFor="size-xs"
                 className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
               >
                 XS
@@ -111,7 +111,7 @@ function ProductDetail() {
             <div className="size-selector">
               <input type="radio" name="size" id="size-sm" className="hidden" />
               <label
-                for="size-sm"
+                htmlFor="size-sm"
                 className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
               >
                 S
@@ -120,7 +120,7 @@ function ProductDetail() {
             <div className="size-selector">
               <input type="radio" name="size" id="size-m" className="hidden" />
               <label
-                for="size-m"
+                htmlFor="size-m"
                 className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
               >
                 M
@@ -129,7 +129,7 @@ function ProductDetail() {
             <div className="size-selector">
               <input type="radio" name="size" id="size-l" className="hidden" />
               <label
-                for="size-l"
+                htmlFor="size-l"
                 className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
               >
                 L
@@ -138,7 +138,7 @@ function ProductDetail() {
             <div className="size-selector">
               <input type="radio" name="size" id="size-xl" className="hidden" />
               <label
-                for="size-xl"
+                htmlFor="size-xl"
                 className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
               >
                 XL
@@ -155,7 +155,7 @@ function ProductDetail() {
             <div className="color-selector">
               <input type="radio" name="color" id="red" className="hidden" />
               <label
-                for="red"
+                htmlFor="red"
                 className="border border-gray-200 rounded-sm h-6 w-6  cursor-pointer shadow-sm block"
                 style={{ backgroundColor: "#fc3d57" }}
               ></label>
@@ -163,7 +163,7 @@ function ProductDetail() {
             <div className="color-selector">
               <input type="radio" name="color" id="black" className="hidden" />
               <label
-                for="black"
+                htmlFor="black"
                 className="border border-gray-200 rounded-sm h-6 w-6  cursor-pointer shadow-sm block"
                 style={{ backgroundColor: "#000" }}
               ></label>
@@ -171,7 +171,7 @@ function ProductDetail() {
             <div className="color-selector">
               <input type="radio" name="color" id="white" className="hidden" />
               <label
-                for="white"
+                htmlFor="white"
                 className="border border-gray-200 rounded-sm h-6 w-6  cursor-pointer shadow-sm block"
                 style={{ backgroundColor: "#fff" }}
               ></label>

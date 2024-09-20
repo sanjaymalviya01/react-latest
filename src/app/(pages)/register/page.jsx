@@ -1,16 +1,28 @@
 import Link from "next/link";
 import React from "react";
 
-const Login = () => {
+function page() {
   return (
     <div className="contain py-16">
       <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
-        <h2 className="text-2xl uppercase font-medium mb-1">Login</h2>
-        <p className="text-gray-600 mb-6 text-sm">welcome back customer</p>
-        <form action="#" method="post" autocomplete="off">
+        <h2 className="text-2xl uppercase font-medium mb-1">Create an account</h2>
+        <p className="text-gray-600 mb-6 text-sm">Register for new cosutumer</p>
+        <form action="#" method="post" autoComplete="off">
           <div className="space-y-2">
             <div>
-              <label for="email" className="text-gray-600 mb-2 block">
+              <label htmlFor="name" className="text-gray-600 mb-2 block">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                placeholder="fulan fulana"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="text-gray-600 mb-2 block">
                 Email address
               </label>
               <input
@@ -22,7 +34,7 @@ const Login = () => {
               />
             </div>
             <div>
-              <label for="password" className="text-gray-600 mb-2 block">
+              <label htmlFor="password" className="text-gray-600 mb-2 block">
                 Password
               </label>
               <input
@@ -33,39 +45,48 @@ const Login = () => {
                 placeholder="*******"
               />
             </div>
+            <div>
+              <label htmlFor="confirm" className="text-gray-600 mb-2 block">
+                Confirm password
+              </label>
+              <input
+                type="password"
+                name="confirm"
+                id="confirm"
+                className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                placeholder="*******"
+              />
+            </div>
           </div>
-          <div className="flex items-center justify-between mt-6">
+          <div className="mt-6">
             <div className="flex items-center">
               <input
                 type="checkbox"
-                name="remember"
-                id="remember"
+                name="aggrement"
+                id="aggrement"
                 className="text-primary focus:ring-0 rounded-sm cursor-pointer"
               />
-              <label
-                for="remember"
-                className="text-gray-600 ml-3 cursor-pointer"
-              >
-                Remember me
+              <label htmlFor="aggrement" className="text-gray-600 ml-3 cursor-pointer">
+                I have read and agree to the{" "}
+                <Link href="#" className="text-primary">
+                  terms & conditions
+                </Link>
               </label>
             </div>
-            <Link href="#" className="text-primary">
-              Forgot password
-            </Link>
           </div>
           <div className="mt-4">
             <button
               type="submit"
               className="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
             >
-              Login
+              create account
             </button>
           </div>
         </form>
 
         <div className="mt-6 flex justify-center relative">
           <div className="text-gray-600 uppercase px-3 bg-white z-10 relative">
-            Or login with
+            Or signup with
           </div>
           <div className="absolute left-0 top-3 w-full border-b-2 border-gray-200"></div>
         </div>
@@ -85,14 +106,14 @@ const Login = () => {
         </div>
 
         <p className="mt-4 text-center text-gray-600">
-          Do not have account?{" "}
-          <Link href="register.html" className="text-primary">
-            Register now
+          Already have account?{" "}
+          <Link href="login.html" className="text-primary">
+            Login now
           </Link>
         </p>
       </div>
     </div>
   );
-};
+}
 
-export default Login;
+export default page;

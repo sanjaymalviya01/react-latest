@@ -1,20 +1,9 @@
-import localFont from "next/font/local";
+import { ReduxProvider } from "./redux-provider";
 import "./globals.css";
 import Header from "./components/Header/Header";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Copyright from "./components/Copyright/Copyright";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata = {
   title: "Create Next App",
@@ -24,15 +13,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        
-      >
-        <Header/>
-        <Navbar/>
-        {children}
-        <Footer/>
-        <Copyright/>
+      <body className={`antialiased`}>
+        <ReduxProvider>
+          <Header />
+          <Navbar />
+          {children}
+          <Footer />
+          <Copyright />
+        </ReduxProvider>
       </body>
     </html>
   );

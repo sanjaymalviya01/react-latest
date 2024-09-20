@@ -1,14 +1,53 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import product1 from "@/app/assets/images/products/product1.jpg";
-import product2 from "@/app/assets/images/products/product2.jpg";
-import product3 from "@/app/assets/images/products/product3.jpg";
-import product4 from "@/app/assets/images/products/product4.jpg";
-import product5 from "@/app/assets/images/products/product5.jpg";
-import product6 from "@/app/assets/images/products/product6.jpg";
+import React, { useEffect, useState } from "react";
+import Pagination, { paginate } from "../Pagination/Pagination";
 
 function ShopWrapper() {
+  const [Products, setProducts] = useState(null);
+  const [paginatedProducts, setPaginatedProducts] = useState(null);
+  const [category, setCategory] = useState(null);
+  const [Brands, setBrands] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6;
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
+  useEffect(() => {
+    fetch("https://dummyjson.com/products")
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data.products);
+        const productsByCategory = data.products.reduce(
+          (arrayCategory, product) => {
+            arrayCategory[product.category] =
+              (arrayCategory[product.category] || 0) + 1;
+            return arrayCategory;
+          },
+          {}
+        );
+        setCategory(productsByCategory);
+
+        const productsByBrand = data.products.reduce((arrayBrand, product) => {
+          if (product.brand != undefined) {
+            arrayBrand[product.brand] = (arrayBrand[product.brand] || 0) + 1;
+          }
+          return arrayBrand;
+        }, {});
+        setBrands(productsByBrand);
+      })
+      .catch((error) => console.error("Error fetching products:", error));
+  }, []);
+
+  useEffect(() => {
+    if (Products) {
+      const paginatedProducts = paginate(Products, currentPage, pageSize);
+      setPaginatedProducts(paginatedProducts);
+    }
+  }, [Products,currentPage]);
+
   return (
     <div className="container grid md:grid-cols-4 grid-cols-2 gap-6 pt-4 pb-16 items-start">
       <div className="text-center md:hidden">
@@ -26,7 +65,7 @@ function ShopWrapper() {
       <div
         id="drawer-example"
         className="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white w-80 dark:bg-gray-800"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="drawer-label"
       >
         <h5
@@ -41,9 +80,9 @@ function ShopWrapper() {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clip-rule="evenodd"
+              clipRule="evenodd"
             ></path>
           </svg>
           Info
@@ -62,9 +101,9 @@ function ShopWrapper() {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
+              clipRule="evenodd"
             ></path>
           </svg>
           <span className="sr-only">Close menu</span>
@@ -83,7 +122,7 @@ function ShopWrapper() {
                   className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                 />
                 <label
-                  for="cat-1"
+                  htmlFor="cat-1"
                   className="text-gray-600 ml-3 cusror-pointer"
                 >
                   Bedroom
@@ -98,7 +137,7 @@ function ShopWrapper() {
                   className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                 />
                 <label
-                  for="cat-2"
+                  htmlFor="cat-2"
                   className="text-gray-600 ml-3 cusror-pointer"
                 >
                   Sofa
@@ -113,7 +152,7 @@ function ShopWrapper() {
                   className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                 />
                 <label
-                  for="cat-3"
+                  htmlFor="cat-3"
                   className="text-gray-600 ml-3 cusror-pointer"
                 >
                   Office
@@ -128,7 +167,7 @@ function ShopWrapper() {
                   className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                 />
                 <label
-                  for="cat-4"
+                  htmlFor="cat-4"
                   className="text-gray-600 ml-3 cusror-pointer"
                 >
                   Outdoor
@@ -151,7 +190,7 @@ function ShopWrapper() {
                   className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                 />
                 <label
-                  for="brand-1"
+                  htmlFor="brand-1"
                   className="text-gray-600 ml-3 cusror-pointer"
                 >
                   Cooking Color
@@ -166,7 +205,7 @@ function ShopWrapper() {
                   className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                 />
                 <label
-                  for="brand-2"
+                  htmlFor="brand-2"
                   className="text-gray-600 ml-3 cusror-pointer"
                 >
                   Magniflex
@@ -181,7 +220,7 @@ function ShopWrapper() {
                   className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                 />
                 <label
-                  for="brand-3"
+                  htmlFor="brand-3"
                   className="text-gray-600 ml-3 cusror-pointer"
                 >
                   Ashley
@@ -196,7 +235,7 @@ function ShopWrapper() {
                   className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                 />
                 <label
-                  for="brand-4"
+                  htmlFor="brand-4"
                   className="text-gray-600 ml-3 cusror-pointer"
                 >
                   M&D
@@ -211,7 +250,7 @@ function ShopWrapper() {
                   className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                 />
                 <label
-                  for="brand-5"
+                  htmlFor="brand-5"
                   className="text-gray-600 ml-3 cusror-pointer"
                 >
                   Olympic
@@ -257,7 +296,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-xs"
+                  htmlFor="size-xs"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   XS
@@ -271,7 +310,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-sm"
+                  htmlFor="size-sm"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   S
@@ -285,7 +324,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-m"
+                  htmlFor="size-m"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   M
@@ -299,7 +338,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-l"
+                  htmlFor="size-l"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   L
@@ -313,7 +352,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-xl"
+                  htmlFor="size-xl"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   XL
@@ -330,7 +369,7 @@ function ShopWrapper() {
               <div className="color-selector">
                 <input type="radio" name="color" id="red" className="hidden" />
                 <label
-                  for="red"
+                  htmlFor="red"
                   className="border border-gray-200 rounded-sm h-6 w-6  cursor-pointer shadow-sm block"
                   style={{ backgroundColor: "#fc3d57" }}
                 ></label>
@@ -343,7 +382,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="black"
+                  htmlFor="black"
                   className="border border-gray-200 rounded-sm h-6 w-6  cursor-pointer shadow-sm block"
                   style={{ backgroundColor: "#000" }}
                 ></label>
@@ -356,7 +395,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="white"
+                  htmlFor="white"
                   className="border border-gray-200 rounded-sm h-6 w-6  cursor-pointer shadow-sm block"
                   style={{ backgroundColor: "#fff" }}
                 ></label>
@@ -384,9 +423,9 @@ function ShopWrapper() {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               ></path>
             </svg>
           </Link>
@@ -395,157 +434,68 @@ function ShopWrapper() {
 
       <div className="col-span-1 bg-white px-4 pb-6 shadow rounded overflow-hiddenb hidden md:block">
         <div className="divide-y divide-gray-200 space-y-5">
-          <div>
-            <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
-              Categories
-            </h3>
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="cat-1"
-                  id="cat-1"
-                  className="text-primary focus:ring-0 rounded-sm cursor-pointer"
-                />
-                <label
-                  for="cat-1"
-                  className="text-gray-600 ml-3 cusror-pointer"
-                >
-                  Bedroom
-                </label>
-                <div className="ml-auto text-gray-600 text-sm">(15)</div>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="cat-2"
-                  id="cat-2"
-                  className="text-primary focus:ring-0 rounded-sm cursor-pointer"
-                />
-                <label
-                  for="cat-2"
-                  className="text-gray-600 ml-3 cusror-pointer"
-                >
-                  Sofa
-                </label>
-                <div className="ml-auto text-gray-600 text-sm">(9)</div>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="cat-3"
-                  id="cat-3"
-                  className="text-primary focus:ring-0 rounded-sm cursor-pointer"
-                />
-                <label
-                  for="cat-3"
-                  className="text-gray-600 ml-3 cusror-pointer"
-                >
-                  Office
-                </label>
-                <div className="ml-auto text-gray-600 text-sm">(21)</div>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="cat-4"
-                  id="cat-4"
-                  className="text-primary focus:ring-0 rounded-sm cursor-pointer"
-                />
-                <label
-                  for="cat-4"
-                  className="text-gray-600 ml-3 cusror-pointer"
-                >
-                  Outdoor
-                </label>
-                <div className="ml-auto text-gray-600 text-sm">(10)</div>
+          {category && (
+            <div>
+              <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
+                Categories
+              </h3>
+              <div className="space-y-2">
+                {Object.entries(category).map(([key, value], index) => (
+                  <div key={index}>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        name={`cat-${index}`}
+                        id={`cat-${index}`}
+                        className="text-primary focus:ring-0 rounded-sm cursor-pointer"
+                        // checked={selectedCategories[key]||false}
+                        // onChange={()=>{handleCheckboxChange(key)}}
+                      />
+                      <label
+                        htmlFor="cat-1"
+                        className="text-gray-600 ml-3 cusror-pointer"
+                      >
+                        {key}
+                      </label>
+                      <div className="ml-auto text-gray-600 text-sm">
+                        ({value})
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-
-          <div className="pt-4">
-            <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
-              Brands
-            </h3>
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="brand-1"
-                  id="brand-1"
-                  className="text-primary focus:ring-0 rounded-sm cursor-pointer"
-                />
-                <label
-                  for="brand-1"
-                  className="text-gray-600 ml-3 cusror-pointer"
-                >
-                  Cooking Color
-                </label>
-                <div className="ml-auto text-gray-600 text-sm">(15)</div>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="brand-2"
-                  id="brand-2"
-                  className="text-primary focus:ring-0 rounded-sm cursor-pointer"
-                />
-                <label
-                  for="brand-2"
-                  className="text-gray-600 ml-3 cusror-pointer"
-                >
-                  Magniflex
-                </label>
-                <div className="ml-auto text-gray-600 text-sm">(9)</div>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="brand-3"
-                  id="brand-3"
-                  className="text-primary focus:ring-0 rounded-sm cursor-pointer"
-                />
-                <label
-                  for="brand-3"
-                  className="text-gray-600 ml-3 cusror-pointer"
-                >
-                  Ashley
-                </label>
-                <div className="ml-auto text-gray-600 text-sm">(21)</div>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="brand-4"
-                  id="brand-4"
-                  className="text-primary focus:ring-0 rounded-sm cursor-pointer"
-                />
-                <label
-                  for="brand-4"
-                  className="text-gray-600 ml-3 cusror-pointer"
-                >
-                  M&D
-                </label>
-                <div className="ml-auto text-gray-600 text-sm">(10)</div>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="brand-5"
-                  id="brand-5"
-                  className="text-primary focus:ring-0 rounded-sm cursor-pointer"
-                />
-                <label
-                  for="brand-5"
-                  className="text-gray-600 ml-3 cusror-pointer"
-                >
-                  Olympic
-                </label>
-                <div className="ml-auto text-gray-600 text-sm">(10)</div>
+          )}
+          {Brands && (
+            <div className="pt-4">
+              <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
+                Brands
+              </h3>
+              <div className="space-y-2">
+                {Object.entries(Brands).map(([key, value], index) => (
+                  <>
+                    <div className="flex items-center" key={index}>
+                      <input
+                        type="checkbox"
+                        name="brand-1"
+                        id="brand-1"
+                        className="text-primary focus:ring-0 rounded-sm cursor-pointer"
+                      />
+                      <label
+                        htmlFor="brand-1"
+                        className="text-gray-600 ml-3 cusror-pointer"
+                      >
+                        {key}
+                      </label>
+                      <div className="ml-auto text-gray-600 text-sm">
+                        ({value})
+                      </div>
+                    </div>
+                  </>
+                ))}
               </div>
             </div>
-          </div>
-
+          )}
           <div className="pt-4">
             <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
               Price
@@ -582,7 +532,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-xs"
+                  htmlFor="size-xs"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   XS
@@ -596,7 +546,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-sm"
+                  htmlFor="size-sm"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   S
@@ -610,7 +560,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-m"
+                  htmlFor="size-m"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   M
@@ -624,7 +574,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-l"
+                  htmlFor="size-l"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   L
@@ -638,7 +588,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="size-xl"
+                  htmlFor="size-xl"
                   className="text-xs border border-gray-200 rounded-sm h-6 w-6 flex items-center justify-center cursor-pointer shadow-sm text-gray-600"
                 >
                   XL
@@ -655,7 +605,7 @@ function ShopWrapper() {
               <div className="color-selector">
                 <input type="radio" name="color" id="red" className="hidden" />
                 <label
-                  for="red"
+                  htmlFor="red"
                   className="border border-gray-200 rounded-sm h-6 w-6  cursor-pointer shadow-sm block"
                   style={{ backgroundColor: "#fc3d57" }}
                 ></label>
@@ -668,7 +618,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="black"
+                  htmlFor="black"
                   className="border border-gray-200 rounded-sm h-6 w-6  cursor-pointer shadow-sm block"
                   style={{ backgroundColor: "#000" }}
                 ></label>
@@ -681,7 +631,7 @@ function ShopWrapper() {
                   className="hidden"
                 />
                 <label
-                  for="white"
+                  htmlFor="white"
                   className="border border-gray-200 rounded-sm h-6 w-6  cursor-pointer shadow-sm block"
                   style={{ backgroundColor: "#fff" }}
                 ></label>
@@ -690,403 +640,122 @@ function ShopWrapper() {
           </div>
         </div>
       </div>
-      <div className="col-span-3">
-        <div className="flex items-center mb-4">
-          <select
-            name="sort"
-            id="sort"
-            className="w-44 text-sm text-gray-600 py-3 px-4 border-gray-300 shadow-sm rounded focus:ring-primary focus:border-primary"
-          >
-            <option value="">Default sorting</option>
-            <option value="price-low-to-high">Price low to high</option>
-            <option value="price-high-to-low">Price high to low</option>
-            <option value="latest">Latest product</option>
-          </select>
+      {paginatedProducts && (
+        <div className="col-span-3">
+          <div className="flex items-center mb-4">
+            <select
+              name="sort"
+              id="sort"
+              className="w-44 text-sm text-gray-600 py-3 px-4 border-gray-300 shadow-sm rounded focus:ring-primary focus:border-primary"
+            >
+              <option value="">Default sorting</option>
+              <option value="price-low-to-high">Price low to high</option>
+              <option value="price-high-to-low">Price high to low</option>
+              <option value="latest">Latest product</option>
+            </select>
 
-          <div className="flex gap-2 ml-auto">
-            <div className="border border-primary w-10 h-9 flex items-center justify-center text-white bg-primary rounded cursor-pointer">
-              <i className="fa-solid fa-grip-vertical"></i>
-            </div>
-            <div className="border border-gray-300 w-10 h-9 flex items-center justify-center text-gray-600 rounded cursor-pointer">
-              <i className="fa-solid fa-list"></i>
+            <div className="flex gap-2 ml-auto">
+              <div className="border border-primary w-10 h-9 flex items-center justify-center text-white bg-primary rounded cursor-pointer">
+                <i className="fa-solid fa-grip-vertical"></i>
+              </div>
+              <div className="border border-gray-300 w-10 h-9 flex items-center justify-center text-gray-600 rounded cursor-pointer">
+                <i className="fa-solid fa-list"></i>
+              </div>
             </div>
           </div>
+
+          <div className="grid md:grid-cols-3 grid-cols-2 gap-6">
+            {paginatedProducts.map((product) => (
+              // {Products.slice(0, 6).map((product) => (
+              <>
+                <div className="bg-white shadow rounded overflow-hidden group">
+                  <div className="relative">
+                    <div style={{ height: "200px" }}>
+                      <Image
+                        fill={true}
+                        src={product.images[0]}
+                        alt="product 1"
+                        className="w-full"
+                      />
+                    </div>
+                    <div
+                      className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
+                        justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
+                    >
+                      <Link
+                        href="#"
+                        className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
+                        title="view product"
+                      >
+                        <i className="fa-solid fa-magnifying-glass"></i>
+                      </Link>
+                      <Link
+                        href="#"
+                        className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
+                        title="add to wishlist"
+                      >
+                        <i className="fa-solid fa-heart"></i>
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="pt-4 pb-3 px-4">
+                    <Link href="#">
+                      <h4
+                        className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition"
+                        style={{ height: "50px" }}
+                      >
+                        {product.title}
+                      </h4>
+                    </Link>
+                    <div className="flex items-baseline mb-1 space-x-2">
+                      <p className="text-xl text-primary font-semibold">
+                        {product.price}
+                      </p>
+                      <p className="text-sm text-gray-400 ">
+                        {product.discountPercentage} % off
+                      </p>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="flex gap-1 text-sm text-yellow-400">
+                        <span>
+                          <i className="fa-solid fa-star"></i>
+                        </span>
+                        <span>
+                          <i className="fa-solid fa-star"></i>
+                        </span>
+                        <span>
+                          <i className="fa-solid fa-star"></i>
+                        </span>
+                        <span>
+                          <i className="fa-solid fa-star"></i>
+                        </span>
+                        <span>
+                          <i className="fa-solid fa-star"></i>
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-500 ml-3">
+                        Rating ({product.rating})
+                      </div>
+                    </div>
+                  </div>
+                  <Link
+                    href="#"
+                    className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
+                  >
+                    Add to cart
+                  </Link>
+                </div>
+              </>
+            ))}
+          </div>
+          <Pagination
+            items={Products.length} //30
+            currentPage={currentPage}
+            pageSize={pageSize}
+            onPageChange={onPageChange}
+          />
         </div>
-
-        <div className="grid md:grid-cols-3 grid-cols-2 gap-6">
-          <div className="bg-white shadow rounded overflow-hidden group">
-            <div className="relative">
-              <Image src={product1} alt="product 1" className="w-full" />
-              <div
-                className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
-                        justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
-              >
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="view product"
-                >
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                </Link>
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="add to wishlist"
-                >
-                  <i className="fa-solid fa-heart"></i>
-                </Link>
-              </div>
-            </div>
-            <div className="pt-4 pb-3 px-4">
-              <Link href="#">
-                <h4 className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
-                  Guyer Chair
-                </h4>
-              </Link>
-              <div className="flex items-baseline mb-1 space-x-2">
-                <p className="text-xl text-primary font-semibold">$45.00</p>
-                <p className="text-sm text-gray-400 line-through">$55.90</p>
-              </div>
-              <div className="flex items-center">
-                <div className="flex gap-1 text-sm text-yellow-400">
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                </div>
-                <div className="text-xs text-gray-500 ml-3">(150)</div>
-              </div>
-            </div>
-            <Link
-              href="#"
-              className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-            >
-              Add to cart
-            </Link>
-          </div>
-
-          <div className="bg-white shadow rounded overflow-hidden group">
-            <div className="relative">
-              <Image src={product2} alt="product 1" className="w-full" />
-              <div
-                className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
-                        justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
-              >
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="view product"
-                >
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                </Link>
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="add to wishlist"
-                >
-                  <i className="fa-solid fa-heart"></i>
-                </Link>
-              </div>
-            </div>
-            <div className="pt-4 pb-3 px-4">
-              <Link href="#">
-                <h4 className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
-                  Guyer Chair
-                </h4>
-              </Link>
-              <div className="flex items-baseline mb-1 space-x-2">
-                <p className="text-xl text-primary font-semibold">$45.00</p>
-                <p className="text-sm text-gray-400 line-through">$55.90</p>
-              </div>
-              <div className="flex items-center">
-                <div className="flex gap-1 text-sm text-yellow-400">
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                </div>
-                <div className="text-xs text-gray-500 ml-3">(150)</div>
-              </div>
-            </div>
-            <Link
-              href="#"
-              className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-            >
-              Add to cart
-            </Link>
-          </div>
-
-          <div className="bg-white shadow rounded overflow-hidden group">
-            <div className="relative">
-              <Image src={product3} alt="product 1" className="w-full" />
-              <div
-                className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
-                        justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
-              >
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="view product"
-                >
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                </Link>
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="add to wishlist"
-                >
-                  <i className="fa-solid fa-heart"></i>
-                </Link>
-              </div>
-            </div>
-            <div className="pt-4 pb-3 px-4">
-              <Link href="#">
-                <h4 className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
-                  Guyer Chair
-                </h4>
-              </Link>
-              <div className="flex items-baseline mb-1 space-x-2">
-                <p className="text-xl text-primary font-semibold">$45.00</p>
-                <p className="text-sm text-gray-400 line-through">$55.90</p>
-              </div>
-              <div className="flex items-center">
-                <div className="flex gap-1 text-sm text-yellow-400">
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                </div>
-                <div className="text-xs text-gray-500 ml-3">(150)</div>
-              </div>
-            </div>
-            <Link
-              href="#"
-              className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-            >
-              Add to cart
-            </Link>
-          </div>
-
-          <div className="bg-white shadow rounded overflow-hidden group">
-            <div className="relative">
-              <Image src={product4} alt="product 1" className="w-full" />
-              <div
-                className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
-                        justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
-              >
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="view product"
-                >
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                </Link>
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="add to wishlist"
-                >
-                  <i className="fa-solid fa-heart"></i>
-                </Link>
-              </div>
-            </div>
-            <div className="pt-4 pb-3 px-4">
-              <Link href="#">
-                <h4 className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
-                  Guyer Chair
-                </h4>
-              </Link>
-              <div className="flex items-baseline mb-1 space-x-2">
-                <p className="text-xl text-primary font-semibold">$45.00</p>
-                <p className="text-sm text-gray-400 line-through">$55.90</p>
-              </div>
-              <div className="flex items-center">
-                <div className="flex gap-1 text-sm text-yellow-400">
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                </div>
-                <div className="text-xs text-gray-500 ml-3">(150)</div>
-              </div>
-            </div>
-            <Link
-              href="#"
-              className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-            >
-              Add to cart
-            </Link>
-          </div>
-
-          <div className="bg-white shadow rounded overflow-hidden group">
-            <div className="relative">
-              <Image src={product5} alt="product 1" className="w-full" />
-              <div
-                className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
-                        justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
-              >
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="view product"
-                >
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                </Link>
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="add to wishlist"
-                >
-                  <i className="fa-solid fa-heart"></i>
-                </Link>
-              </div>
-            </div>
-            <div className="pt-4 pb-3 px-4">
-              <Link href="#">
-                <h4 className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
-                  Guyer Chair
-                </h4>
-              </Link>
-              <div className="flex items-baseline mb-1 space-x-2">
-                <p className="text-xl text-primary font-semibold">$45.00</p>
-                <p className="text-sm text-gray-400 line-through">$55.90</p>
-              </div>
-              <div className="flex items-center">
-                <div className="flex gap-1 text-sm text-yellow-400">
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                </div>
-                <div className="text-xs text-gray-500 ml-3">(150)</div>
-              </div>
-            </div>
-            <Link
-              href="#"
-              className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-            >
-              Add to cart
-            </Link>
-          </div>
-
-          <div className="bg-white shadow rounded overflow-hidden group">
-            <div className="relative">
-              <Image src={product6} alt="product 1" className="w-full" />
-              <div
-                className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
-                        justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
-              >
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="view product"
-                >
-                  <i className="fa-solid fa-magnifying-glass"></i>
-                </Link>
-                <Link
-                  href="#"
-                  className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                  title="add to wishlist"
-                >
-                  <i className="fa-solid fa-heart"></i>
-                </Link>
-              </div>
-            </div>
-            <div className="pt-4 pb-3 px-4">
-              <Link href="#">
-                <h4 className="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
-                  Guyer Chair
-                </h4>
-              </Link>
-              <div className="flex items-baseline mb-1 space-x-2">
-                <p className="text-xl text-primary font-semibold">$45.00</p>
-                <p className="text-sm text-gray-400 line-through">$55.90</p>
-              </div>
-              <div className="flex items-center">
-                <div className="flex gap-1 text-sm text-yellow-400">
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                  <span>
-                    <i className="fa-solid fa-star"></i>
-                  </span>
-                </div>
-                <div className="text-xs text-gray-500 ml-3">(150)</div>
-              </div>
-            </div>
-            <Link
-              href="#"
-              className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-            >
-              Add to cart
-            </Link>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ const Navmenu = () => {
   return (
     <div className="flex items-center space-x-6 capitalize">
             <Link
-              href="/"
+              href="/home"
               className="text-gray-200 hover:text-white transition"
             >
               Home
