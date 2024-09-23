@@ -11,8 +11,11 @@ import product10 from "@/app/assets/images/products/product10.jpg";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { onUerLogOut, onUpdateUser } from "@/redux/userSlice";
+import { useRouter } from "next/navigation";
 
 const AcountWrapper = ({ user }) => {
+
+  const router = useRouter();
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const urlToken = searchParams.get("token");
@@ -28,15 +31,10 @@ const AcountWrapper = ({ user }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (user[0].token == urlToken) {
+    if (user && user[0].token == urlToken) {
       console.log("token matched");
       setuserData(user[0]);
       setformData(user[0]);
-    }else{
-      return (<div className='rounder shadow m-4 p-10 ' style={{display:'flex',alignItems:"center",justifyContent:"center",flexDirection:'column', gap:"20px"}}>
-        <h1>Some thing went wrong</h1>
-        <Link href={'/login'}className="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium" style={{width:"150px"}}>Login</Link>
-      </div>)
     }
     if (pathname == "/profile") {
       setprofile(true);
@@ -164,6 +162,7 @@ const AcountWrapper = ({ user }) => {
             <button
               onClick={() => {
                 dispatch(onUerLogOut());
+                router.push('/login');
               }}
               style={{ border: "none" }}
               className="relative hover:text-primary block font-medium capitalize transition"
@@ -177,7 +176,7 @@ const AcountWrapper = ({ user }) => {
         </div>
       </div>
 
-      {account && (
+      {account && userData && (
         <div className="col-span-9 grid grid-cols-3 gap-4">
           <div className="shadow rounded bg-white px-4 pt-6 pb-8">
             <div className="flex items-center justify-between mb-4">

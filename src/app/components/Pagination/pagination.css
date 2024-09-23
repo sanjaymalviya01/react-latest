@@ -3,8 +3,8 @@
    }
    
    .pagination {
-    border: 0.1rem solid gray;
-    border-radius: 20px;
+    /* border: 0.1rem solid gray; */
+    /* border-radius: 20px; */
     padding: 10px;
     display: flex;
     justify-content: space-around;

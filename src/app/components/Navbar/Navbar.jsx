@@ -12,7 +12,6 @@ const Navbar = () => {
   const loggedInUser = useSelector((state) => state.userReducer.loggedInUser);
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  // console.log(loggedInUser.length);
   return (
     <nav className="bg-gray-800">
       <div className="container flex">
@@ -28,8 +27,8 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center justify-between flex-grow md:pl-12 py-5">
-          <Navmenu />
-          {loggedInUser.length && searchParams >= 1 ? (
+          <Navmenu searchParams={searchParams} />
+          {loggedInUser.length >= 1 && searchParams ? (
             <Wishlist />
           ) : pathname == "/login" ? (
             <Link
@@ -46,7 +45,6 @@ const Navbar = () => {
               Login
             </Link>
           )}
-          {}
         </div>
       </div>
     </nav>
