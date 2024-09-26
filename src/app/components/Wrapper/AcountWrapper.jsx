@@ -4,17 +4,18 @@ import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import React from "react";
 import Image from "next/image";
-import avatar from "@/app/assets/images/avatar.png";
-import product6 from "@/app/assets/images/products/product6.jpg";
-import product5 from "@/app/assets/images/products/product5.jpg";
-import product10 from "@/app/assets/images/products/product10.jpg";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
-import { onUerLogOut, onUpdateUser } from "@/redux/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  onUerLogOut,
+  onUpdateUser,
+  removeFromWishlist,
+} from "@/redux/userSlice";
 import { useRouter } from "next/navigation";
 
-const AcountWrapper = ({ user }) => {
-
+const AcountWrapper = ({ loggedInUser }) => {
+  const reduxUser = useSelector((state) => state.userReducer.loggedInUser);
+  console.log(reduxUser);
   const router = useRouter();
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
@@ -31,11 +32,8 @@ const AcountWrapper = ({ user }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (user && user[0].token == urlToken) {
-      console.log("token matched");
-      setuserData(user[0]);
-      setformData(user[0]);
-    }
+    setuserData(reduxUser);
+    setformData(reduxUser);
     if (pathname == "/profile") {
       setprofile(true);
     }
@@ -162,7 +160,8 @@ const AcountWrapper = ({ user }) => {
             <button
               onClick={() => {
                 dispatch(onUerLogOut());
-                router.push('/login');
+                location.reload();
+                router.push("/login");
               }}
               style={{ border: "none" }}
               className="relative hover:text-primary block font-medium capitalize transition"
@@ -369,80 +368,66 @@ const AcountWrapper = ({ user }) => {
       )}
       {wishlist && (
         <div className="col-span-9 space-y-4">
-          <div className="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
-            <div className="w-28">
-              <Image src={product6} alt="product 6" className="w-full" />
-            </div>
-            <div className="w-1/3">
-              <h2 className="text-gray-800 text-xl font-medium uppercase">
-                Italian L shape
-              </h2>
-              <p className="text-gray-500 text-sm">
-                Availability: <span className="text-green-600">In Stock</span>
-              </p>
-            </div>
-            <div className="text-primary text-lg font-semibold">$320.00</div>
-            <Link
-              href="#"
-              className="px-6 py-2 text-center text-sm text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+          {reduxUser.wishlist.length == 0 ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              add to cart
-            </Link>
+              <h1>No Data To show </h1>
+            </div>
+          ) : (
+            reduxUser.wishlist &&
+            reduxUser.wishlist.map((product) => (
+              <>
+                <div className="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
+                  <div className="w-28">
+                    <Image
+                      src={product.images[0]}
+                      width={100}
+                      height={100}
+                      alt="product 6"
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="w-1/3">
+                    <h2 className="text-gray-800 text-xl font-medium uppercase">
+                      {product.title}
+                    </h2>
+                    <p className="text-gray-500 text-sm">
+                      Availability:{" "}
+                      <span className="text-green-600">
+                        {product.stock} In Stock
+                      </span>
+                    </p>
+                  </div>
+                  <div className="text-primary text-lg font-semibold">
+                    ${product.price}
+                  </div>
+                  <Link
+                    href="#"
+                    className="px-6 py-2 text-center text-sm text-primary bg-dark border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+                  >
+                    add to cart
+                  </Link>
+                  <button
+                    className="px-6 py-2 text-center text-sm text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+                    onClick={() => {
+                      dispatch(removeFromWishlist(product));
+                    }}
+                  >
+                    remove
+                  </button>
 
-            <div className="text-gray-600 cursor-pointer hover:text-primary">
-              <i className="fa-solid fa-trash"></i>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
-            <div className="w-28">
-              <Image src={product5} alt="product 6" className="w-full" />
-            </div>
-            <div className="w-1/3">
-              <h2 className="text-gray-800 text-xl font-medium uppercase">
-                Dining Table
-              </h2>
-              <p className="text-gray-500 text-sm">
-                Availability: <span className="text-green-600">In Stock</span>
-              </p>
-            </div>
-            <div className="text-primary text-lg font-semibold">$320.00</div>
-            <Link
-              href="#"
-              className="px-6 py-2 text-center text-sm text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
-            >
-              add to cart
-            </Link>
-
-            <div className="text-gray-600 cursor-pointer hover:text-primary">
-              <i className="fa-solid fa-trash"></i>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
-            <div className="w-28">
-              <Image src={product10} alt="product 6" className="w-full" />
-            </div>
-            <div className="w-1/3">
-              <h2 className="text-gray-800 text-xl font-medium uppercase">
-                Sofa
-              </h2>
-              <p className="text-gray-500 text-sm">
-                Availability: <span className="text-red-600">Out of Stock</span>
-              </p>
-            </div>
-            <div className="text-primary text-lg font-semibold">$320.00</div>
-            <Link
-              href="#"
-              className="cursor-not-allowed px-6 py-2 text-center text-sm text-white bg-red-400 border border-red-400 rounded transition uppercase font-roboto font-medium"
-            >
-              add to cart
-            </Link>
-
-            <div className="text-gray-600 cursor-pointer hover:text-primary">
-              <i className="fa-solid fa-trash"></i>
-            </div>
-          </div>
+                  <div className="text-gray-600 cursor-pointer hover:text-primary">
+                    <i className="fa-solid fa-trash"></i>
+                  </div>
+                </div>
+              </>
+            ))
+          )}
         </div>
       )}
     </div>

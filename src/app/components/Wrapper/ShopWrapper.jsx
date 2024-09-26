@@ -3,8 +3,16 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Pagination, { paginate } from "../Pagination/Pagination";
+import { FaHeart } from "react-icons/fa";
+import { GiMagnifyingGlass } from "react-icons/gi";
+import { CiHeart } from "react-icons/ci";
+import { useDispatch, useSelector } from "react-redux";
+import { addToWishList, removeFromWishlist } from "@/redux/userSlice";
 
 function ShopWrapper() {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.userReducer.loggedInUser);
+  console.log(user);
   const [allProducts, setAllProducts] = useState([]);
   const [Products, setProducts] = useState([]);
   const [paginatedProducts, setPaginatedProducts] = useState([]);
@@ -17,6 +25,7 @@ function ShopWrapper() {
   const [selectedBrand, setselectedBrand] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6;
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const fetchAllProducts = async () => {
     try {
@@ -116,7 +125,7 @@ function ShopWrapper() {
       const paginatedProducts = paginate(Products, currentPage, pageSize);
       setPaginatedProducts(paginatedProducts);
     }
-  }, [Products, currentPage]);
+  }, [Products, currentPage, user]);
 
   useEffect(() => {
     if (selectedCategories && Object.keys(selectedCategories).length) {
@@ -266,7 +275,7 @@ function ShopWrapper() {
           </div>
         </div>
       </div>
-      {paginatedProducts && (
+      {paginatedProducts && user && (
         <div className="col-span-3">
           <div
             className="grid md:grid-cols-3 grid-cols-2 gap-6 shadow rounded"
@@ -288,20 +297,42 @@ function ShopWrapper() {
                       className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
                         justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
                     >
-                      <Link
-                        href="#"
-                        className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                        title="view product"
-                      >
-                        <i className="fa-solid fa-magnifying-glass"></i>
-                      </Link>
-                      <Link
-                        href="#"
-                        className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
-                        title="add to wishlist"
-                      >
-                        <i className="fa-solid fa-heart"></i>
-                      </Link>
+                      {Object.keys(user).length != 0 && (
+                        <>
+                          <Link
+                            href={`/product?id=${product.id}`}
+                            className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
+                            title="view product"
+                          >
+                            <GiMagnifyingGlass />
+                            <i className="fa-solid fa-magnifying-glass"></i>
+                          </Link>
+                          <label
+                            className="custom-wishlist-label"
+                            for="wishlist"
+                          >
+                            <input
+                              type="checkbox"
+                              name=""
+                              id="wishlist"
+                              checked={user.wishlist.find((item) =>
+                                item.id == product.id ? true : false
+                              )}
+                              onChange={(e) => {
+                                console.log(e);
+                                if (e.target.checked == true) {
+                                  dispatch(addToWishList(product));
+                                } else {
+                                  dispatch(removeFromWishlist(product));
+                                }
+                              }}
+                            />
+                            <span className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition">
+                              <FaHeart />
+                            </span>
+                          </label>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="pt-4 pb-3 px-4">
@@ -349,12 +380,21 @@ function ShopWrapper() {
                       </div>
                     </div>
                   </div>
-                  <Link
-                    href={`/product?id=${product.id}`}
-                    className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-                  >
-                    Add to cart
-                  </Link>
+                  {Object.keys(user).length != 0 ? (
+                    <Link
+                      href="#"
+                      className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
+                    >
+                      Add to cart
+                    </Link>
+                  ) : (
+                    <Link
+                      href="#"
+                      className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
+                    >
+                      Login to Purchase
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}

@@ -1,24 +1,38 @@
-'use client'
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
 import AcountWrapper from "../../components/Wrapper/AcountWrapper";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { checkData } from "../login/actions";
 
 function page() {
-  const user = useSelector((state)=>state.userReducer.loggedInUser)
-  if(user.length){
-    // console.log(user)
-  }else{
-    return(<div className='rounder shadow m-4 p-10 ' style={{display:'flex',alignItems:"center",justifyContent:"center",flexDirection:'column', gap:"20px"}}>
-      <h1>Some thing went wrong</h1>
-      <Link href={'/login'}className="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium" style={{width:"150px"}}>Login</Link>
-    </div>)
-  }
+  const [loggedInUser, setLoggedInUser] = useState(true);
+  const token = useSearchParams().get("token");
+  const router = useRouter();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const request1 = checkData(token);
+    Promise.all([request1]).then(([data1]) => {
+      if (data1.props.newData.message) {
+        alert(data1.props.newData.message);
+        setLoggedInUser(false);
+        dispatch(onUerLogOut());
+        router.push(`/login`);
+      } else {
+        setLoggedInUser(data1.props.newData);
+      }
+    });
+  }, []);
   return (
     <>
-      <BreadCrumb />
-      <AcountWrapper user={user} />
+      {loggedInUser && (
+        <>
+          <BreadCrumb />
+          <AcountWrapper loggedInUser={loggedInUser} />
+        </>
+      )}
     </>
   );
 }

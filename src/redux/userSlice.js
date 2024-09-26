@@ -35,21 +35,30 @@ export const userSlice = createSlice({
                 }
             })
         },
-        checkLoginInput: (state, action) => {
-            const user = state.users.find((user) => user.username === action.payload.username)
-            if (user) {
-                state.loggedInUser.push(user)
-                state.loggedInUser[0]['token'] = action.payload.token
-            } else {
-                console.log("user not found")
+        onLoginUser: (state, action) => {
+            state.loggedInUser = action.payload
+        },
+        addToWishList: (state, action) => {
+            const obj = state.loggedInUser
+            if (Object.keys(obj).length !== 0) {
+                if (state.loggedInUser.wishlist == undefined || state.loggedInUser.wishlist.length == 0) {
+                    state.loggedInUser['wishlist'] = [action.payload]
+                }
+                const existingProduct = obj.wishlist.find((product) => product.id === action.payload.id)
+                if (existingProduct == undefined || existingProduct.id != action.payload.id) {
+                    state.loggedInUser.wishlist.push(action.payload)
+                }
             }
         },
+        removeFromWishlist: (state, action) => {
+            state.loggedInUser.wishlist = state.loggedInUser.wishlist.filter((product) => product.id !== action.payload.id)
+        },
         onUerLogOut: (state, action) => {
-            state.loggedInUser = []
+            state.loggedInUser = {}
         }
     }
 })
 
-export const { fetchUsers, onUpdateUser, checkLoginInput, onUerLogOut } = userSlice.actions
+export const { fetchUsers, onUpdateUser, onLoginUser, onUerLogOut, addToWishList, removeFromWishlist } = userSlice.actions
 
 export default userSlice.reducer

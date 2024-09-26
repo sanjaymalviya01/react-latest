@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { nanoid } from "@reduxjs/toolkit";
 import { checkLoginInput } from "@/redux/userSlice";
 import * as yup from "yup";
+import { navigate } from "./actions";
 
 const loginSchema = yup.object({
   username: yup
@@ -19,41 +20,12 @@ function Index() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState("");
-
-  const users = useSelector((state) => state.userReducer.users);
-  const dispatch = useDispatch();
-  const router = useRouter();
-
-  const loginHandler = async (e) => {
-    e.preventDefault();
-    const user = users.find((user) => user.username === username);
-    const loginInput = {
-      username,
-      password,
-    };
-    try {
-      await loginSchema.validate(loginInput, { abortEarly: false });
-      console.log("valid", loginInput);
-      loginInput['token'] = nanoid();
-      dispatch(checkLoginInput(loginInput));
-      router.push(`/profile?token=${loginInput.token}`);
-      setErrors({});
-    } catch (error) {
-      const validationErrors = {};
-      error.inner.forEach((error) => {
-        validationErrors[error.path] = error.message;
-      });
-      setErrors(validationErrors);
-      console.log("invalid", validationErrors);
-    }
-  };
-
   return (
     <div className="contain py-16">
       <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
         <h2 className="text-2xl uppercase font-medium mb-1">Login</h2>
         <p className="text-gray-600 mb-6 text-sm">welcome back customer</p>
-        <form onSubmit={loginHandler} method="post" autoComplete="off">
+        <form action={navigate} method="post" autoComplete="off">
           <div className="space-y-2">
             <div>
               <label htmlFor="email" className="text-gray-600 mb-2 block">

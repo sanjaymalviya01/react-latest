@@ -7,7 +7,7 @@ import Image from "next/image";
 import logo from "@/app/assets/images/logo.svg";
 import Link from "next/link";
 import Search from "./Search";
-import Wishlist from "./Wishlist";
+import Wishlist from "../Navbar/Wishlist";
 import { usePathname } from "next/navigation";
 function Header() {
   const users = useSelector((state) => state.userReducer.users);
