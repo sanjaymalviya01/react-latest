@@ -12,12 +12,11 @@ import { onUerLogOut } from "@/redux/userSlice";
 
 const Navbar = () => {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [loggedInUser, setLoggedInUser] = useState(false);
-  const token = useSearchParams().get("token");
   const router = useRouter();
   const dispatch = useDispatch();
   useEffect(() => {
+    const token = sessionStorage.getItem("token");
     if (token) {
       const request1 = checkData(token);
       Promise.all([request1]).then(([data1]) => {
@@ -31,7 +30,11 @@ const Navbar = () => {
         }
       });
     }
-  }, [token]);
+  }, [pathname]);
+  // useEffect(()=>{
+  //   console.log(sessionStorage.getItem("token"))
+
+  // },[sessionStorage.getItem("token")])
   return (
     <nav className="bg-gray-800">
       <div className="container flex">
@@ -39,19 +42,19 @@ const Navbar = () => {
           <span className="text-white">
             <FaBars />
           </span>
-          <span className="capitalize ml-2 text-white hidden">
+          {/* <span className="capitalize ml-2 text-white hidden">
             All Categories
-          </span>
+          </span> */}
 
           <Dropdown />
         </div>
 
         <div className="flex items-center justify-between flex-grow md:pl-12 py-5">
-          <Navmenu searchParams={searchParams} />
+          <Navmenu />
           {pathname != "/login" &&
             pathname != "/register" &&
             loggedInUser &&
-            Object.keys(loggedInUser).length !== 0 && (
+            sessionStorage.getItem("token") != null && (
               <Wishlist loggedInUser={loggedInUser} />
             )}
           {pathname != "/profile" &&

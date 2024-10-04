@@ -9,10 +9,10 @@ import { onUerLogOut } from "@/redux/userSlice";
 
 function page() {
   const [loggedInUser, setLoggedInUser] = useState(true);
-  const token = useSearchParams().get("token");
   const router = useRouter();
   const dispatch = useDispatch()
   useEffect(() => {
+    const token = sessionStorage.getItem("token");
     const request1 = checkData(token);
     Promise.all([request1]).then(([data1]) => {
       if (data1.props.newData.message) {

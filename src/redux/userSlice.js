@@ -36,7 +36,17 @@ export const userSlice = createSlice({
             })
         },
         onLoginUser: (state, action) => {
-            state.loggedInUser = action.payload
+            let user = action.payload
+            user['wishlist'] = []
+            user['cart'] = []
+
+            if (state.loggedInUser.id != action.payload.id) {
+                state.loggedInUser = user
+            }
+            // const existingUser = state.loggedInUser.find((user) => user.id == action.payload.id)
+            // if (!existingUser || state.loggedInUser.length == 0) {
+            //     state.loggedInUser.push(user)
+            // }
         },
         addToWishList: (state, action) => {
             const obj = state.loggedInUser
@@ -53,12 +63,42 @@ export const userSlice = createSlice({
         removeFromWishlist: (state, action) => {
             state.loggedInUser.wishlist = state.loggedInUser.wishlist.filter((product) => product.id !== action.payload.id)
         },
+        addToCart: (state, action) => {
+            if (Object.keys(state.loggedInUser).length !== 0) {
+                const existingProduct = state.loggedInUser.cart.find((product) => product.id === action.payload.id)
+                if (existingProduct == undefined || existingProduct.id != action.payload.id) {
+
+                    state.loggedInUser.cart.push(action.payload)
+                    state.loggedInUser.cart.find((product) => {
+                        if (product.id === action.payload.id) {
+                            product['quantity'] = 1
+                            // product.quantity = 1
+                        }
+                    })
+                } else {
+                    if (existingProduct.stock > existingProduct.quantity) {
+
+                        existingProduct.quantity = existingProduct.quantity + 1
+                    } else {
+
+                        existingProduct.quantity = existingProduct.stock
+                    }
+                }
+            }
+        },
+        setCartQuantity: (state, action) => {
+            const Product = state.loggedInUser.cart.find((product) => product.id === action.payload[0].id)
+            Product.quantity = parseInt(action.payload[1])
+        },
+        removeFromCart: (state, action) => {
+            state.loggedInUser.cart = state.loggedInUser.cart.filter((product) => product.id !== action.payload.id)
+        },
         onUerLogOut: (state, action) => {
             state.loggedInUser = {}
         }
     }
 })
 
-export const { fetchUsers, onUpdateUser, onLoginUser, onUerLogOut, addToWishList, removeFromWishlist } = userSlice.actions
+export const { fetchUsers, onUpdateUser, onLoginUser, onUerLogOut, addToWishList, addToCart, removeFromWishlist, removeFromCart, setCartQuantity } = userSlice.actions
 
 export default userSlice.reducer

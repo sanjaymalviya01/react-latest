@@ -33,7 +33,7 @@ export async function navigate(data) {
     }),
   })
   const newData = await res.json();
-  console.log(newData)
+  // console.log(newData)
 
   redirect(`/profile?token=${newData.accessToken}`)
   return <page newData={newData} />
@@ -48,7 +48,7 @@ export async function checkData(token) {
     credentials: "include",
   });
   const newData = await response.json();
-  console.log(newData)
+  // console.log(newData)
   return <page newData={newData} />
 
 }

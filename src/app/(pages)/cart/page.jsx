@@ -1,15 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
-import AcountWrapper from "../../components/Wrapper/AcountWrapper";
-import { useDispatch, useSelector } from "react-redux";
-import Link from "next/link";
+import BreadCrumb from "@/app/components/Breadcrumb/Breadcrumb";
+import AcountWrapper from "@/app/components/Wrapper/AcountWrapper";
 import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { checkData } from "../login/actions";
+import { onUerLogOut } from "@/redux/userSlice";
 
-function page() {
+const page = () => {
   const [loggedInUser, setLoggedInUser] = useState(true);
-  // console.log('token',token)
   const router = useRouter();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -31,11 +30,11 @@ function page() {
       {loggedInUser && (
         <>
           <BreadCrumb />
-          <AcountWrapper loggedInUser={loggedInUser} />
+          <AcountWrapper user={loggedInUser} />
         </>
       )}
     </>
   );
-}
+};
 
 export default page;

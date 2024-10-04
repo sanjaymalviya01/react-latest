@@ -11,12 +11,13 @@ import { onLoginUser, onUerLogOut } from "@/redux/userSlice";
 function page() {
   const dispatch = useDispatch();
   const [user, setUser] = useState();
-  const token = useSearchParams().get("token");
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
   const router = useRouter();
   useEffect(() => {
+    router.refresh();
     const request1 = checkData(token);
     Promise.all([request1]).then(([data1]) => {
-      console.log(data1);
       if (data1.props.newData.message) {
         alert(data1.props.newData.message);
         setLoggedInUser(false);
@@ -25,6 +26,7 @@ function page() {
       } else {
         setUser(data1.props.newData);
         dispatch(onLoginUser(data1.props.newData));
+        sessionStorage.setItem("token", token);
       }
     });
     router.refresh();

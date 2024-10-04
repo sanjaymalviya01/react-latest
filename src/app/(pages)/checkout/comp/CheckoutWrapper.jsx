@@ -1,7 +1,42 @@
+"use client";
 import Link from "next/link";
-import React from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 function CheckoutWrapper() {
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [some, setsome] = useState(false);
+  const cart = useSelector((state) => state.userReducer.loggedInUser.cart);
+  const [subtotal, setSubtotal] = useState(0);
+  const [Total, setTotal] = useState(0);
+  const [sgst, setsgst] = useState(0);
+  const [cgst, setcgst] = useState(0);
+  const [shippingCharge, setShippingCharge] = useState(0);
+  useEffect(() => {
+    const ST = cart
+      .reduce(
+        (total, item) =>
+          total +
+          (item.price - (item.discountPercentage / 100) * item.price) *
+            item.quantity,
+        0
+      )
+      .toFixed(2);
+    setSubtotal(ST);
+    const CGST = (0.09 * ST).toFixed(2);
+    const SGST = (0.09 * ST).toFixed(2);
+    setcgst(CGST);
+    setsgst(SGST);
+    let gTotal = (
+      parseFloat(ST) +
+      parseFloat(CGST) +
+      parseFloat(SGST) +
+      parseFloat(shippingCharge)
+    ).toFixed(2);
+    setTotal(gTotal);
+  }, []);
+
   return (
     <div className="container grid grid-cols-12 items-start pb-16 pt-4 gap-6">
       <div className="col-span-8 border border-gray-200 p-4 rounded">
@@ -100,54 +135,79 @@ function CheckoutWrapper() {
         <h4 className="text-gray-800 text-lg mb-4 font-medium uppercase">
           order summary
         </h4>
-        <div className="space-y-2">
-          <div className="flex justify-between">
+        <>
+          <div className="flex justify-between py-3">
             <div>
-              <h5 className="text-gray-800 font-medium">Italian shape sofa</h5>
-              <p className="text-sm text-gray-600">Size: M</p>
+              <h5
+                className="text-gray-800 font-medium"
+                style={{ width: "150px" }}
+              >
+                Title
+              </h5>
             </div>
-            <p className="text-gray-600">x3</p>
-            <p className="text-gray-800 font-medium">$320</p>
+            <p className="text-gray-600">Quantity</p>
+            <p
+              className="text-gray-800 font-medium text-right"
+              style={{ width: "100px" }}
+            >
+              Price
+            </p>
           </div>
-          <div className="flex justify-between">
-            <div>
-              <h5 className="text-gray-800 font-medium">Italian shape sofa</h5>
-              <p className="text-sm text-gray-600">Size: M</p>
-            </div>
-            <p className="text-gray-600">x3</p>
-            <p className="text-gray-800 font-medium">$320</p>
-          </div>
-          <div className="flex justify-between">
-            <div>
-              <h5 className="text-gray-800 font-medium">Italian shape sofa</h5>
-              <p className="text-sm text-gray-600">Size: M</p>
-            </div>
-            <p className="text-gray-600">x3</p>
-            <p className="text-gray-800 font-medium">$320</p>
-          </div>
-          <div className="flex justify-between">
-            <div>
-              <h5 className="text-gray-800 font-medium">Italian shape sofa</h5>
-              <p className="text-sm text-gray-600">Size: M</p>
-            </div>
-            <p className="text-gray-600">x3</p>
-            <p className="text-gray-800 font-medium">$320</p>
-          </div>
+        </>
+        <hr />
+        <div className="space-y-2 py-3">
+          {cart.map((product) => (
+            <>
+              <div className="flex justify-between">
+                <div>
+                  <h5
+                    className="text-gray-800 font-medium"
+                    style={{ width: "150px" }}
+                  >
+                    {product.title}
+                    <span className="text-sm text-gray-400">
+                      (${product.price})
+                    </span>
+                  </h5>
+                </div>
+                <p className="text-gray-600">{product.quantity}</p>
+                <p
+                  className="text-gray-800 font-medium text-right"
+                  style={{ width: "100px" }}
+                >
+                  $
+                  {(
+                    (product.price -
+                      (product.discountPercentage / 100) * product.price) *
+                    product.quantity
+                  ).toFixed(2)}
+                </p>
+              </div>
+              <hr />
+            </>
+          ))}
         </div>
-
         <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
           <p>subtotal</p>
-          <p>$1280</p>
+          <p>${subtotal}</p>
         </div>
 
         <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
+          <p>CGST(9%)</p>
+          <p>${cgst}</p>
+        </div>
+        <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
+          <p>SGST(9%)</p>
+          <p>${sgst}</p>
+        </div>
+        <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
           <p>shipping</p>
-          <p>Free</p>
+          <p>${shippingCharge.toFixed(2)}</p>
         </div>
 
         <div className="flex justify-between text-gray-800 font-medium py-3 uppercas">
           <p className="font-semibold">Total</p>
-          <p>$1280</p>
+          <p>${Total}</p>
         </div>
 
         <div className="flex items-center mb-4 mt-2">
@@ -155,6 +215,9 @@ function CheckoutWrapper() {
             type="checkbox"
             name="aggrement"
             id="aggrement"
+            onClick={(e) => {
+              setAgreeTerms(e.target.checked);
+            }}
             className="text-primary focus:ring-0 rounded-sm cursor-pointer w-3 h-3"
           />
           <label
@@ -167,13 +230,27 @@ function CheckoutWrapper() {
             </Link>
           </label>
         </div>
+        {some && (
+          <p className="text-sm text-primary text-center">
+            To place order agree terms & conditions first
+          </p>
+        )}
 
-        <Link
-          href="#"
+        <button
+          onClick={() => {
+            if (!agreeTerms) {
+              setsome(true);
+              setTimeout(() => {
+                setsome(false);
+              }, 5000);
+            } else {
+              alert("Order Placed");
+            }
+          }}
           className="block w-full py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary transition font-medium"
         >
           Place order
-        </Link>
+        </button>
       </div>
     </div>
   );
