@@ -1,8 +1,8 @@
 .container {
     padding: 0 2rem;
-   }
-   
-   .pagination {
+}
+
+.pagination {
     /* border: 0.1rem solid gray; */
     /* border-radius: 20px; */
     padding: 10px;
@@ -10,33 +10,55 @@
     justify-content: space-around;
     align-items: center;
     list-style: none;
-   }
-   
-   .pageLink {
+}
+
+.pageLink {
     cursor: pointer;
-   }
-   
-   /* pagination pageItem */
-   .pageItem {
+}
+
+/* pagination pageItem */
+.pageItem {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 2rem;
-    height: 2rem;
+    /* width: 2rem;
+    height: 2rem; */
+    padding: 7px 15px;
     border: 1px solid #eaeaea;
     border-radius: 0.5rem;
     cursor: pointer;
-   }
-   
-   /* pagination page item when active */
-   .pageItemActive {
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
+
+/* pagination page item when active */
+.pageItemActive {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 2rem;
-    height: 2rem;
+    /* width: 2rem;
+    height: 2rem; */
+    padding: 7px 15px;
     border: 1px solid #eaeaea;
     border-radius: 0.5rem;
     cursor: pointer;
-    background-color: #ff0044;
-   }
+    background-color: #fd3d57;
+    /* #ff0044; */
+
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.buttonEnable {
+    background-color: #fd3d57;
+}
+
+.buttonDisable {
+    background-color: #eaeaea;
+    color: #8b8b8b;
+}

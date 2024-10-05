@@ -1,10 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
-import { nanoid } from "@reduxjs/toolkit";
-import { checkLoginInput } from "@/redux/userSlice";
 import * as yup from "yup";
 import { navigate } from "./actions";
 
@@ -13,13 +9,40 @@ const loginSchema = yup.object({
     .string()
     .min(4, "Username is too short!")
     .required("Username is required"),
-  password: yup.string().required("Password is required"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(4, "Password is too short!"),
 });
 
 function Index() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState("");
+
+  const handleSubmit = async () => {
+    const newLogin = {
+      username,
+      password,
+    };
+
+    try {
+      await loginSchema.validate(newLogin, { abortEarly: false });
+      console.log("form is valid", newLogin);
+      setErrors({});
+    } catch (err) {
+      const validationErrors = {};
+      err.inner.forEach((error) => {
+        validationErrors[error.path] = error.message;
+      });
+      setErrors(validationErrors);
+      console.log("form is Invalid", validationErrors);
+    }
+  };
+
+  useEffect(() => {
+    handleSubmit();
+  }, [username, password]);
   return (
     <div className="contain py-16">
       <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">

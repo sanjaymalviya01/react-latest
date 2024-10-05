@@ -21,20 +21,13 @@ const Navbar = () => {
       const request1 = checkData(token);
       Promise.all([request1]).then(([data1]) => {
         if (data1.props.newData.message) {
-          alert(data1.props.newData.message);
           setLoggedInUser(false);
-          dispatch(onUerLogOut());
-          router.push(`/login`);
         } else {
           setLoggedInUser(data1.props.newData);
         }
       });
     }
   }, [pathname]);
-  // useEffect(()=>{
-  //   console.log(sessionStorage.getItem("token"))
-
-  // },[sessionStorage.getItem("token")])
   return (
     <nav className="bg-gray-800">
       <div className="container flex">
@@ -42,9 +35,6 @@ const Navbar = () => {
           <span className="text-white">
             <FaBars />
           </span>
-          {/* <span className="capitalize ml-2 text-white hidden">
-            All Categories
-          </span> */}
 
           <Dropdown />
         </div>
@@ -53,8 +43,8 @@ const Navbar = () => {
           <Navmenu />
           {pathname != "/login" &&
             pathname != "/register" &&
-            loggedInUser &&
-            sessionStorage.getItem("token") != null && (
+            sessionStorage.getItem("token") != null &&
+            sessionStorage.getItem("token") != "" && (
               <Wishlist loggedInUser={loggedInUser} />
             )}
           {pathname != "/profile" &&

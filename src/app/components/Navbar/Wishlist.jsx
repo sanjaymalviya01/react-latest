@@ -16,7 +16,6 @@ const Wishlist = ({}) => {
   const [moreMenu, setMoreMenu] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [token, setToken] = useState("");
-  // const token = sessionStorage.getItem("token");
   const router = useRouter();
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.userReducer.loggedInUser);
@@ -142,10 +141,7 @@ const Wishlist = ({}) => {
                       justifyContent: "flex-start",
                     }}
                     onClick={() => {
-                      // dispatch(onUerLogOut());
-                      // location.reload();
-                      // debugger
-                      sessionStorage.removeItem("token");
+                      sessionStorage.setItem("token", "");
                       router.push("/login");
                     }}
                   >

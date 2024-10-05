@@ -15,9 +15,9 @@ import {
   setCartQuantity,
 } from "@/redux/userSlice";
 import { useRouter } from "next/navigation";
-import { FaHeart } from "react-icons/fa";
+import { FaArrowRight, FaHeart } from "react-icons/fa";
 
-const AcountWrapper = ({ loggedInUser }) => {
+const AcountWrapper = () => {
   const reduxUser = useSelector((state) => state.userReducer.loggedInUser);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -164,15 +164,14 @@ const AcountWrapper = ({ loggedInUser }) => {
                 <div className="space-y-1 pl-8 pt-4">
                   <button
                     onClick={() => {
-                      dispatch(onUerLogOut());
-                      location.reload();
+                      sessionStorage.setItem("token", "");
                       router.push("/login");
                     }}
                     style={{ border: "none" }}
                     className="relative hover:text-primary block font-medium capitalize transition"
                   >
                     <span className="absolute -left-8 top-0 text-base">
-                      <i className="fa-regular fa-arrow-right-from-bracket"></i>
+                      <FaArrowRight />
                     </span>
                     Logout
                   </button>
@@ -559,7 +558,6 @@ const AcountWrapper = ({ loggedInUser }) => {
                                       -
                                     </div>
                                     <div className="h-8 w-8 text-base flex items-center justify-center">
-                                      {/* {quantity} */}
                                       {product && product.quantity}
                                     </div>
                                     <div
@@ -643,34 +641,6 @@ const AcountWrapper = ({ loggedInUser }) => {
                               .toFixed(2)}
                           </p>
                         </div>
-                        {/* <div className="flex justify-between gap-10 my-2">
-                          <p>CGST(9%)</p>
-                          <p>
-                            $
-                            {reduxUser.cart
-                              .reduce(
-                                (total, item) =>
-                                  total +
-                                  (9 / 100) * item.price * item.quantity,
-                                0
-                              )
-                              .toFixed(2)}
-                          </p>
-                        </div>
-                        <div className="flex justify-between gap-10 my-2">
-                          <p>SGST(9%)</p>
-                          <p>
-                            $
-                            {reduxUser.cart
-                              .reduce(
-                                (total, item) =>
-                                  total +
-                                  (9 / 100) * item.price * item.quantity,
-                                0
-                              )
-                              .toFixed(2)}
-                          </p>
-                        </div> */}
                         <div className="flex justify-between gap-10 my-2">
                           <p>Delivery Charges</p>
                           <p>Free</p>

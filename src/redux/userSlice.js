@@ -43,10 +43,6 @@ export const userSlice = createSlice({
             if (state.loggedInUser.id != action.payload.id) {
                 state.loggedInUser = user
             }
-            // const existingUser = state.loggedInUser.find((user) => user.id == action.payload.id)
-            // if (!existingUser || state.loggedInUser.length == 0) {
-            //     state.loggedInUser.push(user)
-            // }
         },
         addToWishList: (state, action) => {
             const obj = state.loggedInUser
@@ -72,7 +68,6 @@ export const userSlice = createSlice({
                     state.loggedInUser.cart.find((product) => {
                         if (product.id === action.payload.id) {
                             product['quantity'] = 1
-                            // product.quantity = 1
                         }
                     })
                 } else {

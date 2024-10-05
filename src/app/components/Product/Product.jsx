@@ -1,12 +1,7 @@
-'use client'
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import product1 from "@/app/assets/images/products/product1.jpg";
-import product2 from "@/app/assets/images/products/product2.jpg";
-import product3 from "@/app/assets/images/products/product3.jpg";
-import product4 from "@/app/assets/images/products/product4.jpg";
-import Index from "@/app/(pages)/login/page";
 import { GiMagnifyingGlass } from "react-icons/gi";
 import { FaHeart, FaStar } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -42,7 +37,7 @@ const Product = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {RecomndedProduct.map((product, index) => (
               <div
-                key={index}
+                key={`RecomndedProduct-${index}`}
                 className="bg-white shadow rounded overflow-hidden group"
               >
                 <div className="relative">

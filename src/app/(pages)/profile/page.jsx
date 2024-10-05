@@ -20,8 +20,6 @@ function page() {
     Promise.all([request1]).then(([data1]) => {
       if (data1.props.newData.message) {
         alert(data1.props.newData.message);
-        setLoggedInUser(false);
-        dispatch(onUerLogOut());
         router.push(`/login`);
       } else {
         setUser(data1.props.newData);

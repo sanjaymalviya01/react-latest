@@ -2,14 +2,12 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
 import AcountWrapper from "../../components/Wrapper/AcountWrapper";
-import { useDispatch, useSelector } from "react-redux";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 import { checkData } from "../login/actions";
 
 function page() {
   const [loggedInUser, setLoggedInUser] = useState(true);
-  // console.log('token',token)
   const router = useRouter();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -19,7 +17,6 @@ function page() {
       if (data1.props.newData.message) {
         alert(data1.props.newData.message);
         setLoggedInUser(false);
-        dispatch(onUerLogOut());
         router.push(`/login`);
       } else {
         setLoggedInUser(data1.props.newData);

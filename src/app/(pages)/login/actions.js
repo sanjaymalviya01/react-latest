@@ -33,8 +33,6 @@ export async function navigate(data) {
     }),
   })
   const newData = await res.json();
-  // console.log(newData)
-
   redirect(`/profile?token=${newData.accessToken}`)
   return <page newData={newData} />
 }

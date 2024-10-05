@@ -1,11 +1,5 @@
 import Image from "next/image";
 import React, { useState } from "react";
-import product1 from "@/app/assets/images/products/product1.jpg";
-import product2 from "@/app/assets/images/products/product2.jpg";
-import product3 from "@/app/assets/images/products/product3.jpg";
-import product4 from "@/app/assets/images/products/product4.jpg";
-import product5 from "@/app/assets/images/products/product5.jpg";
-import product6 from "@/app/assets/images/products/product6.jpg";
 import Link from "next/link";
 import {
   FaFacebook,
@@ -17,20 +11,19 @@ import {
 } from "react-icons/fa";
 import { addToCart, addToWishList, setCartQuantity } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function ProductDetail({ product }) {
   const dispatch = useDispatch();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [imgIndex, setImgIndex] = useState(0);
   const loggedInUser = useSelector((state) => state.userReducer.loggedInUser);
   const reduxProduct = loggedInUser.cart.find((item) => item.id == product.id);
-  // console.log(reduxProduct);
   return (
     <div className="container grid grid-cols-2 gap-6">
       <div>
         <Image
+          key={`mainImage-${product.images[imgIndex]}`}
           src={product.images[imgIndex]}
           width={500}
           height={100}
@@ -40,7 +33,7 @@ function ProductDetail({ product }) {
         <div className="grid grid-cols-5 gap-4 mt-4">
           {product.images.map((img, index) => (
             <Image
-              key={index}
+              key={`optionalImage-${index}`}
               src={img}
               width={100}
               height={100}
@@ -141,7 +134,6 @@ function ProductDetail({ product }) {
                 -
               </div>
               <div className="h-8 w-8 text-base flex items-center justify-center">
-                {/* {quantity} */}
                 {reduxProduct && reduxProduct.quantity}
               </div>
               <div
@@ -173,7 +165,6 @@ function ProductDetail({ product }) {
           </button>
           <button
             onClick={() => {
-              // if(reduxProduct.)
               dispatch(addToWishList(product));
             }}
             className="border border-gray-300 text-gray-600 px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition"

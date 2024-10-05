@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { FaHeart, FaStar } from "react-icons/fa";
 import { GiMagnifyingGlass } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,6 +44,17 @@ const ShopWrapper = () => {
       setAllProducts(data.products);
       setProducts(data.products);
 
+      const productsByCategory = data.products.reduce(
+        (arrayCategory, product) => {
+          if (product.category !== undefined) {
+            arrayCategory[product.category] =
+              (arrayCategory[product.category] || 0) + 1;
+          }
+          return arrayCategory;
+        },
+        {}
+      );
+      setCategory(productsByCategory);
       const productsByBrand = data.products.reduce((arrayBrand, product) => {
         if (product.brand !== undefined) {
           arrayBrand[product.brand] = (arrayBrand[product.brand] || 0) + 1;
@@ -79,19 +90,15 @@ const ShopWrapper = () => {
         `https://dummyjson.com/products/search?q=${searches}`
       );
       const data = await response.json();
-      // console.log(data);
+
       setProducts(data.products);
-      // setAllProducts(data.products);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
-  useEffect(() => {
-    fetchAllProducts();
-    fetchcategories();
-  }, []);
   useMemo(() => {
-    if (searches != "") {
+    if (searches && searches != "") {
+      setCurrentPage(1);
       fetchsearchedProducts();
     } else {
       fetchAllProducts();
@@ -130,6 +137,7 @@ const ShopWrapper = () => {
         product.price >= selectedLowestPrice
     );
 
+    setCurrentPage(1);
     setProducts(filteredProducts);
   }, [
     selectedCategory,
@@ -151,8 +159,8 @@ const ShopWrapper = () => {
   return (
     <div className="container grid md:grid-cols-4 grid-cols-2 gap-6 pt-4 pb-16 items-start">
       <div className="col-span-1 bg-white px-4 pb-6 shadow rounded overflow-hiddenb hidden md:block">
-        <div className="divide-y divide-gray-200 space-y-5">
-          {category && (
+        {category && (
+          <div className="divide-y divide-gray-200 space-y-5">
             <div>
               <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
                 Categories
@@ -161,7 +169,7 @@ const ShopWrapper = () => {
                 className="space-y-2"
                 style={{ maxHeight: "15rem", overflow: "auto" }}
               >
-                {category.map((ProductCategory, index) => (
+                {Object.entries(category).map((ProductCategory, index) => (
                   <div key={index}>
                     <div className="flex items-center">
                       <input
@@ -170,141 +178,135 @@ const ShopWrapper = () => {
                         id={`cat-${index}`}
                         className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                         onClick={(e) => {
-                          // console.log(ProductCategory.slug, e.target.checked);
                           if (e.target.checked === true) {
                             setSelectedCategory((prevData) => ({
                               ...prevData,
-                              [ProductCategory.slug]: e.target.checked,
+                              [ProductCategory[0]]: e.target.checked,
                             }));
                           } else {
                             setSelectedCategory((prevState) => {
                               const {
-                                [ProductCategory.slug]: removed,
+                                [ProductCategory[0]]: removed,
                                 ...newState
                               } = prevState;
                               return newState;
                             });
                           }
-                        }} // onClick={(e) => {
-                        //   console.log(e.target.checked, "hello");
-                        //   if (e.target.checked === true) {
-                        //     setSelectedCategory((prevData) => ({
-                        //       ...prevData,
-                        //       [key]: e.target.checked,
-                        //     }));
-                        //   } else {
-                        //     setSelectedCategory((prevState) => {
-                        //       const { [key]: removed, ...newState } = prevState;
-                        //       return newState;
-                        //     });
-                        //   }
-                        // }}
-                      />
-                      <div className="ml-auto text-gray-600 text-sm">
-                        ({ProductCategory.name})
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {brands && (
-            <div className="pt-4">
-              <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
-                Brands
-              </h3>
-              <div
-                className="space-y-2"
-                style={{ maxHeight: "15rem", overflow: "auto" }}
-              >
-                {Object.entries(brands).map(([key, value], index) => (
-                  <div key={index}>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        name="brand-1"
-                        id="brand-1"
-                        checked={selectedBrand[key] || false}
-                        onChange={(e) => {
-                          if (e.target.checked === true) {
-                            setSelectedBrand((prevData) => ({
-                              ...prevData,
-                              [key]: e.target.checked,
-                            }));
-                          } else {
-                            setSelectedBrand((prevState) => {
-                              const { [key]: removed, ...newState } = prevState;
-                              return newState;
-                            });
-                          }
                         }}
-                        className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                       />
                       <label
                         htmlFor="brand-1"
                         className="text-gray-600 ml-3 cusror-pointer"
                       >
-                        {key}
+                        {ProductCategory[0]}
                       </label>
                       <div className="ml-auto text-gray-600 text-sm">
-                        ({value})
+                        ({ProductCategory[1]})
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          )}
-          <div className="pt-4">
-            <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
-              Price
-            </h3>
-            <div className="mt-4 flex items-center">
-              <input
-                type="number"
-                name="min"
-                id="min"
-                value={selectedLowestPrice}
-                onChange={(e) => {
-                  if (e.target.value >= 0) {
-                    setSelectedLowestPrice(e.target.value, 0);
-                  }
-                }}
-                className="w-full border-gray-300 focus:border-primary rounded focus:ring-0 px-3 py-1 text-gray-600 shadow-sm"
-                placeholder="min"
-              />
-              <span className="mx-3 text-gray-500">-</span>
-              <input
-                type="number"
-                name="max"
-                id="max"
-                value={selectedHighestPrice}
-                onChange={(e) => {
-                  if (e.target.value >= 0) {
-                    setSelectedHighestPrice(e.target.value);
-                  }
-                }}
-                className="w-full border-gray-300 focus:border-primary rounded focus:ring-0 px-3 py-1 text-gray-600 shadow-sm"
-                placeholder="max"
-              />
+            {brands && (
+              <div className="pt-4">
+                <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
+                  Brands
+                </h3>
+                <div
+                  className="space-y-2"
+                  style={{ maxHeight: "15rem", overflow: "auto" }}
+                >
+                  {Object.entries(brands).map(([key, value], index) => (
+                    <div key={index}>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          name="brand-1"
+                          id="brand-1"
+                          checked={selectedBrand[key] || false}
+                          onChange={(e) => {
+                            if (e.target.checked === true) {
+                              setSelectedBrand((prevData) => ({
+                                ...prevData,
+                                [key]: e.target.checked,
+                              }));
+                            } else {
+                              setSelectedBrand((prevState) => {
+                                const { [key]: removed, ...newState } =
+                                  prevState;
+                                return newState;
+                              });
+                            }
+                          }}
+                          className="text-primary focus:ring-0 rounded-sm cursor-pointer"
+                        />
+                        <label
+                          htmlFor="brand-1"
+                          className="text-gray-600 ml-3 cusror-pointer"
+                        >
+                          {key}
+                        </label>
+                        <div className="ml-auto text-gray-600 text-sm">
+                          ({value})
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="pt-4">
+              <h3 className="text-xl text-gray-800 mb-3 uppercase font-medium">
+                Price
+              </h3>
+              <div className="mt-4 flex items-center">
+                <input
+                  type="number"
+                  name="min"
+                  id="min"
+                  value={selectedLowestPrice}
+                  onChange={(e) => {
+                    if (e.target.value >= 0) {
+                      setSelectedLowestPrice(e.target.value, 0);
+                    }
+                  }}
+                  className="w-full border-gray-300 focus:border-primary rounded focus:ring-0 px-3 py-1 text-gray-600 shadow-sm"
+                  placeholder="min"
+                />
+                <span className="mx-3 text-gray-500">-</span>
+                <input
+                  type="number"
+                  name="max"
+                  id="max"
+                  value={selectedHighestPrice}
+                  onChange={(e) => {
+                    if (e.target.value >= 0) {
+                      setSelectedHighestPrice(e.target.value);
+                    }
+                  }}
+                  className="w-full border-gray-300 focus:border-primary rounded focus:ring-0 px-3 py-1 text-gray-600 shadow-sm"
+                  placeholder="max"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="col-span-3">
         <div className="grid md:grid-cols-3 grid-cols-2 gap-6 shadow rounded">
           {paginatedProducts.map((product, index) => (
-            // {products.map((product, index) => (
             <div key={index}>
               <div className="bg-white shadow rounded overflow-hidden group">
                 <div className="relative">
-                  <div style={{ height: "200px" }}>
+                  <div style={{ height: "200px", position: "relative" }}>
                     <Image
                       fill={true}
+                      sizes="(max-width: 768px)"
+                      priority={false}
                       src={product.images[0]}
-                      alt="product 1"
+                      alt={product.title}
                       className="w-full"
                     />
                   </div>
@@ -388,7 +390,7 @@ const ShopWrapper = () => {
                       </p>
                     </div>
                     <div className="">
-                      <p className="text-3xl text-primary font-semibold">
+                      <p className="text-xl text-primary font-semibold">
                         <span>$</span>
                         {(
                           product.price -
@@ -427,25 +429,22 @@ const ShopWrapper = () => {
                     </div>
                   </div>
                 </div>
-                {sessionStorage.getItem("token") != null ? (
-                  // {Object.keys(user).length != 0 ? (
-                  <button
-                    className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-                    onClick={() => {
+                <button
+                  className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
+                  onClick={() => {
+                    if (
+                      sessionStorage.getItem("token") != null ||
+                      sessionStorage.getItem("token") != null
+                    ) {
                       dispatch(addToCart(product));
                       router.push(`/cart`);
-                    }}
-                  >
-                    Add to cart
-                  </button>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
-                  >
-                    Login to Purchase
-                  </Link>
-                )}
+                    } else {
+                      router.push(`/login`);
+                    }
+                  }}
+                >
+                  Add to cart
+                </button>
               </div>
             </div>
           ))}

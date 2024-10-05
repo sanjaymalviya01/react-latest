@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import "./pagination.css";
 
 export const paginate = (items, pageNumber, pageSize) => {
@@ -8,7 +8,8 @@ export const paginate = (items, pageNumber, pageSize) => {
 
 function Pagination({ items, pageSize, currentPage, onPageChange }) {
   const pageCount = Math.ceil(items / pageSize);
-  if (pageCount === 1) return null;
+
+  if (pageCount === 1 || pageCount === 0) return null;
   const pages = Array.from({ length: pageCount }, (a, i) => i + 1);
 
   const startPage = Math.max(1, currentPage - 1);
@@ -25,18 +26,12 @@ function Pagination({ items, pageSize, currentPage, onPageChange }) {
           </div>
         </li>
         <li
-          className={`pageItem ${currentPage === 1 ? "disabled" : ""}`}
+          className={`pageItem ${
+            currentPage === 1 ? "disabled buttonDisable" : "buttonEnable"
+          }`}
           onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
         >
-          <a
-            style={{
-              backgroundColor: "#ff0044",
-              padding: "7px 15px",
-              borderRadius: "20px",
-            }}
-          >
-            Previous
-          </a>
+          <a>Previous</a>
         </li>
         {visiblePages.map((page) => (
           <li
@@ -48,20 +43,16 @@ function Pagination({ items, pageSize, currentPage, onPageChange }) {
           </li>
         ))}
         <li
-          className={`pageItem ${currentPage === pageCount ? "disabled" : ""}`}
+          className={`pageItem ${
+            currentPage === pageCount
+              ? "disabled buttonDisable"
+              : "buttonEnable"
+          }`}
           onClick={() =>
             currentPage < pageCount && onPageChange(currentPage + 1)
           }
         >
-          <a
-            style={{
-              backgroundColor: "#ff0044",
-              padding: "7px 15px",
-              borderRadius: "20px",
-            }}
-          >
-            Next
-          </a>
+          <a>Next</a>
         </li>
       </ul>
     </div>

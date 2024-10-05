@@ -10,7 +10,6 @@ const Banner = () => {
       settoken(sessionStorage.getItem("token"));
     }
   }, []);
-  // const token = sessionStorage.getItem("token");
   return (
     <div
       className="bg-cover bg-no-repeat bg-center py-36"
