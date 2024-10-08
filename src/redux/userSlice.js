@@ -83,13 +83,21 @@ export const userSlice = createSlice({
         },
         setCartQuantity: (state, action) => {
             const Product = state.loggedInUser.cart.find((product) => product.id === action.payload[0].id)
-            Product.quantity = parseInt(action.payload[1])
+            if (Product) {
+                Product.quantity = parseInt(action.payload[1])
+            } else {
+                let newProduct = action.payload[0]
+
+                newProduct['quantity'] = action.payload[1]
+                state.loggedInUser.cart.push(newProduct)
+                debugger
+            }
         },
         removeFromCart: (state, action) => {
             state.loggedInUser.cart = state.loggedInUser.cart.filter((product) => product.id !== action.payload.id)
         },
         onUerLogOut: (state, action) => {
-            state.loggedInUser = {}
+            // state.loggedInUser = {}
         }
     }
 })

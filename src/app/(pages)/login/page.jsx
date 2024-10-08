@@ -137,7 +137,7 @@ function Index() {
 
         <p className="mt-4 text-center text-gray-600">
           Do not have account?{" "}
-          <Link href="register.html" className="text-primary">
+          <Link href="/register" className="text-primary">
             Register now
           </Link>
         </p>

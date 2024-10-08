@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -388,12 +387,16 @@ const AcountWrapper = () => {
                   reduxUser.wishlist.map((product) => (
                     <>
                       <div className="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
-                        <div className="w-28">
+                        <div
+                          className="w-28"
+                          style={{ height: "100px", position: "relative" }}
+                        >
                           <Image
+                            fill={true}
+                            sizes="(max-width: 768px)"
+                            priority={false}
                             src={product.images[0]}
-                            width={100}
-                            height={100}
-                            alt="product 6"
+                            alt={product.title}
                             className="w-full"
                           />
                         </div>
@@ -413,8 +416,15 @@ const AcountWrapper = () => {
                         </div>
                         <button
                           onClick={() => {
-                            dispatch(addToCart(product));
-                            router.push(`/cart`);
+                            if (
+                              sessionStorage.getItem("token") != null ||
+                              sessionStorage.getItem("token") != ""
+                            ) {
+                              dispatch(addToCart(product));
+                              router.push(`/cart`);
+                            } else {
+                              router.push(`/login`);
+                            }
                           }}
                           className="px-6 py-2 text-center text-sm text-primary bg-dark border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
                         >
@@ -462,20 +472,25 @@ const AcountWrapper = () => {
                         <div className="flex flex-col items-center justify-between border gap-6 p-4 border-gray-200 rounded">
                           <div style={{ display: "flex", width: "480px" }}>
                             <div
-                              className="w-28 border mx-1"
-                              style={{ height: "120px" }}
+                              className="w-28"
+                              style={{ height: "100px", position: "relative" }}
                             >
                               <Image
+                                fill={true}
+                                sizes="(max-width: 768px)"
+                                priority={false}
                                 src={product.images[0]}
-                                width={100}
-                                height={100}
-                                style={{ width: "auto", height: "100px" }}
-                                alt="product 6"
+                                alt={product.title}
                                 className="w-full"
                               />
                             </div>
                             <div>
-                              <Link href={`/product?product=${product.id}`}>
+                              <Link
+                                href={{
+                                  pathname: "/product",
+                                  query: { productId: product.id },
+                                }}
+                              >
                                 <h2
                                   className="text-gray-800 text-xl font-medium uppercase overflow-hidden text-wrap"
                                   style={{

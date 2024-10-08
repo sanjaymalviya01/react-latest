@@ -18,7 +18,6 @@ const Navmenu = () => {
         if (data1.props.newData.message) {
           alert(data1.props.newData.message);
           setLoggedInUser(false);
-          dispatch(onUerLogOut());
           router.push(`/login`);
         } else {
           setLoggedInUser(true);

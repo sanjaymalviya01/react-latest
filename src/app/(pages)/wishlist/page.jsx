@@ -18,7 +18,6 @@ function page() {
       if (data1.props.newData.message) {
         alert(data1.props.newData.message);
         setLoggedInUser(false);
-        dispatch(onUerLogOut())
         router.push(`/login`);
       } else {
         setLoggedInUser(data1.props.newData);

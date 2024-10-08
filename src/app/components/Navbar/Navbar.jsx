@@ -13,11 +13,13 @@ import { onUerLogOut } from "@/redux/userSlice";
 const Navbar = () => {
   const pathname = usePathname();
   const [loggedInUser, setLoggedInUser] = useState(false);
+  const [token, setToken] = useState();
   const router = useRouter();
   const dispatch = useDispatch();
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
+      setToken(token);
       const request1 = checkData(token);
       Promise.all([request1]).then(([data1]) => {
         if (data1.props.newData.message) {
@@ -27,7 +29,7 @@ const Navbar = () => {
         }
       });
     }
-  }, [pathname]);
+  }, [pathname, token]);
   return (
     <nav className="bg-gray-800">
       <div className="container flex">
@@ -41,12 +43,16 @@ const Navbar = () => {
 
         <div className="flex items-center justify-between flex-grow md:pl-12 py-5">
           <Navmenu />
-          {pathname != "/login" &&
-            pathname != "/register" &&
-            sessionStorage.getItem("token") != null &&
-            sessionStorage.getItem("token") != "" && (
-              <Wishlist loggedInUser={loggedInUser} />
-            )}
+          {token && (
+            <>
+              {pathname != "/login" &&
+                pathname != "/register" &&
+                sessionStorage.getItem("token") != null &&
+                sessionStorage.getItem("token") != "" && (
+                  <Wishlist loggedInUser={loggedInUser} />
+                )}
+            </>
+          )}
           {pathname != "/profile" &&
             pathname != "/account" &&
             pathname != "/wishlist" &&

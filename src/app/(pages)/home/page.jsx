@@ -6,7 +6,8 @@ import Features from "@/app/components/Features/Features";
 import NewArrival from "@/app/components/NewArrival/NewArrival";
 import Product from "@/app/components/Product/Product";
 
-function HomePage() {
+async function HomePage() {
+  let data = await fetchRecomndedProduct();
   return (
     <>
       <Banner />
@@ -14,9 +15,21 @@ function HomePage() {
       <Categories />
       <NewArrival />
       <Ads />
-      <Product />
+      <Product {...{ data }} />
     </>
   );
 }
 
 export default HomePage;
+
+export const fetchRecomndedProduct = async () => {
+  try {
+    const response = await fetch(
+      "https://dummyjson.com/products?limit=8&skip=5"
+    );
+    const data = await response.json();
+    return data.products;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+};

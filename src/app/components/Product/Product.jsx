@@ -8,25 +8,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/userSlice";
 
-const Product = () => {
+const Product = ({ data }) => {
+  console.log("data : ", data);
   const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [RecomndedProduct, setRecomndedProduct] = useState();
-  const fetchRecomndedProduct = async () => {
-    try {
-      const response = await fetch(
-        "https://dummyjson.com/products?limit=8&skip=5"
-      );
-      const data = await response.json();
-      setRecomndedProduct(data.products);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
   useEffect(() => {
-    fetchRecomndedProduct();
-  }, []);
+    setRecomndedProduct(data);
+  }, [data]);
   return (
     <>
       {RecomndedProduct && (
@@ -70,7 +60,12 @@ const Product = () => {
                   </div>
                 </div>
                 <div className="pt-4 pb-3 px-4">
-                  <Link href={`/product?${searchParams}&product=${product.id}`}>
+                  <Link
+                    href={{
+                      pathname: "/product",
+                      query: { productId: product.id },
+                    }}
+                  >
                     <h4
                       className=" product-title uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition"
                       style={{
@@ -124,8 +119,15 @@ const Product = () => {
                 </div>
                 <button
                   onClick={() => {
-                    dispatch(addToCart(product));
-                    router.push(`/cart?${searchParams}`);
+                    if (
+                      sessionStorage.getItem("token") != null ||
+                      sessionStorage.getItem("token") != ""
+                    ) {
+                      dispatch(addToCart(product));
+                      router.push(`/cart`);
+                    } else {
+                      router.push(`/login`);
+                    }
                   }}
                   className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
                 >

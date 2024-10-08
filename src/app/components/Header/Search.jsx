@@ -7,9 +7,7 @@ const Search = () => {
   const router = useRouter();
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      if (searchedValue == "") {
-        router.push(`/shop`);
-      } else {
+      if (searchedValue != "") {
         router.push(`/shop?search=${searchedValue}`);
       }
     }, 2000);

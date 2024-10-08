@@ -5,7 +5,9 @@ function page() {
   return (
     <div className="contain py-16">
       <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
-        <h2 className="text-2xl uppercase font-medium mb-1">Create an account</h2>
+        <h2 className="text-2xl uppercase font-medium mb-1">
+          Create an account
+        </h2>
         <p className="text-gray-600 mb-6 text-sm">Register for new cosutumer</p>
         <form action="#" method="post" autoComplete="off">
           <div className="space-y-2">
@@ -66,7 +68,10 @@ function page() {
                 id="aggrement"
                 className="text-primary focus:ring-0 rounded-sm cursor-pointer"
               />
-              <label htmlFor="aggrement" className="text-gray-600 ml-3 cursor-pointer">
+              <label
+                htmlFor="aggrement"
+                className="text-gray-600 ml-3 cursor-pointer"
+              >
                 I have read and agree to the{" "}
                 <Link href="#" className="text-primary">
                   terms & conditions
@@ -107,7 +112,7 @@ function page() {
 
         <p className="mt-4 text-center text-gray-600">
           Already have account?{" "}
-          <Link href="login.html" className="text-primary">
+          <Link href="/login" className="text-primary">
             Login now
           </Link>
         </p>
