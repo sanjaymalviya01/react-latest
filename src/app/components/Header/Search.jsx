@@ -1,18 +1,24 @@
 "use client";
-import { useRouter } from "next/navigation";
-import React, { useRef, useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { GiMagnifyingGlass } from "react-icons/gi";
+import debounce from "lodash.debounce";
 const Search = () => {
-  const [searchedValue, setSearchedValue] = useState("");
+  const pathname = usePathname();
   const router = useRouter();
+  const [query, setQuery] = useState("");
   useEffect(() => {
-    const timeOut = setTimeout(() => {
-      if (searchedValue != "") {
-        router.push(`/shop?search=${searchedValue}`);
-      }
-    }, 2000);
-    return () => clearTimeout(timeOut);
-  }, [searchedValue]);
+    if (query) {
+      router.push(`/shop?search=${query}`);
+    } else {
+      router.push(`${pathname}`);
+    }
+  }, [query]);
+
+  const updateQuery = (e) => setQuery(e?.target?.value);
+
+  const debouncedOnChange = debounce(updateQuery, 2000);
+
   return (
     <div className="w-full max-w-xl relative flex">
       <span className="absolute left-4 top-4 text-lg text-gray-400">
@@ -21,30 +27,12 @@ const Search = () => {
       <input
         type="text"
         name="search"
-        value={searchedValue}
-        onChange={(e) => setSearchedValue(e.target.value)}
+        onChange={debouncedOnChange}
         id="search"
-        className="w-full border border-primary 
+        className="w-full border border-primary
          pl-12 py-3 pr-3 rounded focus:outline-none"
         placeholder="Search your Products here"
       />
-      {searchedValue && (
-        <span
-          className="absolute right-4 
-         top-3 text-lg text-gray-400"
-        >
-          <button
-            className="text-sm"
-            onClick={() => {
-              const a = "";
-              setSearchedValue("");
-              router.push(`/shop`);
-            }}
-          >
-            Clear
-          </button>
-        </span>
-      )}
     </div>
   );
 };

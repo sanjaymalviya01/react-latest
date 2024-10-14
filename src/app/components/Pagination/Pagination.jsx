@@ -69,46 +69,6 @@ function Pagination({ items, pageSize, currentPage, onPageChange }) {
           </ul>
         </nav>
       </div>
-
-      {/* <div className="pagination-container">
-        <ul className="pagination">
-          <li>
-            <div className="pagination-info">
-              <span>Showing {pageCount} Pages </span>
-              <span>for {items} Products</span>
-            </div>
-          </li>
-          <li
-            className={`pageItem ${
-              currentPage === 1 ? "disabled buttonDisable" : "buttonEnable"
-            }`}
-            onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-          >
-            <a>Previous</a>
-          </li>
-          {visiblePages.map((page) => (
-            <li
-              key={page}
-              className={page === currentPage ? "pageItemActive" : "pageItem"}
-              onClick={() => onPageChange(page)}
-            >
-              <a className="pageLink">{page}</a>
-            </li>
-          ))}
-          <li
-            className={`pageItem ${
-              currentPage === pageCount
-                ? "disabled buttonDisable"
-                : "buttonEnable"
-            }`}
-            onClick={() =>
-              currentPage < pageCount && onPageChange(currentPage + 1)
-            }
-          >
-            <a>Next</a>
-          </li>
-        </ul>
-      </div> */}
     </>
   );
 }

@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/userSlice";
 
 const Product = ({ data }) => {
-  console.log("data : ", data);
   const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();

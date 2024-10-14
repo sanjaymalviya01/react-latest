@@ -567,7 +567,6 @@ const AcountWrapper = () => {
                                             ])
                                           );
                                         }
-                                        console.log(product.quantity);
                                       }}
                                     >
                                       -
@@ -586,7 +585,6 @@ const AcountWrapper = () => {
                                             ])
                                           );
                                         }
-                                        console.log(product.quantity);
                                       }}
                                     >
                                       +

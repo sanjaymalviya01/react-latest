@@ -1,11 +1,10 @@
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
-import CheckoutWrapper from "./comp/CheckoutWrapper";
-
+import Form from "./comp/form/Form";
 function page() {
   return (
     <>
       <Breadcrumb />
-      <CheckoutWrapper />
+      <Form />
     </>
   );
 }

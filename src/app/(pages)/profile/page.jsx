@@ -17,7 +17,6 @@ async function page() {
   useEffect(() => {
     router.refresh();
     const request1 = checkData(token);
-    console.log(request1);
     Promise.all([request1]).then(([data1]) => {
       if (data1.props.newData.message) {
         alert(data1.props.newData.message);

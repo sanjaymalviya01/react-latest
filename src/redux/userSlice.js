@@ -28,12 +28,7 @@ export const userSlice = createSlice({
             }
         },
         onUpdateUser: (state, action) => {
-            const updatedUser = action.payload
-            state.users.find((user) => {
-                if (user.id === action.payload.id) {
-                    user = action.payload
-                }
-            })
+            state.loggedInUser = action.payload
         },
         onLoginUser: (state, action) => {
             let user = action.payload
