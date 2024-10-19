@@ -16,8 +16,11 @@ const Navbar = () => {
   const [token, setToken] = useState();
   const router = useRouter();
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
+  const urlToken = searchParams.get("token");
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    // router.refresh();
+    const token = sessionStorage.getItem("token") || urlToken;
     if (token) {
       setToken(token);
       const request1 = checkData(token);
@@ -28,6 +31,9 @@ const Navbar = () => {
           setLoggedInUser(data1.props.newData);
         }
       });
+    } else {
+      setLoggedInUser(false);
+      setToken(false);
     }
   }, [pathname, token]);
   return (
@@ -45,38 +51,30 @@ const Navbar = () => {
           <Navmenu />
           {token && (
             <>
-              {pathname != "/login" &&
-                pathname != "/register" &&
-                sessionStorage.getItem("token") != null &&
-                sessionStorage.getItem("token") != "" && (
-                  <Wishlist loggedInUser={loggedInUser} />
-                )}
+              {pathname != "/login" && pathname != "/register" && (
+                <Wishlist loggedInUser={loggedInUser} />
+              )}
             </>
           )}
-          {pathname != "/profile" &&
-            pathname != "/account" &&
-            pathname != "/wishlist" &&
-            Object.keys(loggedInUser).length === 0 &&
-            pathname == "/login" && (
-              <Link
-                href="/register"
-                className="text-gray-200 hover:text-white transition"
-              >
-                Register
-              </Link>
-            )}
-          {pathname != "/profile" &&
-            pathname != "/account" &&
-            pathname != "/wishlist" &&
-            Object.keys(loggedInUser).length === 0 &&
-            pathname == "/register" && (
-              <Link
-                href="/login"
-                className="text-gray-200 hover:text-white transition"
-              >
-                Login
-              </Link>
-            )}
+          {!token && (
+            <>
+              {pathname == "/login" ? (
+                <Link
+                  href="/register"
+                  className="text-gray-200 hover:text-white transition"
+                >
+                  Register
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="text-gray-200 hover:text-white transition"
+                >
+                  Login
+                </Link>
+              )}
+            </>
+          )}
         </div>
       </div>
     </nav>

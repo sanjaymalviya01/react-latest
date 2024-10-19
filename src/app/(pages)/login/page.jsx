@@ -28,7 +28,7 @@ function Index() {
 
     try {
       await loginSchema.validate(newLogin, { abortEarly: false });
-      console.log("form is valid", newLogin);
+      //console.log("form is valid", newLogin);
       setErrors({});
     } catch (err) {
       const validationErrors = {};
@@ -36,7 +36,7 @@ function Index() {
         validationErrors[error.path] = error.message;
       });
       setErrors(validationErrors);
-      console.log("form is Invalid", validationErrors);
+      //console.log("form is Invalid", validationErrors);
     }
   };
 
@@ -52,7 +52,7 @@ function Index() {
           <div className="space-y-2">
             <div>
               <label htmlFor="email" className="text-gray-600 mb-2 block">
-                Email address
+                Username
               </label>
               <input
                 type="text"

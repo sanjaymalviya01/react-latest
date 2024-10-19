@@ -46,7 +46,7 @@ export async function checkData(token) {
     credentials: "include",
   });
   const newData = await response.json();
-  // console.log(newData)
+  // //console.log(newData)
   return <page newData={newData} />
 
 }

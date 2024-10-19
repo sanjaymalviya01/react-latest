@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaGripVertical, FaHeart, FaList, FaStar } from "react-icons/fa";
 import { GiMagnifyingGlass } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,6 +44,7 @@ const ShopWrapper = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const searches = searchParams.get("search");
+  const searchCategory = searchParams.get("category");
 
   const fetchsearchedProducts = async () => {
     try {
@@ -83,9 +84,17 @@ const ShopWrapper = ({
       setSelectedHighestPrice(highestPrice);
       setSelectedLowestPrice(lowestPrice);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      //console.error("Error fetching products:", error);
     }
   };
+  useEffect(() => {
+    if (searchCategory) {
+      setSelectedCategory((prevData) => ({
+        ...prevData,
+        [searchCategory]: true,
+      }));
+    }
+  }, [allProducts]);
   useMemo(() => {
     if (searches && searches != "") {
       setCurrentPage(1);
@@ -169,7 +178,6 @@ const ShopWrapper = ({
   const onPageChange = (page) => {
     setCurrentPage(page);
   };
-
   return (
     <div className="container grid md:grid-cols-4 grid-cols-2 gap-6 pt-4 pb-16 items-start">
       <div className="col-span-1 bg-white px-4 pb-6 shadow rounded overflow-hiddenb hidden md:block">
@@ -190,8 +198,12 @@ const ShopWrapper = ({
                         type="checkbox"
                         name={`cat-${index}`}
                         id={`cat-${index}`}
+                        checked={selectedCategory[ProductCategory[0]]}
                         className="text-primary focus:ring-0 rounded-sm cursor-pointer"
                         onClick={(e) => {
+                          if (searchParams) {
+                            router.push("/shop");
+                          }
                           if (e.target.checked === true) {
                             setSelectedCategory((prevData) => ({
                               ...prevData,
@@ -498,7 +510,7 @@ const ShopWrapper = ({
                     className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
                     onClick={() => {
                       if (
-                        sessionStorage.getItem("token") != null ||
+                        sessionStorage.getItem("token") != null &&
                         sessionStorage.getItem("token") != ""
                       ) {
                         dispatch(addToCart(product));
@@ -611,7 +623,7 @@ const ShopWrapper = ({
                   <button
                     onClick={() => {
                       if (
-                        sessionStorage.getItem("token") != null ||
+                        sessionStorage.getItem("token") != null &&
                         sessionStorage.getItem("token") != ""
                       ) {
                         dispatch(addToCart(product));
@@ -620,7 +632,7 @@ const ShopWrapper = ({
                         router.push(`/login`);
                       }
                     }}
-                    className="px-6 py-2 text-center text-sm text-primary bg-dark border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+                    className="whitespace-nowrap px-6 py-2 text-center text-sm text-primary bg-dark border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
                   >
                     add to cart
                   </button>

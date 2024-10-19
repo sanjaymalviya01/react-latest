@@ -14,7 +14,13 @@ import {
   setCartQuantity,
 } from "@/redux/userSlice";
 import { useRouter } from "next/navigation";
-import { FaArrowRight, FaHeart } from "react-icons/fa";
+import {
+  FaAddressCard,
+  FaArrowRight,
+  FaCreditCard,
+  FaHeart,
+} from "react-icons/fa";
+import { FaBoxArchive } from "react-icons/fa6";
 
 const AcountWrapper = () => {
   const reduxUser = useSelector((state) => state.userReducer.loggedInUser);
@@ -72,17 +78,22 @@ const AcountWrapper = () => {
               <div className="mt-6 bg-white shadow rounded p-4 divide-y divide-gray-200 space-y-4 text-gray-600">
                 <div className="space-y-1 pl-8">
                   <Link
-                    href="#"
-                    className="relative text-primary block font-medium capitalize transition"
+                    href="/account"
+                    className={`relative hover:text-primary block capitalize transition ${
+                      pathname == "/account" && "text-primary"
+                    }`}
                   >
                     <span className="absolute -left-8 top-0 text-base">
+                      <FaAddressCard />
                       <i className="fa-regular fa-address-card"></i>
                     </span>
                     Manage account
                   </Link>
                   <Link
-                    href="#"
-                    className="relative hover:text-primary block capitalize transition"
+                    href={`/profile?token=${sessionStorage.getItem("token")}`}
+                    className={`relative hover:text-primary block capitalize transition ${
+                      pathname == "/profile" && "text-primary"
+                    }`}
                   >
                     Profile information
                   </Link>
@@ -107,6 +118,7 @@ const AcountWrapper = () => {
                   >
                     <span className="absolute -left-8 top-0 text-base">
                       <i className="fa-solid fa-box-archive"></i>
+                      <FaBoxArchive />
                     </span>
                     My order history
                   </Link>
@@ -137,6 +149,7 @@ const AcountWrapper = () => {
                   >
                     <span className="absolute -left-8 top-0 text-base">
                       <i className="fa-regular fa-credit-card"></i>
+                      <FaCreditCard />
                     </span>
                     Payment methods
                   </Link>
@@ -150,11 +163,12 @@ const AcountWrapper = () => {
 
                 <div className="space-y-1 pl-8 pt-4">
                   <Link
-                    href="#"
+                    href="/wishlist"
                     className="relative hover:text-primary block font-medium capitalize transition"
                   >
                     <span className="absolute -left-8 top-0 text-base">
                       <i className="fa-regular fa-heart"></i>
+                      <FaHeart />
                     </span>
                     My wishlist
                   </Link>
@@ -406,30 +420,54 @@ const AcountWrapper = () => {
                           </h2>
                           <p className="text-gray-500 text-sm">
                             Availability:{" "}
-                            <span className="text-green-600">
-                              {product.stock} In Stock
-                            </span>
+                            {product.stock == 0 ? (
+                              <>
+                                <span className="text-red-500">
+                                  All added to cart
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                {product.stock - product.quantity <= 10 ? (
+                                  <>
+                                    <span className="text-orange-500">
+                                      Low Stock - {product.stock}
+                                      {/* {product.stock - product.quantity} */}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span className="text-green-500">
+                                      In Stock - {product.stock}
+                                      {/* {product.stock - product.quantity} */}
+                                    </span>
+                                  </>
+                                )}
+                              </>
+                            )}
                           </p>
                         </div>
                         <div className="text-primary text-lg font-semibold">
                           ${product.price}
                         </div>
-                        <button
-                          onClick={() => {
-                            if (
-                              sessionStorage.getItem("token") != null ||
-                              sessionStorage.getItem("token") != ""
-                            ) {
-                              dispatch(addToCart(product));
-                              router.push(`/cart`);
-                            } else {
-                              router.push(`/login`);
-                            }
-                          }}
-                          className="px-6 py-2 text-center text-sm text-primary bg-dark border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
-                        >
-                          add to cart
-                        </button>
+                        {product.stock > 0 && (
+                          <button
+                            onClick={() => {
+                              if (
+                                sessionStorage.getItem("token") != null &&
+                                sessionStorage.getItem("token") != ""
+                              ) {
+                                dispatch(addToCart(product));
+                                router.push(`/cart`);
+                              } else {
+                                router.push(`/login`);
+                              }
+                            }}
+                            className="whitespace-nowrap px-6 py-2 text-center text-sm text-primary bg-dark border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
+                          >
+                            add to cart
+                          </button>
+                        )}
                         <button
                           className="px-6 py-2 text-center text-sm text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
                           onClick={() => {
@@ -507,7 +545,7 @@ const AcountWrapper = () => {
                                 <div>
                                   <p className="text-gray-500 text-sm">
                                     Availability:{" "}
-                                    {product.stock == product.quantity ? (
+                                    {product.stock == 0 ? (
                                       <>
                                         <span className="text-red-500">
                                           Out of stock
@@ -519,15 +557,15 @@ const AcountWrapper = () => {
                                         10 ? (
                                           <>
                                             <span className="text-orange-500">
-                                              Low Stock -{" "}
-                                              {product.stock - product.quantity}
+                                              Low Stock - {product.stock}
+                                              {/* {product.stock - product.quantity} */}
                                             </span>
                                           </>
                                         ) : (
                                           <>
                                             <span className="text-green-500">
-                                              In Stock -{" "}
-                                              {product.stock - product.quantity}
+                                              In Stock - {product.stock}
+                                              {/* {product.stock - product.quantity} */}
                                             </span>
                                           </>
                                         )}
@@ -577,7 +615,8 @@ const AcountWrapper = () => {
                                     <div
                                       className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none"
                                       onClick={() => {
-                                        if (product.quantity < product.stock) {
+                                        if (product.stock > 0) {
+                                          // if (product.quantity <= product.stock) {
                                           dispatch(
                                             setCartQuantity([
                                               product,

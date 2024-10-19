@@ -1921,8 +1921,28 @@ h6 {
   content: 'Hello';
 }
 
-
 .product-img:active {
   --tw-border-opacity: 1;
   border-color: rgb(253 61 87 / var(--tw-border-opacity));
+}
+
+.remove-arrow::-webkit-outer-spin-button,
+.remove-arrow::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.remove-arrow {
+  -moz-appearance: textfield;
+  /* padding-left: 45px; */
+}
+
+.remove-card-arrow::-webkit-outer-spin-button,
+.remove-card-arrow::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.remove-card-arrow {
+  -moz-appearance: textfield;
 }

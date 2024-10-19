@@ -3,26 +3,36 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import OrderSummary from "../OrderSummary";
 import { useDispatch, useSelector } from "react-redux";
-import { onUpdateUser } from "@/redux/userSlice";
+import { onUpdateUser, updateCheckoutInfo } from "@/redux/userSlice";
+import debounce from "lodash.debounce";
+import Link from "next/link";
 
-const validationSchema = Yup.object().shape({
+const generalValidationSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "firstName is too short!")
     .max(10, "firstName is too long!")
+    .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
     .required("firstName is required"),
   lastName: Yup.string()
     .min(2, "lastName is too short!")
     .max(10, "lastName is too long!")
+    .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
     .required("lastName is required"),
   email: Yup.string()
     .email()
     .matches(/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/, "Not a valid email")
     .required("Email is required"),
-  paymentType: Yup.string().required("phone is required"),
-  billingphoneNumber: Yup.string()
-    .min(2, "phone is too short!")
-    .max(10, "phone is too long!")
-    .required("phone is required"),
+  // phoneNumber: Yup.string()
+  //   .matches(
+  //     /^[0-9]/,
+  //     // /^\+[1-9]{1}[0-9]{3,13}$/,
+  //     // /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
+  //     "Phone number is not valid"
+  //   )
+  //   .min(9, "Phone Number should be 10 digit long.No special character allowed")
+  //   .max(11, "Phone Number should be max 10 digit long"),
+});
+const addressValidationSchema = Yup.object().shape({
   billingaddress: Yup.string()
     .min(2, "address is too short!")
     .max(25, "address is too long!")
@@ -43,10 +53,6 @@ const validationSchema = Yup.object().shape({
     .min(2, "country is too short!")
     .max(25, "country is too long!")
     .required("country is required"),
-  shippingphoneNumber: Yup.string()
-    .min(2, "phone is too short!")
-    .max(10, "phone is too long!")
-    .required("phone is required"),
   shippingaddress: Yup.string()
     .min(2, "address is too short!")
     .max(25, "address is too long!")
@@ -67,26 +73,32 @@ const validationSchema = Yup.object().shape({
     .min(2, "country is too short!")
     .max(25, "country is too long!")
     .required("country is required"),
-  cardFirstName: Yup.string()
-    .min(2, "country is too short!")
-    .max(25, "country is too long!")
-    .required("country is required"),
-  cardLastName: Yup.string()
-    .min(2, "country is too short!")
-    .max(25, "country is too long!")
-    .required("country is required"),
+});
+const paymentValidationSchema = Yup.object().shape({
   creditCardNumber: Yup.string()
-    .min(2, "country is too short!")
-    .max(25, "country is too long!")
-    .required("country is required"),
+    .min(10, "creditCardNumber is too short!")
+    .max(20, "creditCardNumber is too long!")
+    .required("creditCardNumber is required"),
   cardSecurityCode: Yup.string()
-    .min(4, "country is too short!")
-    .max(10, "country is too long!")
-    .required("country is required"),
+    .min(2, "cardSecurityCode is too short!")
+    .max(4, "cardSecurityCode is too long!")
+    .required("cardSecurityCode is required"),
   CardExpiration: Yup.string()
-    .min(2, "country is too short!")
-    .max(25, "country is too long!")
-    .required("country is required"),
+    .matches(
+      /^\d{2}\/\d{2}$/,
+      "CardExpiration Date must be in the format MM/YY"
+    )
+    .test("valid-month", "Month must be between 01 and 12", (value) => {
+      const [month, year] = value.split("/");
+      return Number(month) >= 1 && Number(month) <= 12;
+      // Number(year) >= 1 && Number(month) <= 12;
+    })
+    .test("valid-year", "Year must be between 24 and 50", (value) => {
+      const [month, year] = value.split("/");
+      // Number(month) >= 1 && Number(month) <= 12;
+      return Number(year) >= 24 && Number(year) <= 50;
+    })
+    .required("CardExpiration is required"),
 });
 
 function Form() {
@@ -100,6 +112,12 @@ function Form() {
   ];
   const data = [
     [
+      // {
+      //   id: "useUserData",
+      //   name: "useUserData",
+      //   type: "checkbox",
+      //   label: "Cash On Delivery",
+      // },
       {
         id: "firstName",
         name: "firstName",
@@ -121,15 +139,15 @@ function Form() {
         label: "Email",
         placeholder: "Email",
       },
+      {
+        id: "phoneNumber",
+        name: "phoneNumber",
+        type: "number",
+        label: "phoneNumber",
+        placeholder: "9876543210",
+      },
     ],
     [
-      {
-        id: "billingphoneNumber",
-        name: "billingphoneNumber",
-        type: "text",
-        label: "Phone Number",
-        placeholder: "Phone Number",
-      },
       {
         id: "billingaddress",
         name: "billingaddress",
@@ -147,7 +165,7 @@ function Form() {
       {
         id: "billingpostalCode",
         name: "billingpostalCode",
-        type: "text",
+        type: "number",
         label: "Postal Code",
         placeholder: "Postal Code",
       },
@@ -174,66 +192,37 @@ function Form() {
     ],
     [
       {
-        id: "cashOnDelivery",
-        value: "cashOnDelivery",
-        name: "paymentType",
-        type: "radio",
+        id: "cashondelivery",
+        name: "cashondelivery",
+        type: "checkbox",
         label: "Cash On Delivery",
-      },
-      {
-        id: "debitOrCrerditCard",
-        value: "debitOrCrerditCard",
-        name: "paymentType",
-        type: "radio",
-        label: "Debit or Credit Card",
       },
     ],
   ];
   const paymentData = [
     {
-      id: "cardFirstName",
-      name: "cardFirstName",
-      type: "text",
-      label: "First Name",
-      placeholder: "First Name",
-    },
-    {
-      id: "cardLastName",
-      name: "cardLastName",
-      type: "text",
-      label: "Last Name",
-      placeholder: "Last Name",
-    },
-    {
       id: "creditCardNumber",
       name: "creditCardNumber",
-      type: "text",
+      type: "number",
       label: "Credit Card Number",
-      placeholder: "Credit Card Number",
+      placeholder: "12342315132",
     },
     {
       id: "cardSecurityCode",
       name: "cardSecurityCode",
-      type: "text",
+      type: "number",
       label: "Security Code",
-      placeholder: "Security Code",
+      placeholder: "1234",
     },
     {
       id: "CardExpiration",
       name: "CardExpiration",
       type: "text",
       label: "Card Expiration",
-      placeholder: "Card Expiration",
+      placeholder: "01/25",
     },
   ];
   const shippingFormData = [
-    {
-      id: "shippingphoneNumber",
-      name: "shippingphoneNumber",
-      type: "text",
-      label: "Phone Number",
-      placeholder: "Phone Number",
-    },
     {
       id: "shippingaddress",
       name: "shippingaddress",
@@ -270,55 +259,1342 @@ function Form() {
       placeholder: "Country",
     },
   ];
+  const [forms, setForms] = useState(data);
+  const [index, setIndex] = useState(0);
+  const [cashondelivery, setcashondelivery] = useState(false);
+  const [shippingForm, setShippingForm] = useState(false);
+  const [useUserData, setUseUserData] = useState(false);
+  const [lastUpdateField, setlastUpdateField] = useState();
+  const [showNext, setShowNext] = useState(false);
+  const [errors, seterrors] = useState("");
+  const [refreshErrors, setRefreshErrors] = useState(1);
+  const [selectCountryCode, setselectCountryCode] = useState("+91");
+  const [selectCountryCodeMenu, setselectCountryCodeMenu] = useState(false);
+
   const [formData, setformData] = useState({
     firstName: "",
     lastName: "",
-    billingphoneNumber: "",
+    countryCode: selectCountryCode,
+    phoneNumber: "",
+    email: "",
     billingaddress: "",
     billingcity: "",
     billingpostalCode: "",
     billingstate: "",
     billingcountry: "",
-    shippingphoneNumber: "",
+    makeThisAddressAsShippingAddress: shippingForm,
     shippingaddress: "",
     shippingcity: "",
     shippingpostalCode: "",
     shippingstate: "",
     shippingcountry: "",
-    paymentType: "cashOnDelivery",
-    cardFirstName: "",
-    cardLastName: "",
+    paymentType: "debitOrCrerditCard",
+    cashondelivery: cashondelivery,
     creditCardNumber: "",
     cardSecurityCode: "",
     CardExpiration: "",
+    useUserData: useUserData,
   });
-  const [forms, setForms] = useState(data);
-  const [index, setIndex] = useState(0);
-  const [paymentType, setPaymentType] = useState("cashondelivery");
-  const [shippingForm, setShippingForm] = useState(false);
-  const [errors, seterrors] = useState("");
 
-  const onChangeHandler = (e) => {
-    const id = e.target.id;
-    const val = e.target.value;
-    if (e.target.type == "radio") {
-      setPaymentType(id);
-      console.log(id);
+  const selectCountryCodeOptions = [
+    {
+      name: "Afghanistan",
+      dial_code: "+93",
+      code: "AF",
+    },
+    {
+      name: "Aland Islands",
+      dial_code: "+358",
+      code: "AX",
+    },
+    {
+      name: "Albania",
+      dial_code: "+355",
+      code: "AL",
+    },
+    {
+      name: "Algeria",
+      dial_code: "+213",
+      code: "DZ",
+    },
+    {
+      name: "AmericanSamoa",
+      dial_code: "+1684",
+      code: "AS",
+    },
+    {
+      name: "Andorra",
+      dial_code: "+376",
+      code: "AD",
+    },
+    {
+      name: "Angola",
+      dial_code: "+244",
+      code: "AO",
+    },
+    {
+      name: "Anguilla",
+      dial_code: "+1264",
+      code: "AI",
+    },
+    {
+      name: "Antarctica",
+      dial_code: "+672",
+      code: "AQ",
+    },
+    {
+      name: "Antigua and Barbuda",
+      dial_code: "+1268",
+      code: "AG",
+    },
+    {
+      name: "Argentina",
+      dial_code: "+54",
+      code: "AR",
+    },
+    {
+      name: "Armenia",
+      dial_code: "+374",
+      code: "AM",
+    },
+    {
+      name: "Aruba",
+      dial_code: "+297",
+      code: "AW",
+    },
+    {
+      name: "Australia",
+      dial_code: "+61",
+      code: "AU",
+    },
+    {
+      name: "Austria",
+      dial_code: "+43",
+      code: "AT",
+    },
+    {
+      name: "Azerbaijan",
+      dial_code: "+994",
+      code: "AZ",
+    },
+    {
+      name: "Bahamas",
+      dial_code: "+1242",
+      code: "BS",
+    },
+    {
+      name: "Bahrain",
+      dial_code: "+973",
+      code: "BH",
+    },
+    {
+      name: "Bangladesh",
+      dial_code: "+880",
+      code: "BD",
+    },
+    {
+      name: "Barbados",
+      dial_code: "+1246",
+      code: "BB",
+    },
+    {
+      name: "Belarus",
+      dial_code: "+375",
+      code: "BY",
+    },
+    {
+      name: "Belgium",
+      dial_code: "+32",
+      code: "BE",
+    },
+    {
+      name: "Belize",
+      dial_code: "+501",
+      code: "BZ",
+    },
+    {
+      name: "Benin",
+      dial_code: "+229",
+      code: "BJ",
+    },
+    {
+      name: "Bermuda",
+      dial_code: "+1441",
+      code: "BM",
+    },
+    {
+      name: "Bhutan",
+      dial_code: "+975",
+      code: "BT",
+    },
+    {
+      name: "Bolivia, Plurinational State of",
+      dial_code: "+591",
+      code: "BO",
+    },
+    {
+      name: "Bosnia and Herzegovina",
+      dial_code: "+387",
+      code: "BA",
+    },
+    {
+      name: "Botswana",
+      dial_code: "+267",
+      code: "BW",
+    },
+    {
+      name: "Brazil",
+      dial_code: "+55",
+      code: "BR",
+    },
+    {
+      name: "British Indian Ocean Territory",
+      dial_code: "+246",
+      code: "IO",
+    },
+    {
+      name: "Brunei Darussalam",
+      dial_code: "+673",
+      code: "BN",
+    },
+    {
+      name: "Bulgaria",
+      dial_code: "+359",
+      code: "BG",
+    },
+    {
+      name: "Burkina Faso",
+      dial_code: "+226",
+      code: "BF",
+    },
+    {
+      name: "Burundi",
+      dial_code: "+257",
+      code: "BI",
+    },
+    {
+      name: "Cambodia",
+      dial_code: "+855",
+      code: "KH",
+    },
+    {
+      name: "Cameroon",
+      dial_code: "+237",
+      code: "CM",
+    },
+    {
+      name: "Canada",
+      dial_code: "+1",
+      code: "CA",
+    },
+    {
+      name: "Cape Verde",
+      dial_code: "+238",
+      code: "CV",
+    },
+    {
+      name: "Cayman Islands",
+      dial_code: "+ 345",
+      code: "KY",
+    },
+    {
+      name: "Central African Republic",
+      dial_code: "+236",
+      code: "CF",
+    },
+    {
+      name: "Chad",
+      dial_code: "+235",
+      code: "TD",
+    },
+    {
+      name: "Chile",
+      dial_code: "+56",
+      code: "CL",
+    },
+    {
+      name: "China",
+      dial_code: "+86",
+      code: "CN",
+    },
+    {
+      name: "Christmas Island",
+      dial_code: "+61",
+      code: "CX",
+    },
+    {
+      name: "Cocos (Keeling) Islands",
+      dial_code: "+61",
+      code: "CC",
+    },
+    {
+      name: "Colombia",
+      dial_code: "+57",
+      code: "CO",
+    },
+    {
+      name: "Comoros",
+      dial_code: "+269",
+      code: "KM",
+    },
+    {
+      name: "Congo",
+      dial_code: "+242",
+      code: "CG",
+    },
+    {
+      name: "Congo, The Democratic Republic of the Congo",
+      dial_code: "+243",
+      code: "CD",
+    },
+    {
+      name: "Cook Islands",
+      dial_code: "+682",
+      code: "CK",
+    },
+    {
+      name: "Costa Rica",
+      dial_code: "+506",
+      code: "CR",
+    },
+    {
+      name: "Cote d'Ivoire",
+      dial_code: "+225",
+      code: "CI",
+    },
+    {
+      name: "Croatia",
+      dial_code: "+385",
+      code: "HR",
+    },
+    {
+      name: "Cuba",
+      dial_code: "+53",
+      code: "CU",
+    },
+    {
+      name: "Cyprus",
+      dial_code: "+357",
+      code: "CY",
+    },
+    {
+      name: "Czech Republic",
+      dial_code: "+420",
+      code: "CZ",
+    },
+    {
+      name: "Denmark",
+      dial_code: "+45",
+      code: "DK",
+    },
+    {
+      name: "Djibouti",
+      dial_code: "+253",
+      code: "DJ",
+    },
+    {
+      name: "Dominica",
+      dial_code: "+1767",
+      code: "DM",
+    },
+    {
+      name: "Dominican Republic",
+      dial_code: "+1849",
+      code: "DO",
+    },
+    {
+      name: "Ecuador",
+      dial_code: "+593",
+      code: "EC",
+    },
+    {
+      name: "Egypt",
+      dial_code: "+20",
+      code: "EG",
+    },
+    {
+      name: "El Salvador",
+      dial_code: "+503",
+      code: "SV",
+    },
+    {
+      name: "Equatorial Guinea",
+      dial_code: "+240",
+      code: "GQ",
+    },
+    {
+      name: "Eritrea",
+      dial_code: "+291",
+      code: "ER",
+    },
+    {
+      name: "Estonia",
+      dial_code: "+372",
+      code: "EE",
+    },
+    {
+      name: "Ethiopia",
+      dial_code: "+251",
+      code: "ET",
+    },
+    {
+      name: "Falkland Islands (Malvinas)",
+      dial_code: "+500",
+      code: "FK",
+    },
+    {
+      name: "Faroe Islands",
+      dial_code: "+298",
+      code: "FO",
+    },
+    {
+      name: "Fiji",
+      dial_code: "+679",
+      code: "FJ",
+    },
+    {
+      name: "Finland",
+      dial_code: "+358",
+      code: "FI",
+    },
+    {
+      name: "France",
+      dial_code: "+33",
+      code: "FR",
+    },
+    {
+      name: "French Guiana",
+      dial_code: "+594",
+      code: "GF",
+    },
+    {
+      name: "French Polynesia",
+      dial_code: "+689",
+      code: "PF",
+    },
+    {
+      name: "Gabon",
+      dial_code: "+241",
+      code: "GA",
+    },
+    {
+      name: "Gambia",
+      dial_code: "+220",
+      code: "GM",
+    },
+    {
+      name: "Georgia",
+      dial_code: "+995",
+      code: "GE",
+    },
+    {
+      name: "Germany",
+      dial_code: "+49",
+      code: "DE",
+    },
+    {
+      name: "Ghana",
+      dial_code: "+233",
+      code: "GH",
+    },
+    {
+      name: "Gibraltar",
+      dial_code: "+350",
+      code: "GI",
+    },
+    {
+      name: "Greece",
+      dial_code: "+30",
+      code: "GR",
+    },
+    {
+      name: "Greenland",
+      dial_code: "+299",
+      code: "GL",
+    },
+    {
+      name: "Grenada",
+      dial_code: "+1473",
+      code: "GD",
+    },
+    {
+      name: "Guadeloupe",
+      dial_code: "+590",
+      code: "GP",
+    },
+    {
+      name: "Guam",
+      dial_code: "+1671",
+      code: "GU",
+    },
+    {
+      name: "Guatemala",
+      dial_code: "+502",
+      code: "GT",
+    },
+    {
+      name: "Guernsey",
+      dial_code: "+44",
+      code: "GG",
+    },
+    {
+      name: "Guinea",
+      dial_code: "+224",
+      code: "GN",
+    },
+    {
+      name: "Guinea-Bissau",
+      dial_code: "+245",
+      code: "GW",
+    },
+    {
+      name: "Guyana",
+      dial_code: "+595",
+      code: "GY",
+    },
+    {
+      name: "Haiti",
+      dial_code: "+509",
+      code: "HT",
+    },
+    {
+      name: "Holy See (Vatican City State)",
+      dial_code: "+379",
+      code: "VA",
+    },
+    {
+      name: "Honduras",
+      dial_code: "+504",
+      code: "HN",
+    },
+    {
+      name: "Hong Kong",
+      dial_code: "+852",
+      code: "HK",
+    },
+    {
+      name: "Hungary",
+      dial_code: "+36",
+      code: "HU",
+    },
+    {
+      name: "Iceland",
+      dial_code: "+354",
+      code: "IS",
+    },
+    {
+      name: "India",
+      dial_code: "+91",
+      code: "IN",
+    },
+    {
+      name: "Indonesia",
+      dial_code: "+62",
+      code: "ID",
+    },
+    {
+      name: "Iran, Islamic Republic of Persian Gulf",
+      dial_code: "+98",
+      code: "IR",
+    },
+    {
+      name: "Iraq",
+      dial_code: "+964",
+      code: "IQ",
+    },
+    {
+      name: "Ireland",
+      dial_code: "+353",
+      code: "IE",
+    },
+    {
+      name: "Isle of Man",
+      dial_code: "+44",
+      code: "IM",
+    },
+    {
+      name: "Israel",
+      dial_code: "+972",
+      code: "IL",
+    },
+    {
+      name: "Italy",
+      dial_code: "+39",
+      code: "IT",
+    },
+    {
+      name: "Jamaica",
+      dial_code: "+1876",
+      code: "JM",
+    },
+    {
+      name: "Japan",
+      dial_code: "+81",
+      code: "JP",
+    },
+    {
+      name: "Jersey",
+      dial_code: "+44",
+      code: "JE",
+    },
+    {
+      name: "Jordan",
+      dial_code: "+962",
+      code: "JO",
+    },
+    {
+      name: "Kazakhstan",
+      dial_code: "+77",
+      code: "KZ",
+    },
+    {
+      name: "Kenya",
+      dial_code: "+254",
+      code: "KE",
+    },
+    {
+      name: "Kiribati",
+      dial_code: "+686",
+      code: "KI",
+    },
+    {
+      name: "Korea, Democratic People's Republic of Korea",
+      dial_code: "+850",
+      code: "KP",
+    },
+    {
+      name: "Korea, Republic of South Korea",
+      dial_code: "+82",
+      code: "KR",
+    },
+    {
+      name: "Kuwait",
+      dial_code: "+965",
+      code: "KW",
+    },
+    {
+      name: "Kyrgyzstan",
+      dial_code: "+996",
+      code: "KG",
+    },
+    {
+      name: "Laos",
+      dial_code: "+856",
+      code: "LA",
+    },
+    {
+      name: "Latvia",
+      dial_code: "+371",
+      code: "LV",
+    },
+    {
+      name: "Lebanon",
+      dial_code: "+961",
+      code: "LB",
+    },
+    {
+      name: "Lesotho",
+      dial_code: "+266",
+      code: "LS",
+    },
+    {
+      name: "Liberia",
+      dial_code: "+231",
+      code: "LR",
+    },
+    {
+      name: "Libyan Arab Jamahiriya",
+      dial_code: "+218",
+      code: "LY",
+    },
+    {
+      name: "Liechtenstein",
+      dial_code: "+423",
+      code: "LI",
+    },
+    {
+      name: "Lithuania",
+      dial_code: "+370",
+      code: "LT",
+    },
+    {
+      name: "Luxembourg",
+      dial_code: "+352",
+      code: "LU",
+    },
+    {
+      name: "Macao",
+      dial_code: "+853",
+      code: "MO",
+    },
+    {
+      name: "Macedonia",
+      dial_code: "+389",
+      code: "MK",
+    },
+    {
+      name: "Madagascar",
+      dial_code: "+261",
+      code: "MG",
+    },
+    {
+      name: "Malawi",
+      dial_code: "+265",
+      code: "MW",
+    },
+    {
+      name: "Malaysia",
+      dial_code: "+60",
+      code: "MY",
+    },
+    {
+      name: "Maldives",
+      dial_code: "+960",
+      code: "MV",
+    },
+    {
+      name: "Mali",
+      dial_code: "+223",
+      code: "ML",
+    },
+    {
+      name: "Malta",
+      dial_code: "+356",
+      code: "MT",
+    },
+    {
+      name: "Marshall Islands",
+      dial_code: "+692",
+      code: "MH",
+    },
+    {
+      name: "Martinique",
+      dial_code: "+596",
+      code: "MQ",
+    },
+    {
+      name: "Mauritania",
+      dial_code: "+222",
+      code: "MR",
+    },
+    {
+      name: "Mauritius",
+      dial_code: "+230",
+      code: "MU",
+    },
+    {
+      name: "Mayotte",
+      dial_code: "+262",
+      code: "YT",
+    },
+    {
+      name: "Mexico",
+      dial_code: "+52",
+      code: "MX",
+    },
+    {
+      name: "Micronesia, Federated States of Micronesia",
+      dial_code: "+691",
+      code: "FM",
+    },
+    {
+      name: "Moldova",
+      dial_code: "+373",
+      code: "MD",
+    },
+    {
+      name: "Monaco",
+      dial_code: "+377",
+      code: "MC",
+    },
+    {
+      name: "Mongolia",
+      dial_code: "+976",
+      code: "MN",
+    },
+    {
+      name: "Montenegro",
+      dial_code: "+382",
+      code: "ME",
+    },
+    {
+      name: "Montserrat",
+      dial_code: "+1664",
+      code: "MS",
+    },
+    {
+      name: "Morocco",
+      dial_code: "+212",
+      code: "MA",
+    },
+    {
+      name: "Mozambique",
+      dial_code: "+258",
+      code: "MZ",
+    },
+    {
+      name: "Myanmar",
+      dial_code: "+95",
+      code: "MM",
+    },
+    {
+      name: "Namibia",
+      dial_code: "+264",
+      code: "NA",
+    },
+    {
+      name: "Nauru",
+      dial_code: "+674",
+      code: "NR",
+    },
+    {
+      name: "Nepal",
+      dial_code: "+977",
+      code: "NP",
+    },
+    {
+      name: "Netherlands",
+      dial_code: "+31",
+      code: "NL",
+    },
+    {
+      name: "Netherlands Antilles",
+      dial_code: "+599",
+      code: "AN",
+    },
+    {
+      name: "New Caledonia",
+      dial_code: "+687",
+      code: "NC",
+    },
+    {
+      name: "New Zealand",
+      dial_code: "+64",
+      code: "NZ",
+    },
+    {
+      name: "Nicaragua",
+      dial_code: "+505",
+      code: "NI",
+    },
+    {
+      name: "Niger",
+      dial_code: "+227",
+      code: "NE",
+    },
+    {
+      name: "Nigeria",
+      dial_code: "+234",
+      code: "NG",
+    },
+    {
+      name: "Niue",
+      dial_code: "+683",
+      code: "NU",
+    },
+    {
+      name: "Norfolk Island",
+      dial_code: "+672",
+      code: "NF",
+    },
+    {
+      name: "Northern Mariana Islands",
+      dial_code: "+1670",
+      code: "MP",
+    },
+    {
+      name: "Norway",
+      dial_code: "+47",
+      code: "NO",
+    },
+    {
+      name: "Oman",
+      dial_code: "+968",
+      code: "OM",
+    },
+    {
+      name: "Pakistan",
+      dial_code: "+92",
+      code: "PK",
+    },
+    {
+      name: "Palau",
+      dial_code: "+680",
+      code: "PW",
+    },
+    {
+      name: "Palestinian Territory, Occupied",
+      dial_code: "+970",
+      code: "PS",
+    },
+    {
+      name: "Panama",
+      dial_code: "+507",
+      code: "PA",
+    },
+    {
+      name: "Papua New Guinea",
+      dial_code: "+675",
+      code: "PG",
+    },
+    {
+      name: "Paraguay",
+      dial_code: "+595",
+      code: "PY",
+    },
+    {
+      name: "Peru",
+      dial_code: "+51",
+      code: "PE",
+    },
+    {
+      name: "Philippines",
+      dial_code: "+63",
+      code: "PH",
+    },
+    {
+      name: "Pitcairn",
+      dial_code: "+872",
+      code: "PN",
+    },
+    {
+      name: "Poland",
+      dial_code: "+48",
+      code: "PL",
+    },
+    {
+      name: "Portugal",
+      dial_code: "+351",
+      code: "PT",
+    },
+    {
+      name: "Puerto Rico",
+      dial_code: "+1939",
+      code: "PR",
+    },
+    {
+      name: "Qatar",
+      dial_code: "+974",
+      code: "QA",
+    },
+    {
+      name: "Romania",
+      dial_code: "+40",
+      code: "RO",
+    },
+    {
+      name: "Russia",
+      dial_code: "+7",
+      code: "RU",
+    },
+    {
+      name: "Rwanda",
+      dial_code: "+250",
+      code: "RW",
+    },
+    {
+      name: "Reunion",
+      dial_code: "+262",
+      code: "RE",
+    },
+    {
+      name: "Saint Barthelemy",
+      dial_code: "+590",
+      code: "BL",
+    },
+    {
+      name: "Saint Helena, Ascension and Tristan Da Cunha",
+      dial_code: "+290",
+      code: "SH",
+    },
+    {
+      name: "Saint Kitts and Nevis",
+      dial_code: "+1869",
+      code: "KN",
+    },
+    {
+      name: "Saint Lucia",
+      dial_code: "+1758",
+      code: "LC",
+    },
+    {
+      name: "Saint Martin",
+      dial_code: "+590",
+      code: "MF",
+    },
+    {
+      name: "Saint Pierre and Miquelon",
+      dial_code: "+508",
+      code: "PM",
+    },
+    {
+      name: "Saint Vincent and the Grenadines",
+      dial_code: "+1784",
+      code: "VC",
+    },
+    {
+      name: "Samoa",
+      dial_code: "+685",
+      code: "WS",
+    },
+    {
+      name: "San Marino",
+      dial_code: "+378",
+      code: "SM",
+    },
+    {
+      name: "Sao Tome and Principe",
+      dial_code: "+239",
+      code: "ST",
+    },
+    {
+      name: "Saudi Arabia",
+      dial_code: "+966",
+      code: "SA",
+    },
+    {
+      name: "Senegal",
+      dial_code: "+221",
+      code: "SN",
+    },
+    {
+      name: "Serbia",
+      dial_code: "+381",
+      code: "RS",
+    },
+    {
+      name: "Seychelles",
+      dial_code: "+248",
+      code: "SC",
+    },
+    {
+      name: "Sierra Leone",
+      dial_code: "+232",
+      code: "SL",
+    },
+    {
+      name: "Singapore",
+      dial_code: "+65",
+      code: "SG",
+    },
+    {
+      name: "Slovakia",
+      dial_code: "+421",
+      code: "SK",
+    },
+    {
+      name: "Slovenia",
+      dial_code: "+386",
+      code: "SI",
+    },
+    {
+      name: "Solomon Islands",
+      dial_code: "+677",
+      code: "SB",
+    },
+    {
+      name: "Somalia",
+      dial_code: "+252",
+      code: "SO",
+    },
+    {
+      name: "South Africa",
+      dial_code: "+27",
+      code: "ZA",
+    },
+    {
+      name: "South Sudan",
+      dial_code: "+211",
+      code: "SS",
+    },
+    {
+      name: "South Georgia and the South Sandwich Islands",
+      dial_code: "+500",
+      code: "GS",
+    },
+    {
+      name: "Spain",
+      dial_code: "+34",
+      code: "ES",
+    },
+    {
+      name: "Sri Lanka",
+      dial_code: "+94",
+      code: "LK",
+    },
+    {
+      name: "Sudan",
+      dial_code: "+249",
+      code: "SD",
+    },
+    {
+      name: "Suriname",
+      dial_code: "+597",
+      code: "SR",
+    },
+    {
+      name: "Svalbard and Jan Mayen",
+      dial_code: "+47",
+      code: "SJ",
+    },
+    {
+      name: "Swaziland",
+      dial_code: "+268",
+      code: "SZ",
+    },
+    {
+      name: "Sweden",
+      dial_code: "+46",
+      code: "SE",
+    },
+    {
+      name: "Switzerland",
+      dial_code: "+41",
+      code: "CH",
+    },
+    {
+      name: "Syrian Arab Republic",
+      dial_code: "+963",
+      code: "SY",
+    },
+    {
+      name: "Taiwan",
+      dial_code: "+886",
+      code: "TW",
+    },
+    {
+      name: "Tajikistan",
+      dial_code: "+992",
+      code: "TJ",
+    },
+    {
+      name: "Tanzania, United Republic of Tanzania",
+      dial_code: "+255",
+      code: "TZ",
+    },
+    {
+      name: "Thailand",
+      dial_code: "+66",
+      code: "TH",
+    },
+    {
+      name: "Timor-Leste",
+      dial_code: "+670",
+      code: "TL",
+    },
+    {
+      name: "Togo",
+      dial_code: "+228",
+      code: "TG",
+    },
+    {
+      name: "Tokelau",
+      dial_code: "+690",
+      code: "TK",
+    },
+    {
+      name: "Tonga",
+      dial_code: "+676",
+      code: "TO",
+    },
+    {
+      name: "Trinidad and Tobago",
+      dial_code: "+1868",
+      code: "TT",
+    },
+    {
+      name: "Tunisia",
+      dial_code: "+216",
+      code: "TN",
+    },
+    {
+      name: "Turkey",
+      dial_code: "+90",
+      code: "TR",
+    },
+    {
+      name: "Turkmenistan",
+      dial_code: "+993",
+      code: "TM",
+    },
+    {
+      name: "Turks and Caicos Islands",
+      dial_code: "+1649",
+      code: "TC",
+    },
+    {
+      name: "Tuvalu",
+      dial_code: "+688",
+      code: "TV",
+    },
+    {
+      name: "Uganda",
+      dial_code: "+256",
+      code: "UG",
+    },
+    {
+      name: "Ukraine",
+      dial_code: "+380",
+      code: "UA",
+    },
+    {
+      name: "United Arab Emirates",
+      dial_code: "+971",
+      code: "AE",
+    },
+    {
+      name: "United Kingdom",
+      dial_code: "+44",
+      code: "GB",
+    },
+    {
+      name: "United States",
+      dial_code: "+1",
+      code: "US",
+    },
+    {
+      name: "Uruguay",
+      dial_code: "+598",
+      code: "UY",
+    },
+    {
+      name: "Uzbekistan",
+      dial_code: "+998",
+      code: "UZ",
+    },
+    {
+      name: "Vanuatu",
+      dial_code: "+678",
+      code: "VU",
+    },
+    {
+      name: "Venezuela, Bolivarian Republic of Venezuela",
+      dial_code: "+58",
+      code: "VE",
+    },
+    {
+      name: "Vietnam",
+      dial_code: "+84",
+      code: "VN",
+    },
+    {
+      name: "Virgin Islands, British",
+      dial_code: "+1284",
+      code: "VG",
+    },
+    {
+      name: "Virgin Islands, U.S.",
+      dial_code: "+1340",
+      code: "VI",
+    },
+    {
+      name: "Wallis and Futuna",
+      dial_code: "+681",
+      code: "WF",
+    },
+    {
+      name: "Yemen",
+      dial_code: "+967",
+      code: "YE",
+    },
+    {
+      name: "Zambia",
+      dial_code: "+260",
+      code: "ZM",
+    },
+    {
+      name: "Zimbabwe",
+      dial_code: "+263",
+      code: "ZW",
+    },
+  ];
+  // console.log(selectCountryCodeOptions);
+  const setselectCountryCodeHandler = (event) => {
+    setselectCountryCode(event.target.value);
+    console.log("User Selected Value - ", event.target.value);
+  };
+  const useUserDataHandler = (e) => {
+    setUseUserData(e.target.checked);
+    if (e.target.checked == true) {
       setformData((prevData) => ({
         ...prevData,
-        ["paymentType"]: id,
+        firstName: loggedInUser.firstName,
+        lastName: loggedInUser.lastName,
+        phoneNumber: loggedInUser.phone,
+        email: loggedInUser.email,
+        billingaddress: loggedInUser.address.address,
+        billingcity: loggedInUser.address.city,
+        billingpostalCode: loggedInUser.address.postalCode,
+        billingstate: loggedInUser.address.state,
+        billingcountry: loggedInUser.address.country,
+        makeThisAddressAsShippingAddress: shippingForm,
+        creditCardNumber: loggedInUser.bank.cardNumber,
+        CardExpiration: loggedInUser.bank.cardExpire,
       }));
-      if (id == "cashOnDelivery") {
-        setformData((prevData) => ({
-          ...prevData,
+    }
+  };
+  const generalValidationFunction = async () => {
+    try {
+      await generalValidationSchema.validate(formData, { abortEarly: false });
+      // //console.log("form is valid", formData);
+      seterrors({});
+      // setIndex(index + 1);
+    } catch (err) {
+      const validationErrors = {};
+      err.inner.forEach((error) => {
+        validationErrors[error.path] = error.message;
+      });
+      seterrors(validationErrors);
+      //console.log("form is Invalid", validationErrors, index);
+    }
+  };
+  const addressValidationFunction = async () => {
+    try {
+      await addressValidationSchema.validate(formData, { abortEarly: false });
+      //console.log("form is valid", formData);
+      seterrors({});
+      // setIndex(index + 1);
+    } catch (err) {
+      const validationErrors = {};
+      err.inner.forEach((error) => {
+        validationErrors[error.path] = error.message;
+      });
+      seterrors(validationErrors);
+      //console.log("form is Invalid", validationErrors, index);
+    }
+  };
+  const paymentValidationFunction = async () => {
+    try {
+      await paymentValidationSchema.validate(formData, { abortEarly: false });
+      //console.log("form is valid", formData);
+      dispatch(updateCheckoutInfo(formData));
+      seterrors({});
+      // setIndex(index + 1);
+    } catch (err) {
+      const validationErrors = {};
+      err.inner.forEach((error) => {
+        validationErrors[error.path] = error.message;
+      });
+      seterrors(validationErrors);
+      //console.log("form is Invalid", validationErrors, index);
+    }
+  };
 
-          ["cardFirstName"]: "None",
-          ["cardLastName"]: "None",
-          ["creditCardNumber"]: "None",
-          ["cardSecurityCode"]: "None",
-          ["CardExpiration"]: "None",
-        }));
-      }
+  const onChangeHandler = (e) => {
+    e.preventDefault();
+
+    const id = e.target.id;
+    const val = e.target.value;
+
+    setlastUpdateField(id);
+    if (id == "cashondelivery" && e.target.type == "checkbox") {
+      setcashondelivery(e.target.checked);
+      setformData((prevData) => ({
+        ...prevData,
+        ["cashondelivery"]: e.target.checked,
+        ["paymentType"]:
+          e.target.checked == true ? "cashondelivery" : "debitOrCrerditCard",
+      }));
     }
     if (
       id == "makeThisAddressAsShippingAddress" &&
@@ -328,6 +1604,7 @@ function Form() {
       if (e.target.checked == true) {
         setformData((prevData) => ({
           ...prevData,
+          ["makeThisAddressAsShippingAddress"]: e.target.checked,
           ["shippingphoneNumber"]: formData.billingphoneNumber,
           ["shippingaddress"]: formData.billingaddress,
           ["shippingcity"]: formData.billingcity,
@@ -338,6 +1615,7 @@ function Form() {
       } else {
         setformData((prevData) => ({
           ...prevData,
+          ["makeThisAddressAsShippingAddress"]: e.target.checked,
           ["shippingphoneNumber"]: "",
           ["shippingaddress"]: "",
           ["shippingcity"]: "",
@@ -353,41 +1631,728 @@ function Form() {
         [id]: val,
       }));
     }
+    if (e.target.type == "number") {
+      setformData((prevData) => ({
+        ...prevData,
+        [id]: val,
+      }));
+    }
   };
-  const validateInputHandler = async (e) => {
-    try {
-      await validationSchema.validate(formData, { abortEarly: false });
-      debugger;
-      console.log("form is valid", formData);
-      let newData = loggedInUser;
-      dispatch(onUpdateUser(loggedInUser));
-      seterrors({});
-      setIndex(index + 1);
-    } catch (err) {
-      const validationErrors = {};
-      err.inner.forEach((error) => {
-        validationErrors[error.path] = error.message;
-      });
-      seterrors(validationErrors);
-      setIndex(0);
-      console.log("form is Invalid", validationErrors);
+  const validationHandler = (id) => {
+    switch (id) {
+      case "firstName":
+        const firstNameValidationSchema = Yup.object().shape({
+          firstName: Yup.string()
+            .min(2, "First Name is too short!")
+            .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
+            .max(10, "First Name is too long!")
+            .required("First Name is required"),
+        });
+        async function firstNamevalidationFunc() {
+          try {
+            await firstNameValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.firstName) {
+              delete errorObj.firstName;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["firstName"]: validationErrors.firstName,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        firstNamevalidationFunc();
+        break;
+      case "lastName":
+        const lastNameValidationSchema = Yup.object().shape({
+          lastName: Yup.string()
+            .min(2, "Last Name is too short!")
+            .max(10, "Last Name is too long!")
+            .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
+            .required("Last Name is required"),
+        });
+        async function lastNamevalidationFunc() {
+          try {
+            await lastNameValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.lastName) {
+              delete errorObj.lastName;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["lastName"]: validationErrors.lastName,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        lastNamevalidationFunc();
+        break;
+      case "email":
+        const emailValidationSchema = Yup.object().shape({
+          email: Yup.string()
+            .email()
+            .matches(
+              /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/,
+              "Not a valid email"
+            )
+            .required("Email is required"),
+        });
+        async function emailvalidationFunc() {
+          try {
+            await emailValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.email) {
+              delete errorObj.email;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["email"]: validationErrors.email,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        emailvalidationFunc();
+        break;
+      case "phoneNumber":
+        const phoneNumberValidationSchema = Yup.object().shape({
+          phoneNumber: Yup.string()
+            .matches(
+              /[0-9]{1,10}/,
+              // /^\+[1-9]{1}[0-9]{3,13}$/,
+              // /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
+              "Phone number is not valid"
+            )
+            .min(
+              10,
+              "Phone Number should be 10 digit long.No special character allowed"
+            )
+            .max(10, "Phone Number should be max 10 digit long"),
+        });
+        async function phoneNumbervalidationFunc() {
+          try {
+            await phoneNumberValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+
+            let errorObj = errors;
+            if (errorObj.phoneNumber) {
+              delete errorObj.phoneNumber;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["phoneNumber"]: validationErrors.phoneNumber,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        phoneNumbervalidationFunc();
+        break;
+      case "billingaddress":
+        const billingaddressValidationSchema = Yup.object().shape({
+          billingaddress: Yup.string()
+            .min(2, "address is too short!")
+            .max(25, "address is too long!")
+            .required("address is required"),
+        });
+        async function billingaddressvalidationFunc() {
+          try {
+            await billingaddressValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.billingaddress) {
+              delete errorObj.billingaddress;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["billingaddress"]: validationErrors.billingaddress,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        billingaddressvalidationFunc();
+        break;
+      case "billingcity":
+        const billingcityValidationSchema = Yup.object().shape({
+          billingcity: Yup.string()
+            .min(2, "city is too short!")
+            .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
+            .max(10, "city is too long!")
+            .required("city is required"),
+        });
+        async function billingcityvalidationFunc() {
+          try {
+            await billingcityValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.billingcity) {
+              delete errorObj.billingcity;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["billingcity"]: validationErrors.billingcity,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        billingcityvalidationFunc();
+        break;
+      case "billingstate":
+        const billingstateValidationSchema = Yup.object().shape({
+          billingstate: Yup.string()
+            .min(2, "state is too short!")
+            .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
+            .max(10, "state is too long!")
+            .required("state is required"),
+        });
+        async function billingstatevalidationFunc() {
+          try {
+            await billingstateValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.billingstate) {
+              delete errorObj.billingstate;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["billingstate"]: validationErrors.billingstate,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        billingstatevalidationFunc();
+        break;
+      case "billingpostalCode":
+        const billingpostalCodeValidationSchema = Yup.object().shape({
+          billingpostalCode: Yup.string()
+            .min(6, "Postal Code is too short!")
+            .matches(/^[0-9]{1,10}$/, "Use only Numbers(0-9)")
+            .max(10, "Postal Code is too long!")
+            .required("Postal Code is required"),
+        });
+        async function billingpostalCodevalidationFunc() {
+          try {
+            await billingpostalCodeValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            //console.log("form is valid", formData);
+            let errorObj = errors;
+            if (errorObj.billingpostalCode) {
+              delete errorObj.billingpostalCode;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            seterrors((prevData) => ({
+              ...prevData,
+              ["billingpostalCode"]: validationErrors.billingpostalCode,
+            }));
+          }
+        }
+        billingpostalCodevalidationFunc();
+        break;
+      case "billingcountry":
+        const billingcountryValidationSchema = Yup.object().shape({
+          billingcountry: Yup.string()
+            .min(2, "country is too short!")
+            .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
+            .max(10, "country is too long!")
+            .required("country is required"),
+        });
+        async function billingcountryvalidationFunc() {
+          try {
+            await billingcountryValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.billingcountry) {
+              delete errorObj.billingcountry;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["billingcountry"]: validationErrors.billingcountry,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        billingcountryvalidationFunc();
+        break;
+      case "shippingaddress":
+        const shippingaddressValidationSchema = Yup.object().shape({
+          shippingaddress: Yup.string()
+            .min(2, "address is too short!")
+            .max(10, "address is too long!")
+            .required("address is required"),
+        });
+        async function shippingaddressvalidationFunc() {
+          try {
+            await shippingaddressValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.shippingaddress) {
+              delete errorObj.shippingaddress;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["shippingaddress"]: validationErrors.shippingaddress,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        shippingaddressvalidationFunc();
+        break;
+      case "shippingcity":
+        const shippingcityValidationSchema = Yup.object().shape({
+          shippingcity: Yup.string()
+            .min(2, "city is too short!")
+            .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
+            .max(10, "city is too long!")
+            .required("city is required"),
+        });
+        async function shippingcityvalidationFunc() {
+          try {
+            await shippingcityValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.shippingcity) {
+              delete errorObj.shippingcity;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["shippingcity"]: validationErrors.shippingcity,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        shippingcityvalidationFunc();
+        break;
+      case "shippingstate":
+        const shippingstateValidationSchema = Yup.object().shape({
+          shippingstate: Yup.string()
+            .min(2, "state is too short!")
+            .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
+            .max(10, "state is too long!")
+            .required("state is required"),
+        });
+        async function shippingstatevalidationFunc() {
+          try {
+            await shippingstateValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.shippingstate) {
+              delete errorObj.shippingstate;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["shippingstate"]: validationErrors.shippingstate,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        shippingstatevalidationFunc();
+        break;
+      case "shippingpostalCode":
+        const shippingpostalCodeValidationSchema = Yup.object().shape({
+          shippingpostalCode: Yup.string()
+            .min(6, "Postal Code is too short!")
+            .matches(/^[0-9]{1,10}$/, "Use only Numbers(0-9)")
+            .max(10, "Postal Code is too long!")
+            .required("Postal Code is required"),
+        });
+        async function shippingpostalCodevalidationFunc() {
+          try {
+            await shippingpostalCodeValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.shippingpostalCode) {
+              delete errorObj.shippingpostalCode;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["shippingpostalCode"]: validationErrors.shippingpostalCode,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        shippingpostalCodevalidationFunc();
+        break;
+      case "shippingcountry":
+        const shippingcountryValidationSchema = Yup.object().shape({
+          shippingcountry: Yup.string()
+            .min(2, "country is too short!")
+            .matches(/^[a-zA-Z]{1,10}$/, "Use only Alphabets(a-z or A-Z)")
+            .max(10, "country is too long!")
+            .required("country is required"),
+        });
+        async function shippingcountryvalidationFunc() {
+          try {
+            await shippingcountryValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.shippingcountry) {
+              delete errorObj.shippingcountry;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["shippingcountry"]: validationErrors.shippingcountry,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        shippingcountryvalidationFunc();
+        break;
+      case "creditCardNumber":
+        const creditCardNumberValidationSchema = Yup.object().shape({
+          creditCardNumber: Yup.string()
+            .min(10, "Credit Card Number is too short!")
+            .max(20, "Credit Card Number is too long!")
+            .required("Credit Card Number is required"),
+        });
+        async function creditCardNumbervalidationFunc() {
+          try {
+            await creditCardNumberValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.creditCardNumber) {
+              delete errorObj.creditCardNumber;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["creditCardNumber"]: validationErrors.creditCardNumber,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        creditCardNumbervalidationFunc();
+        break;
+      case "cardSecurityCode":
+        const cardSecurityCodeValidationSchema = Yup.object().shape({
+          cardSecurityCode: Yup.string()
+            .min(3, "Security Code is too short!")
+            .max(4, "Security Code is too long!")
+            .required("Security Code is required"),
+        });
+        async function cardSecurityCodevalidationFunc() {
+          try {
+            await cardSecurityCodeValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.cardSecurityCode) {
+              delete errorObj.cardSecurityCode;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["cardSecurityCode"]: validationErrors.cardSecurityCode,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        cardSecurityCodevalidationFunc();
+        break;
+      case "CardExpiration":
+        const CardExpirationValidationSchema = Yup.object().shape({
+          CardExpiration: Yup.string()
+            .matches(
+              /^\d{2}\/\d{2}$/,
+              "Card Expiration Date must be in the format MM/YY"
+            )
+            .test("valid-month", "Month must be between 01 and 12", (value) => {
+              const [month, year] = value.split("/");
+              return Number(month) >= 1 && Number(month) <= 12;
+              // Number(year) >= 1 && Number(month) <= 12;
+            })
+            .test("valid-year", "Year must be between 24 and 50", (value) => {
+              const [month, year] = value.split("/");
+              // Number(month) >= 1 && Number(month) <= 12;
+              return Number(year) >= 24 && Number(year) <= 50;
+            })
+            .required("Card Expiration is required"),
+        });
+        async function CardExpirationvalidationFunc() {
+          try {
+            await CardExpirationValidationSchema.validate(formData, {
+              abortEarly: false,
+            });
+            let errorObj = errors;
+            if (errorObj.CardExpiration) {
+              delete errorObj.CardExpiration;
+              seterrors(errorObj);
+            }
+          } catch (err) {
+            const validationErrors = {};
+            err.inner.forEach((error) => {
+              validationErrors[error.path] = error.message;
+            });
+            // seterrors(validationErrors);
+            seterrors((prevData) => ({
+              ...prevData,
+              ["CardExpiration"]: validationErrors.CardExpiration,
+            }));
+            //console.log("form is Invalid", validationErrors, index);
+          }
+        }
+        CardExpirationvalidationFunc();
+        break;
+
+      default:
+        break;
     }
   };
   const nextHandler = (e) => {
     e.preventDefault();
-    if (index < forms.length - 1) {
-      setIndex(index + 1);
-      console.log("next");
-      console.log(formData);
-    } else {
-      validateInputHandler();
-    }
-  };
+    // //console.log(titleData[index]);
+    switch (titleData[index]) {
+      case "General Details":
+        generalValidationFunction();
+        if (
+          formData.firstName &&
+          formData.lastName &&
+          formData.phoneNumber &&
+          formData.email &&
+          Object.keys(errors).length == 0
+        ) {
+          setIndex(index + 1);
+        }
+        break;
+      case "Billing Address Details":
+        addressValidationFunction();
+        if (
+          formData.billingaddress &&
+          formData.billingcity &&
+          formData.billingpostalCode &&
+          formData.billingstate &&
+          formData.billingcountry &&
+          Object.keys(errors).length == 0
+        ) {
+          setIndex(index + 1);
+        }
+        break;
+      case "Payment Details":
+        if (!cashondelivery) {
+          paymentValidationFunction();
+          if (
+            formData.creditCardNumber &&
+            formData.cardSecurityCode &&
+            formData.CardExpiration &&
+            Object.keys(errors).length == 0
+          ) {
+            setIndex(index + 1);
+          }
+        } else {
+          dispatch(updateCheckoutInfo(formData));
+          setIndex(index + 1);
+        }
+        // if (Object.keys(errors).length) {
+        //   setIndex(index + 1);
+        // }
+        break;
 
+      default:
+        break;
+    }
+    setShowNext(false);
+  };
   const submitHandler = (e) => {
-    console.log("submit");
     alert("order placed");
   };
+  useEffect(() => {
+    setRefreshErrors(refreshErrors + 1);
+    if (lastUpdateField) {
+      validationHandler(lastUpdateField);
+      // console.log("errors : ", errors);
+    }
+  }, [formData, showNext]);
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      setShowNext(false);
+    }
+    if (
+      index == 0 &&
+      formData.firstName &&
+      formData.lastName &&
+      formData.phoneNumber &&
+      formData.email &&
+      Object.keys(errors).length == 0
+    ) {
+      setShowNext(true);
+    }
+    if (
+      index == 1 &&
+      formData.billingaddress &&
+      formData.billingcity &&
+      formData.billingpostalCode &&
+      formData.billingstate &&
+      formData.billingcountry &&
+      // shippingForm &&
+      Object.keys(errors).length == 0
+    ) {
+      if (formData.makeThisAddressAsShippingAddress == true) {
+        setShowNext(true);
+      } else {
+        if (
+          formData.shippingaddress &&
+          formData.shippingcity &&
+          formData.shippingpostalCode &&
+          formData.shippingstate &&
+          formData.shippingcountry &&
+          Object.keys(errors).length == 0
+        ) {
+          setShowNext(true);
+        } else {
+          setShowNext(false);
+        }
+      }
+    }
+    if (index == 2) {
+      if (
+        formData.creditCardNumber &&
+        formData.cardSecurityCode &&
+        formData.CardExpiration &&
+        Object.keys(errors).length == 0
+      ) {
+        setShowNext(true);
+      } else {
+        // setShowNext(false);
+
+        if (cashondelivery) {
+          setShowNext(true);
+        } else {
+          setShowNext(false);
+        }
+      }
+    }
+  }, [errors, shippingForm, cashondelivery, useUserData, refreshErrors]);
+
+  // console.log(errors);
+  // console.log(cashondelivery);
   return (
     <div className="container grid grid-cols-12 items-start pb-16 pt-4 gap-6">
       <div className="col-span-12 border border-gray-200 p-4 rounded">
@@ -395,15 +2360,22 @@ function Form() {
           {titleData[index]}
         </h1>
 
-        {Object.keys(errors).length ? (
-          <p style={{ color: "red" }}>
-            Please recheck the details you had entered
-          </p>
-        ) : (
-          <></>
-        )}
         {index != forms.length ? (
           <form className="my-4 sm:my-5">
+            {/* {index == 0 && (
+              <div className="mb-2 flex items-center text-sm font-medium text-gray-900 dark:text-white">
+                <input
+                  className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  type="checkbox"
+                  name="useUserData"
+                  id="useUserData"
+                  onChange={useUserDataHandler}
+                />
+                <label className="mx-3" htmlFor="useUserData">
+                  Use User Data
+                </label>
+              </div>
+            )} */}
             <div className="grid gap-6 mb-6 md:grid-cols-2">
               {forms[index].map((form, i) => (
                 <div key={form.label}>
@@ -413,111 +2385,295 @@ function Form() {
                   >
                     {form.label}
                   </label>
-                  <input
-                    type={form.type}
-                    id={form.id}
-                    name={form.name}
-                    placeholder={form.placeholder}
-                    value={formData[form.name]}
-                    onChange={onChangeHandler}
-                    className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
-                      form.type == "radio" || form.type == "checkbox"
-                        ? "w-auto"
-                        : " w-full "
-                    }`}
-                  />
+                  <div
+                    className={`${form.type == "number" && "flex"}`}
+                    // className={`${form.type == "number" && "relative"}`}
+                  >
+                    {form.type == "number" && form.name == "phoneNumber" && (
+                      <>
+                        {selectCountryCodeMenu && (
+                          <div
+                            className="absolute z-10 mt-10 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                            role="menu"
+                            aria-orientation="vertical"
+                            aria-labelledby="menu-button"
+                            tabIndex="-1"
+                            onClick={() => {
+                              setselectCountryCodeMenu(false);
+                            }}
+                            style={{ maxHeight: "15rem", overflow: "auto" }}
+                          >
+                            <div className="py-1" role="none">
+                              {selectCountryCodeOptions.map((option) => (
+                                <>
+                                  {/* <ul>
+                                    <li> */}
+                                  <Link
+                                    href=""
+                                    className="flex px-4 py-2 text-sm text-gray-700 border"
+                                    role="menuitem"
+                                    title={option.dial_code}
+                                    onClick={(e) => {
+                                      setselectCountryCode(e.target.title);
+                                    }}
+                                  >
+                                    <span
+                                      title={option.dial_code}
+                                      style={{ width: "70px" }}
+                                      className=" text-right pr-4"
+                                    >
+                                      {option.dial_code}
+                                    </span>
+                                    <span
+                                      className="flex-1"
+                                      title={option.dial_code}
+                                    >
+                                      {option.name.split("(")[0]}
+                                    </span>
+                                  </Link>
+                                  {/* </li>
+                                  </ul> */}
+                                </>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        <Link
+                          href=""
+                          class="select-none rounded-s-lg justify-self-start justify-end py-2 px-4 text-center text-sm text-gray-900 bg-white border border-gray-300 hover:bg-transparent hover:text-primary transition font-medium"
+                          // <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none text-sm text-gray-900"
+                          onClick={() => {
+                            selectCountryCodeMenu == false
+                              ? setselectCountryCodeMenu(true)
+                              : setselectCountryCodeMenu(false);
+                          }}
+                        >
+                          {selectCountryCode}
+                        </Link>
+                      </>
+                    )}
+                    <input
+                      type={form.type}
+                      id={form.id}
+                      name={form.name}
+                      placeholder={form.placeholder}
+                      value={formData[form.name]}
+                      checked={form.type == "checkbox" && formData[form.name]}
+                      onInput={(e) => {
+                        if (form.type == "number") {
+                          let lastValidValue = "";
+                          if (
+                            e.target.value == "" &&
+                            formData[form.name].length == 1
+                          ) {
+                            lastValidValue = "";
+                          } else {
+                            lastValidValue = formData[form.name];
+                          }
+                          if (/[0-9]/.test(e.target.value)) {
+                            lastValidValue = e.target.value;
+                          } else {
+                            e.target.value = lastValidValue;
+                          }
+                        }
+                      }}
+                      onChange={onChangeHandler}
+                      className={`bg-gray-50 border border-gray-300  text-sm  focus:ring-primary focus:border-primary block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary ${
+                        form.type == "radio" || form.type == "checkbox"
+                          ? "w-auto text-primary"
+                          : " w-full text-gray-900"
+                      } ${
+                        form.type == "number" &&
+                        form.name == "phoneNumber" &&
+                        "remove-arrow"
+                      } ${form.type == "number" && "remove-card-arrow"}
+                    `}
+                    />
+                  </div>
                   {errors[form.name] && (
                     <p style={{ color: "red" }}>{errors[form.name]}</p>
                   )}
                 </div>
               ))}
             </div>
-            {!shippingForm && index == 1 && (
-              <form className="my-4 sm:my-5">
-                <div className="grid gap-6 mb-6 md:grid-cols-2">
-                  {shippingFormData.map((form, i) => (
-                    <div key={form.label}>
-                      <label
-                        htmlFor={form.id}
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        {form.label}
-                      </label>
-                      <input
-                        type={form.type}
-                        id={form.id}
-                        name={form.name}
-                        placeholder={form.placeholder}
-                        value={formData[form.id]}
-                        onChange={onChangeHandler}
-                        className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
-                          form.type == "radio" || form.type == "checkbox"
-                            ? "w-auto"
-                            : " w-full "
-                        }`}
-                      />
-                      {errors[form.name] && (
-                        <p style={{ color: "red" }}>{errors[form.name]}</p>
-                      )}
-                    </div>
-                  ))}
+            {index == 1 && (
+              <>
+                <div class="relative flex py-5 items-center">
+                  <div class="flex-grow border-t border-gray-400"></div>
+                  <span class="flex-shrink mx-4 text-gray-400">
+                    Shipping Address details
+                  </span>
+                  <div class="flex-grow border-t border-gray-400"></div>
                 </div>
-              </form>
+
+                <form className="my-4 sm:my-5">
+                  <div className="grid gap-6 mb-6 md:grid-cols-2">
+                    {shippingFormData.map((form, i) => (
+                      <div key={form.label}>
+                        <label
+                          htmlFor={form.id}
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          {form.label}
+                        </label>
+                        <input
+                          type={form.type}
+                          id={form.id}
+                          name={form.name}
+                          placeholder={form.placeholder}
+                          value={formData[form.id]}
+                          onChange={onChangeHandler}
+                          className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+                            form.type == "radio" || form.type == "checkbox"
+                              ? "w-auto"
+                              : " w-full "
+                          }`}
+                        />
+                        {errors[form.name] && (
+                          <p style={{ color: "red" }}>{errors[form.name]}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </form>
+              </>
             )}
-            {paymentType == "debitOrCrerditCard" && index == 2 && (
-              <form className="my-4 sm:my-5">
-                <div className="grid gap-6 mb-6 md:grid-cols-2">
-                  {paymentData.map((form, i) => (
-                    <div key={form.label}>
-                      <label
-                        htmlFor={form.id}
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        {form.label}
-                      </label>
-                      <input
-                        type={form.type}
-                        id={form.id}
-                        name={form.name}
-                        placeholder={form.placeholder}
-                        value={formData[form.id]}
-                        onChange={onChangeHandler}
-                        className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
-                          form.type == "radio" || form.type == "checkbox"
-                            ? "w-auto"
-                            : " w-full "
-                        }`}
-                      />
-                      {errors[form.name] && (
-                        <p style={{ color: "red" }}>{errors[form.name]}</p>
-                      )}
-                    </div>
-                  ))}
+            {!cashondelivery && index == 2 && (
+              <>
+                <div class="relative flex py-5 items-center">
+                  <div class="flex-grow border-t border-gray-400"></div>
+                  <span class="flex-shrink mx-4 text-gray-400">
+                    Debit or Credit Card details
+                  </span>
+                  <div class="flex-grow border-t border-gray-400"></div>
                 </div>
-              </form>
+                <form className="my-4 sm:my-5">
+                  <div className="grid gap-6 mb-6 md:grid-cols-2">
+                    {paymentData.map((form, i) => (
+                      <div key={form.label}>
+                        <label
+                          htmlFor={form.id}
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          {form.label}
+                        </label>
+                        <input
+                          type={form.type}
+                          id={form.id}
+                          name={form.name}
+                          placeholder={form.placeholder}
+                          value={formData[form.id]}
+                          onChange={onChangeHandler}
+                          onInput={(e) => {
+                            if (form.type == "number") {
+                              let lastValidValue = "";
+                              if (
+                                e.target.value == "" &&
+                                formData[form.name].length == 1
+                              ) {
+                                lastValidValue = "";
+                              } else {
+                                lastValidValue = formData[form.name];
+                              }
+                              if (/[0-9]/.test(e.target.value)) {
+                                lastValidValue = e.target.value;
+                              } else {
+                                e.target.value = lastValidValue;
+                              }
+                            }
+                          }}
+                          className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+                            form.type == "radio" || form.type == "checkbox"
+                              ? "w-auto"
+                              : " w-full "
+                          } ${form.type == "number" && "remove-card-arrow"}`}
+                        />
+                        {errors[form.name] && (
+                          <p style={{ color: "red" }}>{errors[form.name]}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </form>
+              </>
             )}
           </form>
         ) : (
           <>
             <div className="my-4 sm:my-5">
-              <div className="grid gap-6 mb-6 md:grid-cols-2">
-                <div className="border w-1/2">
-                  <h1 className="text-center">Your Details</h1>
-                  <hr />
-                  {Object.entries(formData).map((userData) => (
-                    <>
-                      <div className="grid gap-6 md:grid-cols-2">
-                        <p className="px-8">{userData[0]}</p>
-                        <p className="">{userData[1]}</p>
-                      </div>
-                    </>
-                  ))}
-                </div>
-                <div className="border w-1/2">
+              <div className="flex justify-center items-center flex-col gap-6 mb-6 md:grid-cols-2">
+                <div className="" style={{ width: "1000px" }}>
                   <h1 className="text-center">Product Details</h1>
                   <hr />
                   <div className="grid gap-6 md:grid-cols-2">
                     <OrderSummary />
+                  </div>
+                  <div
+                    className="border"
+                    style={{ width: "1000px", marginTop: "20px" }}
+                  >
+                    <h1 className="text-center">Your Details</h1>
+                    <hr />
+                    <div className="grid gap-6 md:grid-cols-2">
+                      <div className="border">
+                        <h1 className="text-center">Personal Info</h1>
+                        <div className="grid gap-6 md:grid-cols-2 p-4">
+                          <p>Name</p>
+                          <p>
+                            {formData.firstName} {formData.lastName}
+                          </p>
+                          <p>Email</p>
+                          <p>{formData.email}</p>
+                          <p>Phone</p>
+                          <p>{formData.phoneNumber}</p>
+                        </div>
+                      </div>
+                      <div className="border">
+                        <h1 className="text-center">Payment Details</h1>
+                        <div className="grid gap-6 md:grid-cols-2 p-4">
+                          <p>Payment Type</p>
+                          <p>{formData.paymentType}</p>
+                          {formData.paymentType == "debitOrCrerditCard" && (
+                            <>
+                              <p>Credit Card Number</p>
+                              <p>
+                                XXXX-XXXX-{formData.creditCardNumber.slice(-4)}
+                              </p>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div className="border">
+                        <h1 className="text-center">Billing Address</h1>
+                        <div className="grid gap-6 md:grid-cols-2 p-4">
+                          <p>Address</p>
+                          <p>{formData.billingaddress}</p>
+                          <p>City</p>
+                          <p>{formData.billingcity}</p>
+                          <p>Postal Code</p>
+                          <p>{formData.billingpostalCode}</p>
+                          <p>State</p>
+                          <p>{formData.billingstate}</p>
+                          <p>Country</p>
+                          <p>{formData.billingcountry}</p>
+                        </div>
+                      </div>
+                      <div className="border">
+                        <h1 className="text-center">Shipping Address</h1>
+                        <div className="grid gap-6 md:grid-cols-2 p-4">
+                          <p>Address</p>
+                          <p>{formData.shippingaddress}</p>
+                          <p>City</p>
+                          <p>{formData.shippingcity}</p>
+                          <p>Postal Code</p>
+                          <p>{formData.shippingpostalCode}</p>
+                          <p>State</p>
+                          <p>{formData.shippingstate}</p>
+                          <p>Country</p>
+                          <p>{formData.shippingcountry}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -535,11 +2691,13 @@ function Form() {
               onClick={(e) => {
                 e.preventDefault();
                 setIndex(index - 1);
+                seterrors({});
               }}
             >
               Previous
             </button>
           </div>
+          {/* {showNext && ( */}
           <div className="grid w-1/2 justify-self-end justify-end">
             {index == forms.length ? (
               <button
@@ -549,14 +2707,26 @@ function Form() {
                 Place Order
               </button>
             ) : (
-              <button
-                className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary transition font-medium"
-                onClick={nextHandler}
-              >
-                Next
-              </button>
+              <>
+                {!showNext && Object.keys(errors).length != 0 ? (
+                  <button
+                    className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-gray-400 bg-white border border-white rounded-md hover:bg-transparent hover:text-gray-300 transition font-medium"
+                    // onClick={nextHandler}
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary transition font-medium"
+                    onClick={nextHandler}
+                  >
+                    Next
+                  </button>
+                )}{" "}
+              </>
             )}
           </div>
+          {/* )} */}
         </div>
       </div>
     </div>

@@ -19,14 +19,15 @@ const Product = ({ data }) => {
   return (
     <>
       {RecomndedProduct && (
-        <div className="container pb-16">
+        <div className="container pb-16" key={`RecomndedProduct-heading`}>
           <h2 className="text-2xl font-medium text-gray-800 uppercase mb-6">
             recomended for you
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {RecomndedProduct.map((product, index) => (
               <div
-                key={`RecomndedProduct-${index}`}
+                // key={`RecomndedProduct-${product.id}`}
+                key={product.sku}
                 className="bg-white shadow rounded overflow-hidden group"
               >
                 <div className="relative">
@@ -119,9 +120,10 @@ const Product = ({ data }) => {
                 <button
                   onClick={() => {
                     if (
-                      sessionStorage.getItem("token") != null ||
+                      sessionStorage.getItem("token") != null &&
                       sessionStorage.getItem("token") != ""
                     ) {
+                      debugger;
                       dispatch(addToCart(product));
                       router.push(`/cart`);
                     } else {

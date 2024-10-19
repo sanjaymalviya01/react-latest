@@ -6,10 +6,11 @@ import Image from "next/image";
 import Logo from "@/app/assets/images/logo.svg";
 import { FaFacebook, FaGithub, FaTwitter } from "react-icons/fa";
 import { CiInstagram } from "react-icons/ci";
+import Copyright from "../Copyright/Copyright";
 
 const Footer = () => {
   return (
-    <footer className="bg-white pt-16 pb-12 border-t border-gray-100">
+    <footer className="bg-white pt-16 border-t border-gray-100">
       <div className="container grid grid-cols-1 ">
         <div className="col-span-1 space-y-4">
           <Image src={Logo} alt="logo" className="w-30" />
@@ -21,21 +22,22 @@ const Footer = () => {
           </div>
           <div className="flex space-x-5">
             <Link href="#" className="text-gray-400 hover:text-gray-500">
-              <FaFacebook/>
+              <FaFacebook />
             </Link>
             <Link href="#" className="text-gray-400 hover:text-gray-500">
-              <CiInstagram/>
+              <CiInstagram />
             </Link>
             <Link href="#" className="text-gray-400 hover:text-gray-500">
-              <FaTwitter/>
+              <FaTwitter />
             </Link>
             <Link href="#" className="text-gray-400 hover:text-gray-500">
-              <FaGithub/>
+              <FaGithub />
             </Link>
           </div>
         </div>
         <FooterLinks />
       </div>
+      <Copyright />
     </footer>
   );
 };

@@ -8,14 +8,13 @@ import Link from "next/link";
 import { checkData } from "../login/actions";
 import { onLoginUser, onUerLogOut } from "@/redux/userSlice";
 
-async function page() {
+function page() {
   const dispatch = useDispatch();
   const [user, setUser] = useState();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const router = useRouter();
   useEffect(() => {
-    router.refresh();
     const request1 = checkData(token);
     Promise.all([request1]).then(([data1]) => {
       if (data1.props.newData.message) {
@@ -27,7 +26,7 @@ async function page() {
         sessionStorage.setItem("token", token);
       }
     });
-    router.refresh();
+    // router.refresh();
   }, []);
   return (
     <>

@@ -19,7 +19,6 @@ export default function RootLayout({ children }) {
           <Navbar />
           {children}
           <Footer />
-          <Copyright />
         </ReduxProvider>
       </body>
     </html>

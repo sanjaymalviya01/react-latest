@@ -10,11 +10,23 @@ function Pagination({ items, pageSize, currentPage, onPageChange }) {
   const pageCount = Math.ceil(items / pageSize);
 
   if (pageCount === 1 || pageCount === 0) return null;
+
   const pages = Array.from({ length: pageCount }, (a, i) => i + 1);
 
   const startPage = Math.max(1, currentPage - 1);
   const endPage = Math.min(pageCount, currentPage + 1);
-  const visiblePages = pages.slice(startPage - 1, endPage);
+
+  let visiblePages = [];
+
+  if (pageCount <= 3) {
+    visiblePages = pages; // If there are 3 or fewer pages, show all
+  } else if (currentPage === 1) {
+    visiblePages = [1, 2, 3]; // If on the first page, show pages 1, 2, 3
+  } else if (currentPage === pageCount) {
+    visiblePages = [pageCount - 2, pageCount - 1, pageCount]; // If on the last page, show the last 3 pages
+  } else {
+    visiblePages = [currentPage - 1, currentPage, currentPage + 1]; // Show the previous, current, and next page
+  }
 
   return (
     <>
@@ -24,12 +36,12 @@ function Pagination({ items, pageSize, currentPage, onPageChange }) {
           <span>of {pageCount}</span>
         </div>
         <nav aria-label="Page navigation example">
-          <ul className="inline-flex -space-x-px text-base h-10">
+          <ul className="inline-flex -space-x-px text-base h-10 border rounded-lg">
             <li
               onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
             >
               <a
-                className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                className={`w-32 flex items-center justify-center px-4 h-10 ms-0 leading-tight border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
                   currentPage === 1
                     ? "bg-white text-gray-500"
                     : "bg-primary text-white"
@@ -57,7 +69,7 @@ function Pagination({ items, pageSize, currentPage, onPageChange }) {
               }
             >
               <a
-                className={`flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                className={`w-32 flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
                   currentPage === pageCount
                     ? "bg-white text-gray-500"
                     : "bg-primary text-white"

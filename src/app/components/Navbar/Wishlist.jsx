@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ImProfile } from "react-icons/im";
 import { FaUserAlt } from "react-icons/fa";
 import { onUerLogOut } from "@/redux/userSlice";
+import debounce from "lodash.debounce";
 
 const Wishlist = ({}) => {
   const searchParams = useSearchParams();
@@ -20,11 +21,14 @@ const Wishlist = ({}) => {
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.userReducer.loggedInUser);
   useEffect(() => {
-    if (!sessionStorage.getItem("token")) {
-      router.push("/login");
-    } else {
-      setToken(sessionStorage.getItem("token"));
-    }
+    debounce(() => {
+      if (!sessionStorage.getItem("token")) {
+        // router.push("/login");
+        router.push("/login");
+      } else {
+        setToken(sessionStorage.getItem("token"));
+      }
+    }, 2000);
   }, [sessionStorage.getItem("token")]);
 
   useEffect(() => {
@@ -41,30 +45,34 @@ const Wishlist = ({}) => {
   }, [loggedInUser]);
   return (
     <>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-stretch space-x-4">
         <Link
           href={`/wishlist`}
           className="text-center text-gray-700 hover:text-primary transition relative"
         >
-          <div className="text-2xl">
+          <div className="text-2xl flex items-center justify-center">
             <CiHeart className="text-white" />
           </div>
           <div className="text-white text-xs leading-3">Wishlist</div>
-          <div className="absolute right-0 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
-            {wishlistCount}
-          </div>
+          {wishlistCount != 0 && (
+            <div className="absolute right-0 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
+              {wishlistCount}
+            </div>
+          )}
         </Link>
         <Link
           href={`/cart`}
           className="text-center text-gray-700 hover:text-primary transition relative"
         >
-          <div className="text-2xl">
+          <div className="text-2xl flex items-center justify-center">
             <CiShoppingCart className="text-white" />
           </div>
           <div className="text-xs leading-3 text-white">Cart</div>
-          <div className="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
-            {cartCount}
-          </div>
+          {cartCount != 0 && (
+            <div className="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
+              {cartCount}
+            </div>
+          )}
         </Link>
         <div className="relative inline-block text-left">
           <div>
@@ -90,7 +98,7 @@ const Wishlist = ({}) => {
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="menu-button"
-                tabindex="-1"
+                tabIndex="-1"
                 onClick={() => {
                   setMoreMenu(false);
                 }}
@@ -100,7 +108,7 @@ const Wishlist = ({}) => {
                     href={`/account`}
                     className="block px-4 py-2 text-sm text-gray-700"
                     role="menuitem"
-                    tabindex="-1"
+                    tabIndex="-1"
                     id="menu-item-0"
                     style={{
                       display: "flex",
@@ -116,7 +124,7 @@ const Wishlist = ({}) => {
                     href={`/profile?token=${token}`}
                     className="block px-4 py-2 text-sm text-gray-700"
                     role="menuitem"
-                    tabindex="-1"
+                    tabIndex="-1"
                     id="menu-item-0"
                     style={{
                       display: "flex",
@@ -128,11 +136,11 @@ const Wishlist = ({}) => {
                     <ImProfile className="text-gray-700" />
                     Profile
                   </Link>
-                  <Link
-                    href="#"
+                  <button
+                    // href="#"
                     className="block px-4 py-2 text-sm text-gray-700"
                     role="menuitem"
-                    tabindex="-1"
+                    tabIndex="-1"
                     id="menu-item-0"
                     style={{
                       display: "flex",
@@ -141,13 +149,14 @@ const Wishlist = ({}) => {
                       justifyContent: "flex-start",
                     }}
                     onClick={() => {
-                      sessionStorage.setItem("token", "");
+                      // sessionStorage.setItem("token", "");
+                      sessionStorage.removeItem("token");
                       router.push("/login");
                     }}
                   >
                     <MdLogout className="text-gray-700" />
                     Log Out
-                  </Link>
+                  </button>
                 </div>
               </div>
             )}

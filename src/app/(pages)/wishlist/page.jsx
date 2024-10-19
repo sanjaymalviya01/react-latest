@@ -13,16 +13,16 @@ function page() {
   const dispatch = useDispatch()
   useEffect(() => {
     const token = sessionStorage.getItem("token");
-    const request1 = checkData(token);
-    Promise.all([request1]).then(([data1]) => {
-      if (data1.props.newData.message) {
-        alert(data1.props.newData.message);
-        setLoggedInUser(false);
-        router.push(`/login`);
-      } else {
-        setLoggedInUser(data1.props.newData);
-      }
-    });
+    // const request1 = checkData(token);
+    // Promise.all([request1]).then(([data1]) => {
+    //   if (data1.props.newData.message) {
+    //     alert(data1.props.newData.message);
+    //     setLoggedInUser(false);
+    //     router.push(`/login`);
+    //   } else {
+    //     setLoggedInUser(data1.props.newData);
+    //   }
+    // });
   }, []);
   return (
     <>

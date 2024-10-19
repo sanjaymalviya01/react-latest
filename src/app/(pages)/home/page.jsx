@@ -8,11 +8,12 @@ import Product from "@/app/components/Product/Product";
 
 async function HomePage() {
   let data = await fetchRecomndedProduct();
+  let productCotegories = await fetchProductCotegories();
   return (
     <>
       <Banner />
       <Features />
-      <Categories />
+      <Categories {...{ productCotegories }} />
       <NewArrival />
       <Ads />
       <Product {...{ data }} />
@@ -30,6 +31,15 @@ export const fetchRecomndedProduct = async () => {
     const data = await response.json();
     return data.products;
   } catch (error) {
-    console.error("Error fetching products:", error);
+    //console.error("Error fetching products:", error);
+  }
+};
+export const fetchProductCotegories = async () => {
+  try {
+    const response = await fetch("https://dummyjson.com/products/categories");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    //console.error("Error fetching products:", error);
   }
 };

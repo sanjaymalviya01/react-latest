@@ -68,9 +68,6 @@ function OrderSummary() {
                   style={{ width: "150px" }}
                 >
                   {product.title}
-                  <span className="text-sm text-gray-400">
-                    (${product.price})
-                  </span>
                 </h5>
               </div>
               <p className="text-gray-600 text-sm">
@@ -112,7 +109,7 @@ function OrderSummary() {
 
       <div className="flex justify-between text-gray-800 font-medium py-3 uppercas">
         <p className="font-semibold">Total</p>
-        <p>${Total}</p>
+        <p className="font-semibold">${Total}</p>
       </div>
     </div>
   );
