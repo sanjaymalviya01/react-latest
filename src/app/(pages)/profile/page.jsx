@@ -2,11 +2,10 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
 import AcountWrapper from "../../components/Wrapper/AcountWrapper/AcountWrapper";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch } from "react-redux";
 import { checkData } from "../login/actions";
-import { onLoginUser, onUerLogOut } from "@/redux/userSlice";
+import { onLoginUser } from "@/redux/userSlice";
 
 function page() {
   const dispatch = useDispatch();

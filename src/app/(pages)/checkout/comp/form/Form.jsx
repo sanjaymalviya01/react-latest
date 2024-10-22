@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import OrderSummary from "../OrderSummary";
 import { useDispatch, useSelector } from "react-redux";
-import { onUpdateUser, updateCheckoutInfo } from "@/redux/userSlice";
-import debounce from "lodash.debounce";
+import { updateCheckoutInfo } from "@/redux/userSlice";
 import Link from "next/link";
+import "./style.css";
 
 const generalValidationSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -91,7 +91,6 @@ const paymentValidationSchema = Yup.object().shape({
 });
 
 function Form() {
-  const loggedInUser = useSelector((state) => state.userReducer.loggedInUser);
   const dispatch = useDispatch();
   const titleData = [
     "General Details",
@@ -246,7 +245,6 @@ function Form() {
   const [index, setIndex] = useState(0);
   const [cashondelivery, setcashondelivery] = useState(false);
   const [shippingForm, setShippingForm] = useState(false);
-  const [useUserData, setUseUserData] = useState(false);
   const [lastUpdateField, setlastUpdateField] = useState();
   const [showNext, setShowNext] = useState(false);
   const [errors, seterrors] = useState("");
@@ -276,7 +274,6 @@ function Form() {
     creditCardNumber: "",
     cardSecurityCode: "",
     CardExpiration: "",
-    useUserData: useUserData,
   });
 
   const selectCountryCodeOptions = [
@@ -1491,30 +1488,6 @@ function Form() {
       code: "ZW",
     },
   ];
-  const setselectCountryCodeHandler = (event) => {
-    setselectCountryCode(event.target.value);
-    console.log("User Selected Value - ", event.target.value);
-  };
-  const useUserDataHandler = (e) => {
-    setUseUserData(e.target.checked);
-    if (e.target.checked == true) {
-      setformData((prevData) => ({
-        ...prevData,
-        firstName: loggedInUser.firstName,
-        lastName: loggedInUser.lastName,
-        phoneNumber: loggedInUser.phone,
-        email: loggedInUser.email,
-        billingaddress: loggedInUser.address.address,
-        billingcity: loggedInUser.address.city,
-        billingpostalCode: loggedInUser.address.postalCode,
-        billingstate: loggedInUser.address.state,
-        billingcountry: loggedInUser.address.country,
-        makeThisAddressAsShippingAddress: shippingForm,
-        creditCardNumber: loggedInUser.bank.cardNumber,
-        CardExpiration: loggedInUser.bank.cardExpire,
-      }));
-    }
-  };
   const generalValidationFunction = async () => {
     try {
       await generalValidationSchema.validate(formData, { abortEarly: false });
@@ -1561,21 +1534,21 @@ function Form() {
     const val = e.target.value;
 
     setlastUpdateField(id);
-    if (id == "cashondelivery" && e.target.type == "checkbox") {
+    if (id === "cashondelivery" && e.target.type === "checkbox") {
       setcashondelivery(e.target.checked);
       setformData((prevData) => ({
         ...prevData,
         ["cashondelivery"]: e.target.checked,
         ["paymentType"]:
-          e.target.checked == true ? "cashondelivery" : "debitOrCrerditCard",
+          e.target.checked === true ? "cashondelivery" : "debitOrCrerditCard",
       }));
     }
     if (
-      id == "makeThisAddressAsShippingAddress" &&
-      e.target.type == "checkbox"
+      id === "makeThisAddressAsShippingAddress" &&
+      e.target.type === "checkbox"
     ) {
       setShippingForm(e.target.checked);
-      if (e.target.checked == true) {
+      if (e.target.checked === true) {
         setformData((prevData) => ({
           ...prevData,
           ["makeThisAddressAsShippingAddress"]: e.target.checked,
@@ -1599,13 +1572,13 @@ function Form() {
         }));
       }
     }
-    if (e.target.type == "text" || e.target.type == "email") {
+    if (e.target.type === "text" || e.target.type === "email") {
       setformData((prevData) => ({
         ...prevData,
         [id]: val,
       }));
     }
-    if (e.target.type == "number") {
+    if (e.target.type === "number") {
       setformData((prevData) => ({
         ...prevData,
         [id]: val,
@@ -2171,7 +2144,7 @@ function Form() {
           formData.lastName &&
           formData.phoneNumber &&
           formData.email &&
-          Object.keys(errors).length == 0
+          Object.keys(errors).length === 0
         ) {
           setIndex(index + 1);
         }
@@ -2184,7 +2157,7 @@ function Form() {
           formData.billingpostalCode &&
           formData.billingstate &&
           formData.billingcountry &&
-          Object.keys(errors).length == 0
+          Object.keys(errors).length === 0
         ) {
           setIndex(index + 1);
         }
@@ -2196,7 +2169,7 @@ function Form() {
             formData.creditCardNumber &&
             formData.cardSecurityCode &&
             formData.CardExpiration &&
-            Object.keys(errors).length == 0
+            Object.keys(errors).length === 0
           ) {
             setIndex(index + 1);
           }
@@ -2225,25 +2198,25 @@ function Form() {
       setShowNext(false);
     }
     if (
-      index == 0 &&
+      index === 0 &&
       formData.firstName &&
       formData.lastName &&
       formData.phoneNumber &&
       formData.email &&
-      Object.keys(errors).length == 0
+      Object.keys(errors).length === 0
     ) {
       setShowNext(true);
     }
     if (
-      index == 1 &&
+      index === 1 &&
       formData.billingaddress &&
       formData.billingcity &&
       formData.billingpostalCode &&
       formData.billingstate &&
       formData.billingcountry &&
-      Object.keys(errors).length == 0
+      Object.keys(errors).length === 0
     ) {
-      if (formData.makeThisAddressAsShippingAddress == true) {
+      if (formData.makeThisAddressAsShippingAddress === true) {
         setShowNext(true);
       } else {
         if (
@@ -2252,7 +2225,7 @@ function Form() {
           formData.shippingpostalCode &&
           formData.shippingstate &&
           formData.shippingcountry &&
-          Object.keys(errors).length == 0
+          Object.keys(errors).length === 0
         ) {
           setShowNext(true);
         } else {
@@ -2260,12 +2233,12 @@ function Form() {
         }
       }
     }
-    if (index == 2) {
+    if (index === 2) {
       if (
         formData.creditCardNumber &&
         formData.cardSecurityCode &&
         formData.CardExpiration &&
-        Object.keys(errors).length == 0
+        Object.keys(errors).length === 0
       ) {
         setShowNext(true);
       } else {
@@ -2276,45 +2249,29 @@ function Form() {
         }
       }
     }
-  }, [errors, shippingForm, cashondelivery, useUserData, refreshErrors]);
+  }, [errors, shippingForm, cashondelivery, refreshErrors]);
   return (
-    <div className="container grid grid-cols-12 items-start pb-16 pt-4 gap-6">
-      <div className="col-span-12 border border-gray-200 p-4 rounded">
-        <h1 className="text-center text-3xl m-2 text-primary">
-          {titleData[index]}
-        </h1>
+    <div className="checkoutform-grid">
+      <div className="checkoutform-col">
+        <h1 className="checkoutform-title">{titleData[index]}</h1>
 
-        {index != forms.length ? (
-          <form className="my-4 sm:my-5">
-            {/* {index == 0 && (
-              <div className="mb-2 flex items-center text-sm font-medium text-gray-900 dark:text-white">
-                <input
-                  className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  type="checkbox"
-                  name="useUserData"
-                  id="useUserData"
-                  onChange={useUserDataHandler}
-                />
-                <label className="mx-3" htmlFor="useUserData">
-                  Use User Data
-                </label>
-              </div>
-            )} */}
-            <div className="grid gap-6 mb-6 md:grid-cols-2">
+        {index !== forms.length ? (
+          <form className="checkoutform-main-form">
+            <div className="checkoutform-main-form-grid">
               {forms[index].map((form, i) => (
                 <div key={form.label}>
                   <label
                     htmlFor={form.id}
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="checkoutform-main-form-grid-label"
                   >
                     {form.label}
                   </label>
-                  <div className={`${form.type == "number" && "flex"}`}>
-                    {form.type == "number" && form.name == "phoneNumber" && (
+                  <div className={`${form.type === "number" && "flex"}`}>
+                    {form.type === "number" && form.name === "phoneNumber" && (
                       <>
                         {selectCountryCodeMenu && (
                           <div
-                            className="absolute z-10 mt-10 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                            className="checkoutform-selectCountryCodeMenu"
                             role="menu"
                             aria-orientation="vertical"
                             aria-labelledby="menu-button"
@@ -2322,16 +2279,13 @@ function Form() {
                             onClick={() => {
                               setselectCountryCodeMenu(false);
                             }}
-                            style={{ maxHeight: "15rem", overflow: "auto" }}
                           >
                             <div className="py-1" role="none">
                               {selectCountryCodeOptions.map((option) => (
                                 <>
-                                  {/* <ul>
-                                    <li> */}
                                   <Link
                                     href=""
-                                    className="flex px-4 py-2 text-sm text-gray-700 border"
+                                    className="checkoutform-selectCountryCodeOptions"
                                     role="menuitem"
                                     title={option.dial_code}
                                     onClick={(e) => {
@@ -2340,8 +2294,7 @@ function Form() {
                                   >
                                     <span
                                       title={option.dial_code}
-                                      style={{ width: "70px" }}
-                                      className=" text-right pr-4"
+                                      className=" text-right pr-4 w-16"
                                     >
                                       {option.dial_code}
                                     </span>
@@ -2352,8 +2305,6 @@ function Form() {
                                       {option.name.split("(")[0]}
                                     </span>
                                   </Link>
-                                  {/* </li>
-                                  </ul> */}
                                 </>
                               ))}
                             </div>
@@ -2361,9 +2312,9 @@ function Form() {
                         )}
                         <Link
                           href=""
-                          class="select-none rounded-s-lg justify-self-start justify-end py-2 px-4 text-center text-sm text-gray-900 bg-white border border-gray-300 hover:bg-transparent hover:text-primary transition font-medium"
+                          class="checkoutform-selectCountryCode"
                           onClick={() => {
-                            selectCountryCodeMenu == false
+                            selectCountryCodeMenu === false
                               ? setselectCountryCodeMenu(true)
                               : setselectCountryCodeMenu(false);
                           }}
@@ -2378,13 +2329,13 @@ function Form() {
                       name={form.name}
                       placeholder={form.placeholder}
                       value={formData[form.name]}
-                      checked={form.type == "checkbox" && formData[form.name]}
+                      checked={form.type === "checkbox" && formData[form.name]}
                       onInput={(e) => {
-                        if (form.type == "number") {
+                        if (form.type === "number") {
                           let lastValidValue = "";
                           if (
-                            e.target.value == "" &&
-                            formData[form.name].length == 1
+                            e.target.value === "" &&
+                            formData[form.name].length === 1
                           ) {
                             lastValidValue = "";
                           } else {
@@ -2398,41 +2349,41 @@ function Form() {
                         }
                       }}
                       onChange={onChangeHandler}
-                      className={`bg-gray-50 border border-gray-300  text-sm  focus:ring-primary focus:border-primary block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary ${
-                        form.type == "radio" || form.type == "checkbox"
+                      className={`checkoutform-main-form-grid-input ${
+                        form.type === "radio" || form.type === "checkbox"
                           ? "w-auto text-primary"
                           : " w-full text-gray-900"
                       } ${
-                        form.type == "number" &&
-                        form.name == "phoneNumber" &&
+                        form.type === "number" &&
+                        form.name === "phoneNumber" &&
                         "remove-arrow"
-                      } ${form.type == "number" && "remove-card-arrow"}
+                      } ${form.type === "number" && "remove-card-arrow"}
                     `}
                     />
                   </div>
                   {errors[form.name] && (
-                    <p style={{ color: "red" }}>{errors[form.name]}</p>
+                    <p className="text-red-500">{errors[form.name]}</p>
                   )}
                 </div>
               ))}
             </div>
-            {index == 1 && (
+            {index === 1 && (
               <>
-                <div class="relative flex py-5 items-center">
-                  <div class="flex-grow border-t border-gray-400"></div>
-                  <span class="flex-shrink mx-4 text-gray-400">
+                <div class="checkoutform-shipping-div">
+                  <div class="checkoutform-shipping-border"></div>
+                  <span class="checkoutform-shipping">
                     Shipping Address details
                   </span>
-                  <div class="flex-grow border-t border-gray-400"></div>
+                  <div class="checkoutform-shipping-border"></div>
                 </div>
 
-                <form className="my-4 sm:my-5">
-                  <div className="grid gap-6 mb-6 md:grid-cols-2">
+                <form className="checkoutform-shipping-form">
+                  <div className="checkoutform-shipping-form-grid">
                     {shippingFormData.map((form, i) => (
                       <div key={form.label}>
                         <label
                           htmlFor={form.id}
-                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          className="checkoutform-shipping-form-label"
                         >
                           {form.label}
                         </label>
@@ -2443,14 +2394,14 @@ function Form() {
                           placeholder={form.placeholder}
                           value={formData[form.id]}
                           onChange={onChangeHandler}
-                          className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
-                            form.type == "radio" || form.type == "checkbox"
+                          className={`checkoutform-shipping-form-input ${
+                            form.type === "radio" || form.type === "checkbox"
                               ? "w-auto"
                               : " w-full "
                           }`}
                         />
                         {errors[form.name] && (
-                          <p style={{ color: "red" }}>{errors[form.name]}</p>
+                          <p className="text-red-500">{errors[form.name]}</p>
                         )}
                       </div>
                     ))}
@@ -2458,22 +2409,22 @@ function Form() {
                 </form>
               </>
             )}
-            {!cashondelivery && index == 2 && (
+            {!cashondelivery && index === 2 && (
               <>
-                <div class="relative flex py-5 items-center">
-                  <div class="flex-grow border-t border-gray-400"></div>
-                  <span class="flex-shrink mx-4 text-gray-400">
+                <div class="checkoutform-shipping-div">
+                  <div class="checkoutform-shipping-border"></div>
+                  <span class="checkoutform-shipping">
                     Debit or Credit Card details
                   </span>
-                  <div class="flex-grow border-t border-gray-400"></div>
+                  <div class="checkoutform-shipping-border"></div>
                 </div>
-                <form className="my-4 sm:my-5">
-                  <div className="grid gap-6 mb-6 md:grid-cols-2">
+                <form className="checkoutform-shipping-form">
+                  <div className="checkoutform-shipping-form-grid">
                     {paymentData.map((form, i) => (
                       <div key={form.label}>
                         <label
                           htmlFor={form.id}
-                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          className="checkoutform-shipping-form-label"
                         >
                           {form.label}
                         </label>
@@ -2485,11 +2436,11 @@ function Form() {
                           value={formData[form.id]}
                           onChange={onChangeHandler}
                           onInput={(e) => {
-                            if (form.type == "number") {
+                            if (form.type === "number") {
                               let lastValidValue = "";
                               if (
-                                e.target.value == "" &&
-                                formData[form.name].length == 1
+                                e.target.value === "" &&
+                                formData[form.name].length === 1
                               ) {
                                 lastValidValue = "";
                               } else {
@@ -2502,14 +2453,14 @@ function Form() {
                               }
                             }
                           }}
-                          className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
-                            form.type == "radio" || form.type == "checkbox"
+                          className={`checkoutform-shipping-form-input ${
+                            form.type === "radio" || form.type === "checkbox"
                               ? "w-auto"
                               : " w-full "
-                          } ${form.type == "number" && "remove-card-arrow"}`}
+                          } ${form.type === "number" && "remove-card-arrow"}`}
                         />
                         {errors[form.name] && (
-                          <p style={{ color: "red" }}>{errors[form.name]}</p>
+                          <p className="text-red-500">{errors[form.name]}</p>
                         )}
                       </div>
                     ))}
@@ -2520,24 +2471,27 @@ function Form() {
           </form>
         ) : (
           <>
-            <div className="my-4 sm:my-5">
-              <div className="flex justify-center items-center flex-col gap-6 mb-6 md:grid-cols-2">
-                <div className="" style={{ width: "1000px" }}>
-                  <h1 className="text-center">Product Details</h1>
+            <div className="checkoutform-shipping-form">
+              <div className="checkoutform-ordersummary">
+                <div className="border shadow-lg">
+                  <h1 className="checkoutform-ordersummary-head">
+                    Product Details
+                  </h1>
                   <hr />
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="checkoutform-ordersummary-grid">
                     <OrderSummary />
                   </div>
-                  <div
-                    className="border"
-                    style={{ width: "1000px", marginTop: "20px" }}
-                  >
-                    <h1 className="text-center">Your Details</h1>
+                  <div className="border m-5">
+                    <h1 className="checkoutform-ordersummary-head">
+                      Your Details
+                    </h1>
                     <hr />
-                    <div className="grid gap-6 md:grid-cols-2">
+                    <div className="checkoutform-ordersummary-grid">
                       <div className="border">
-                        <h1 className="text-center">Personal Info</h1>
-                        <div className="grid gap-6 md:grid-cols-2 p-4">
+                        <h1 className="checkoutform-ordersummary-head">
+                          Personal Info
+                        </h1>
+                        <div className="checkoutform-ordersummary-grid p-4">
                           <p>Name</p>
                           <p>
                             {formData.firstName} {formData.lastName}
@@ -2549,11 +2503,13 @@ function Form() {
                         </div>
                       </div>
                       <div className="border">
-                        <h1 className="text-center">Payment Details</h1>
-                        <div className="grid gap-6 md:grid-cols-2 p-4">
+                        <h1 className="checkoutform-ordersummary-head">
+                          Payment Details
+                        </h1>
+                        <div className="checkoutform-ordersummary-grid p-4">
                           <p>Payment Type</p>
                           <p>{formData.paymentType}</p>
-                          {formData.paymentType == "debitOrCrerditCard" && (
+                          {formData.paymentType === "debitOrCrerditCard" && (
                             <>
                               <p>Credit Card Number</p>
                               <p>
@@ -2564,8 +2520,10 @@ function Form() {
                         </div>
                       </div>
                       <div className="border">
-                        <h1 className="text-center">Billing Address</h1>
-                        <div className="grid gap-6 md:grid-cols-2 p-4">
+                        <h1 className="checkoutform-ordersummary-head">
+                          Billing Address
+                        </h1>
+                        <div className="checkoutform-ordersummary-grid p-4">
                           <p>Address</p>
                           <p>{formData.billingaddress}</p>
                           <p>City</p>
@@ -2579,8 +2537,10 @@ function Form() {
                         </div>
                       </div>
                       <div className="border">
-                        <h1 className="text-center">Shipping Address</h1>
-                        <div className="grid gap-6 md:grid-cols-2 p-4">
+                        <h1 className="checkoutform-ordersummary-head">
+                          Shipping Address
+                        </h1>
+                        <div className="checkoutform-ordersummary-grid p-4">
                           <p>Address</p>
                           <p>{formData.shippingaddress}</p>
                           <p>City</p>
@@ -2606,7 +2566,7 @@ function Form() {
           <div className="grid w-1/2">
             <button
               className={`mt-4 justify-self-start justify-end py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary transition font-medium ${
-                index == 0 && "hidden"
+                index === 0 && "hidden"
               }`}
               onClick={(e) => {
                 e.preventDefault();
@@ -2617,9 +2577,8 @@ function Form() {
               Previous
             </button>
           </div>
-          {/* {showNext && ( */}
           <div className="grid w-1/2 justify-self-end justify-end">
-            {index == forms.length ? (
+            {index === forms.length ? (
               <button
                 className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary transition font-medium"
                 onClick={submitHandler}
@@ -2628,7 +2587,7 @@ function Form() {
               </button>
             ) : (
               <>
-                {!showNext && Object.keys(errors).length != 0 ? (
+                {!showNext && Object.keys(errors).length !== 0 ? (
                   <button className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-gray-400 bg-white border border-white rounded-md hover:bg-transparent hover:text-gray-300 transition font-medium">
                     Next
                   </button>
@@ -2643,7 +2602,6 @@ function Form() {
               </>
             )}
           </div>
-          {/* )} */}
         </div>
       </div>
     </div>

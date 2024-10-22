@@ -23,16 +23,9 @@ const Product = ({ data }) => {
           <h2 className="heading">recomended for you</h2>
           <div className="recomnded-product-grid">
             {RecomndedProduct.map((product, index) => (
-              <div
-                // key={`RecomndedProduct-${product.id}`}
-                key={product.sku}
-                className="product-div group"
-              >
+              <div key={product.sku} className="product-div group">
                 <div className="relative">
-                  <div
-                    className="img"
-                    // style={{ height: "200px" }}
-                  >
+                  <div className="img">
                     <Image
                       fill={true}
                       src={product.images[0]}
@@ -106,8 +99,8 @@ const Product = ({ data }) => {
                 <button
                   onClick={() => {
                     if (
-                      sessionStorage.getItem("token") != null &&
-                      sessionStorage.getItem("token") != ""
+                      sessionStorage.getItem("token") !== null &&
+                      sessionStorage.getItem("token") !== ""
                     ) {
                       debugger;
                       dispatch(addToCart(product));

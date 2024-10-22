@@ -42,29 +42,26 @@ const AcountWrapper = () => {
   useEffect(() => {
     setuserData(reduxUser);
     setformData(reduxUser);
-    if (pathname == "/profile") {
+    if (pathname === "/profile") {
       setprofile(true);
     }
-    if (pathname == "/account") {
+    if (pathname === "/account") {
       setaccount(true);
     }
-    if (pathname == "/wishlist") {
+    if (pathname === "/wishlist") {
       setwishlist(true);
     }
-    if (pathname == "/cart") {
+    if (pathname === "/cart") {
       setcart(true);
     }
   }, [pathname]);
-  // useEffect(() => {
-  //   router.refresh();
-  // }, []);
   return (
     <>
-      {Object.keys(reduxUser).length != 0 ? (
+      {Object.keys(reduxUser).length !== 0 ? (
         <div className="side-nav-grid">
           <div className="col-span-3">
             <div className="user-info">
-              {/* <div className="user-img-div">
+              <div className="user-img-div">
                 <Image
                   src={userData.image}
                   width={100}
@@ -72,7 +69,7 @@ const AcountWrapper = () => {
                   alt="profile"
                   className="user-img"
                 />
-              </div> */}
+              </div>
               <div className="flex-grow">
                 <p className="greet-text">Hello,</p>
                 <h4 className="user-full-name">
@@ -86,7 +83,7 @@ const AcountWrapper = () => {
                 <Link
                   href="/account"
                   className={`wrapper-link ${
-                    pathname == "/account" && "active-wrapper-link"
+                    pathname === "/account" && "active-wrapper-link"
                   }`}
                 >
                   <span className="wrapper-link-icon">
@@ -97,7 +94,7 @@ const AcountWrapper = () => {
                 <Link
                   href={`/profile?token=${sessionStorage.getItem("token")}`}
                   className={`wrapper-link ${
-                    pathname == "/profile" && "active-wrapper-link"
+                    pathname === "/profile" && "active-wrapper-link"
                   }`}
                 >
                   Profile information
@@ -155,7 +152,6 @@ const AcountWrapper = () => {
                     sessionStorage.setItem("token", "");
                     router.push("/login");
                   }}
-                  style={{ border: "none" }}
                   className="wrapper-link"
                 >
                   <span className="wrapper-link-icon">

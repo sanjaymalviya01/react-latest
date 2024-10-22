@@ -1,0 +1,79 @@
+.checkoutform-grid {
+    @apply container grid grid-cols-12 items-start pb-16 pt-4 gap-6
+}
+
+.checkoutform-col {
+    @apply col-span-12 border border-gray-200 p-4 rounded
+}
+
+.checkoutform-title {
+    @apply text-center text-3xl m-2 text-primary
+}
+
+.checkoutform-main-form {
+    @apply my-4 sm:my-5
+}
+
+.checkoutform-main-form-grid {
+    @apply grid gap-6 mb-6 md:grid-cols-2
+}
+
+.checkoutform-main-form-grid-label {
+    @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white
+}
+
+.checkoutform-selectCountryCodeMenu {
+    @apply absolute z-10 mt-10 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none max-h-60 overflow-auto
+}
+
+.checkoutform-selectCountryCodeOptions {
+    @apply flex px-4 py-2 text-sm text-gray-700 border
+}
+
+.checkoutform-selectCountryCode {
+    @apply select-none rounded-s-lg justify-self-start justify-end py-2 px-4 text-center text-sm text-gray-900 bg-white border border-gray-300 hover:bg-transparent hover:text-primary transition font-medium
+}
+
+.checkoutform-main-form-grid-input {
+    @apply bg-gray-50 border border-gray-300 text-sm focus:ring-primary focus:border-primary block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary
+}
+
+.checkoutform-shipping {
+    @apply flex-shrink mx-4 text-gray-400
+}
+
+.checkoutform-shipping-border {
+    @apply flex-grow border-t border-gray-400
+}
+
+.checkoutform-shipping-div {
+    @apply relative flex py-5 items-center
+}
+
+.checkoutform-shipping-form {
+    @apply my-4 sm:my-5
+}
+
+.checkoutform-shipping-form-grid {
+    @apply grid gap-6 mb-6 md:grid-cols-2
+}
+
+.checkoutform-shipping-form-label {
+    @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white
+}
+
+.checkoutform-shipping-form-input {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+}
+
+.checkoutform-ordersummary {
+    @apply flex justify-center items-center flex-col gap-6 mb-6 md:grid-cols-2
+}
+
+.checkoutform-ordersummary-grid {
+    @apply grid gap-6 md:grid-cols-2
+}
+
+.checkoutform-ordersummary-head {
+    @apply text-lg text-center
+}

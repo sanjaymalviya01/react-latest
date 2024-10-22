@@ -3,14 +3,11 @@ import BreadCrumb from "@/app/components/Breadcrumb/Breadcrumb";
 import AcountWrapper from "@/app/components/Wrapper/AcountWrapper/AcountWrapper";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { checkData } from "../login/actions";
-import { onUerLogOut } from "@/redux/userSlice";
 
 const page = () => {
   const [loggedInUser, setLoggedInUser] = useState(true);
   const router = useRouter();
-  const dispatch = useDispatch();
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const request1 = checkData(token);

@@ -7,7 +7,7 @@
 }
 
 .category-img-div {
-    @apply relative rounded-sm overflow-hidden
+    @apply relative rounded-sm overflow-hidden h-52 relative
 }
 
 .category-img-div-link {

@@ -15,7 +15,7 @@
 }
 
 .listview-product-title {
-    @apply text-gray-800 text-xl font-medium uppercase
+    @apply text-gray-800 text-xl font-medium uppercase h-6 whitespace-nowrap overflow-hidden text-ellipsis
 }
 
 .listview-product-sku-div {

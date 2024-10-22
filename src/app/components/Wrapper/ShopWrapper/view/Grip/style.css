@@ -47,7 +47,7 @@
 }
 
 .product-title {
-    @apply uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition
+    @apply uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition h-6 whitespace-nowrap overflow-hidden text-ellipsis
 }
 
 .title-tooltip {

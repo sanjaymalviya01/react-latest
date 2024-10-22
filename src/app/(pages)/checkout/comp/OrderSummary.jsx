@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import "./style.css";
 function OrderSummary() {
-  const [token, setToken] = useState(false);
   const cart = useSelector((state) => state.userReducer.loggedInUser.cart);
   const [subtotal, setSubtotal] = useState(0);
   const [Total, setTotal] = useState(0);
@@ -10,7 +10,6 @@ function OrderSummary() {
   const [cgst, setcgst] = useState(0);
   const [shippingCharge, setShippingCharge] = useState(0);
   useEffect(() => {
-    setToken(sessionStorage.getItem("token"));
     const ST = cart
       .reduce(
         (total, item) =>
@@ -34,49 +33,26 @@ function OrderSummary() {
     setTotal(gTotal);
   }, []);
   return (
-    <div className="col-span-5 border border-gray-200 p-4 rounded">
-      <>
-        <div
-          className="flex justify-between 
-        "
-        >
-          <div>
-            <h5
-              className="text-gray-800 font-medium"
-              style={{ width: "150px" }}
-            >
-              Title
-            </h5>
-          </div>
-          <p className="text-gray-600">Quantity</p>
-          <p
-            className="text-gray-800 font-medium text-right"
-            style={{ width: "100px" }}
-          >
-            Price
-          </p>
+    <div className="ordersummary">
+      <div className="ordersummary-flex">
+        <div>
+          <h5 className="ordersummary-head w-36">Title</h5>
         </div>
-      </>
+        <p className="ordersummary-head">Quantity</p>
+        <p className="ordersummary-head text-right w-24">Price</p>
+      </div>
       <hr />
-      <div className="space-y-2 py-3">
+      <div className="ordersummary-productdetails">
         {cart.map((product) => (
           <>
-            <div className="flex justify-between">
+            <div className="ordersummary-product">
               <div>
-                <h5
-                  className="text-gray-800 font-medium"
-                  style={{ width: "150px" }}
-                >
-                  {product.title}
-                </h5>
+                <h5 className="ordersummary-product-titel">{product.title}</h5>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="ordersummary-product-quantity">
                 ${product.price} X {product.quantity}
               </p>
-              <p
-                className="text-gray-800 font-medium text-right"
-                style={{ width: "100px" }}
-              >
+              <p className="ordersummary-product-price">
                 $
                 {(
                   (product.price -
@@ -89,25 +65,25 @@ function OrderSummary() {
           </>
         ))}
       </div>
-      <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
+      <div className="ordersummary-additional-rates">
         <p>subtotal</p>
         <p>${subtotal}</p>
       </div>
 
-      <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
+      <div className="ordersummary-additional-rates">
         <p>CGST(9%)</p>
         <p>${cgst}</p>
       </div>
-      <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
+      <div className="ordersummary-additional-rates">
         <p>SGST(9%)</p>
         <p>${sgst}</p>
       </div>
-      <div className="flex justify-between border-b border-gray-200 mt-1 text-gray-800 font-medium py-3 uppercas">
+      <div className="ordersummary-additional-rates">
         <p>shipping</p>
         <p>${shippingCharge.toFixed(2)}</p>
       </div>
 
-      <div className="flex justify-between text-gray-800 font-medium py-3 uppercas">
+      <div className="ordersummary-total">
         <p className="font-semibold">Total</p>
         <p className="font-semibold">${Total}</p>
       </div>

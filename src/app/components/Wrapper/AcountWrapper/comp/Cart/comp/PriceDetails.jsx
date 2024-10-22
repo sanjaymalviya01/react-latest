@@ -1,7 +1,9 @@
 import React from "react";
 import "./style.css";
+import { useRouter } from "next/navigation";
 
 function PriceDetails({ reduxUser }) {
+  const router = useRouter();
   return (
     <div className="price-details">
       <h1 className="heading">price details</h1>

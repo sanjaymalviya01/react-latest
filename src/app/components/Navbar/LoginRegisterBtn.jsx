@@ -7,7 +7,7 @@ function LoginRegisterBtn() {
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
   useEffect(() => {
-    if (pathname == "/login") {
+    if (pathname === "/login") {
       setVisible(false);
     } else {
       setVisible(true);

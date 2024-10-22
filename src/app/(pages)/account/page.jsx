@@ -2,14 +2,12 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
 import AcountWrapper from "../../components/Wrapper/AcountWrapper/AcountWrapper";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { checkData } from "../login/actions";
 
 function page() {
   const [loggedInUser, setLoggedInUser] = useState(true);
   const router = useRouter();
-  const dispatch = useDispatch();
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const request1 = checkData(token);

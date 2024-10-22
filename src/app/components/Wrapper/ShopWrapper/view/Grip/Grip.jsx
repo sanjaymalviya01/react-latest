@@ -32,7 +32,7 @@ function Grip({ paginatedProducts, user }) {
                 />
               </div>
               <div className="link-div">
-                {Object.keys(user).length != 0 && (
+                {Object.keys(user).length !== 0 && (
                   <>
                     <Link
                       href={{
@@ -50,10 +50,10 @@ function Grip({ paginatedProducts, user }) {
                         name=""
                         id="wishlist"
                         checked={user.wishlist.find((item) =>
-                          item.id == product.id ? true : false
+                          item.id === product.id ? true : false
                         )}
                         onChange={(e) => {
-                          if (e.target.checked == true) {
+                          if (e.target.checked === true) {
                             dispatch(addToWishList(product));
                           } else {
                             dispatch(removeFromWishlist(product));
@@ -79,17 +79,7 @@ function Grip({ paginatedProducts, user }) {
                   query: { productId: product.id },
                 }}
               >
-                <h4
-                  className="product-title"
-                  style={{
-                    height: "22px",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {product.title}
-                </h4>
+                <h4 className="product-title">{product.title}</h4>
               </Link>
 
               <div className="group title-tooltip">
@@ -144,8 +134,8 @@ function Grip({ paginatedProducts, user }) {
               className="add-to-cart"
               onClick={() => {
                 if (
-                  sessionStorage.getItem("token") != null &&
-                  sessionStorage.getItem("token") != ""
+                  sessionStorage.getItem("token") !== null &&
+                  sessionStorage.getItem("token") !== ""
                 ) {
                   dispatch(addToCart(product));
                   router.push(`/cart`);

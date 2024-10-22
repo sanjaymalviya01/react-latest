@@ -10,7 +10,7 @@ import {
   FaStar,
   FaTwitter,
 } from "react-icons/fa";
-import { addToCart, addToWishList, setCartQuantity } from "@/redux/userSlice";
+import { addToWishList, setCartQuantity } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import "./style.css";
@@ -19,14 +19,13 @@ function ProductDetail({ product }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const [imgIndex, setImgIndex] = useState(0);
-  const [reduxProduct, setReduxProduct] = useState();
   const [productQuantity, setProductQuantity] = useState(1);
   const loggedInUser = useSelector((state) => state.userReducer.loggedInUser);
 
   useEffect(() => {
     if (Object.keys(loggedInUser).length) {
       const reduxProduct = loggedInUser.cart.find(
-        (item) => item.id == product.id
+        (item) => item.id === product.id
       );
       if (reduxProduct) {
         setProductQuantity(reduxProduct.quantity);
@@ -99,12 +98,12 @@ function ProductDetail({ product }) {
         <div className="space-y-2">
           <p className="product-detail-availablity">
             <span>Availability: </span>
-            {product.availabilityStatus == "Low Stock" && (
+            {product.availabilityStatus === "Low Stock" && (
               <span className="text-orange-600">
                 {product.availabilityStatus}
               </span>
             )}
-            {product.availabilityStatus == "In Stock" && (
+            {product.availabilityStatus === "In Stock" && (
               <span className="text-green-600">
                 {product.availabilityStatus}
               </span>
@@ -166,8 +165,8 @@ function ProductDetail({ product }) {
           <button
             onClick={() => {
               if (
-                sessionStorage.getItem("token") != null ||
-                sessionStorage.getItem("token") != ""
+                sessionStorage.getItem("token") !== null ||
+                sessionStorage.getItem("token") !== ""
               ) {
                 dispatch(setCartQuantity([product, productQuantity]));
                 router.push(`/cart`);

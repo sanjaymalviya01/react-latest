@@ -33,17 +33,7 @@ function List({ paginatedProducts, user }) {
                   query: { productId: product.id },
                 }}
               >
-                <h2
-                  className="listview-product-title"
-                  style={{
-                    height: "22px",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {product.title}
-                </h2>
+                <h2 className="listview-product-title">{product.title}</h2>
               </Link>
               <div className="listview-product-sku-div">
                 <p className="listview-product-sku ">sku-{product.sku}</p>
@@ -94,8 +84,8 @@ function List({ paginatedProducts, user }) {
             <button
               onClick={() => {
                 if (
-                  sessionStorage.getItem("token") != null &&
-                  sessionStorage.getItem("token") != ""
+                  sessionStorage.getItem("token") !== null &&
+                  sessionStorage.getItem("token") !== ""
                 ) {
                   dispatch(addToCart(product));
                   router.push(`/cart`);

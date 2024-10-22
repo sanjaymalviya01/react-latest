@@ -7,11 +7,10 @@ import { removeFromCart, setCartQuantity } from "@/redux/userSlice";
 import PriceDetails from "./comp/PriceDetails";
 function Cart({ reduxUser }) {
   const dispatch = useDispatch();
-
   return (
     <div className="cart-col">
       <div>
-        {reduxUser.cart.length == 0 ? (
+        {reduxUser.cart.length === 0 ? (
           <div className="no-data">
             <h1>No Data To show </h1>
           </div>
@@ -43,7 +42,7 @@ function Cart({ reduxUser }) {
                     <div>
                       <p className="product-fields">
                         Availability:{" "}
-                        {product.stock == 0 ? (
+                        {product.stock === 0 ? (
                           <>
                             <span className="text-red-500">Out of stock</span>
                           </>
@@ -53,14 +52,12 @@ function Cart({ reduxUser }) {
                               <>
                                 <span className="text-orange-500">
                                   Low Stock - {product.stock}
-                                  {/* {product.stock - product.quantity} */}
                                 </span>
                               </>
                             ) : (
                               <>
                                 <span className="text-green-500">
                                   In Stock - {product.stock}
-                                  {/* {product.stock - product.quantity} */}
                                 </span>
                               </>
                             )}
@@ -130,7 +127,7 @@ function Cart({ reduxUser }) {
           ))
         )}
       </div>
-      {reduxUser.cart && reduxUser.cart.length != 0 && (
+      {reduxUser.cart && reduxUser.cart.length !== 0 && (
         <PriceDetails {...{ reduxUser }} />
       )}
     </div>

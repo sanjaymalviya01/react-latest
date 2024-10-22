@@ -11,7 +11,7 @@ function Wishlist({ reduxUser }) {
   const router = useRouter();
   return (
     <div className="wishlist-col">
-      {reduxUser.wishlist.length == 0 ? (
+      {reduxUser.wishlist.length === 0 ? (
         <div className="no-data" key={"no-data"}>
           <h1>No Data To show </h1>
         </div>
@@ -34,7 +34,7 @@ function Wishlist({ reduxUser }) {
                 <h2 className="product-title">{product.title}</h2>
                 <p className="product-fields">
                   Availability:{" "}
-                  {product.stock == 0 ? (
+                  {product.stock === 0 ? (
                     <span className="text-red-500">All added to cart</span>
                   ) : (
                     <>
@@ -65,8 +65,8 @@ function Wishlist({ reduxUser }) {
               <button
                 onClick={() => {
                   if (
-                    sessionStorage.getItem("token") != null &&
-                    sessionStorage.getItem("token") != ""
+                    sessionStorage.getItem("token") !== null &&
+                    sessionStorage.getItem("token") !== ""
                   ) {
                     if (product.stock > 0) {
                       dispatch(addToCart(product));

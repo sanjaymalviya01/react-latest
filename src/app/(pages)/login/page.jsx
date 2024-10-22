@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import * as yup from "yup";
 import { navigate } from "./actions";
@@ -65,7 +65,7 @@ function Index() {
                 placeholder="Enter Your Username"
               />
               {errors.username && (
-                <p style={{ color: "red" }}>{errors.username}</p>
+                <p className="text-red-500">{errors.username}</p>
               )}
             </div>
             <div>

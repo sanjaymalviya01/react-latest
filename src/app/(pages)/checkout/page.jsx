@@ -11,8 +11,8 @@ function page() {
   const [showData, setshowdata] = useState(false);
   useEffect(() => {
     if (
-      sessionStorage.getItem("token") == null ||
-      loggedInUser.cart.length == 0
+      sessionStorage.getItem("token") === null ||
+      loggedInUser.cart.length === 0
     ) {
       router.push("/shop");
     } else {

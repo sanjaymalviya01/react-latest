@@ -18,22 +18,12 @@ const Wishlist = ({}) => {
   const loggedInUser = useSelector((state) => state.userReducer.loggedInUser);
   const sessionStorageToken = sessionStorage.getItem("token");
   useEffect(() => {
-    if (sessionStorageToken) {
-      setToken(sessionStorageToken);
-    }
+    setToken(sessionStorageToken);
   }, [sessionStorageToken]);
 
   useEffect(() => {
-    if (loggedInUser.wishlist != undefined) {
-      setwishlistCount(loggedInUser.wishlist.length);
-    }
-    if (loggedInUser.cart != undefined) {
-      let count = 0;
-      loggedInUser.cart.map((product) => {
-        count = count + product.quantity;
-      });
-      setCartCount(count);
-    }
+    setwishlistCount(loggedInUser.wishlist.length);
+    setCartCount(loggedInUser.cart.length);
   }, [loggedInUser]);
   return (
     <div className="nav-wishlist">
@@ -42,7 +32,7 @@ const Wishlist = ({}) => {
           <CiHeart />
         </div>
         <div className="nav-wishlist-link-name">Wishlist</div>
-        {wishlistCount != 0 && (
+        {wishlistCount !== 0 && (
           <div className="nav-wishlist-link-wishlist-count">
             {wishlistCount}
           </div>
@@ -53,7 +43,7 @@ const Wishlist = ({}) => {
           <CiShoppingCart />
         </div>
         <div className="nav-wishlist-link-name">Cart</div>
-        {cartCount != 0 && (
+        {cartCount !== 0 && (
           <div className="nav-wishlist-link-cart-count">{cartCount}</div>
         )}
       </Link>
@@ -63,7 +53,7 @@ const Wishlist = ({}) => {
             href="#"
             className="nav-wishlist-link"
             onClick={() => {
-              moreMenu == false ? setMoreMenu(true) : setMoreMenu(false);
+              moreMenu === false ? setMoreMenu(true) : setMoreMenu(false);
             }}
           >
             <div className="nav-wishlist-link-icon">

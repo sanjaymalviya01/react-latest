@@ -1,15 +1,8 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { FaGripHorizontal, FaHeart, FaList, FaStar } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import { FaGripHorizontal, FaList } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import Pagination, { paginate } from "../../Pagination/Pagination";
-import {
-  addToCart,
-  addToWishList,
-  removeFromWishlist,
-} from "@/redux/userSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import "./style.css";
 import Grip from "./view/Grip/Grip";
@@ -42,7 +35,6 @@ const ShopWrapper = ({
 
   const user = useSelector((state) => state.userReducer.loggedInUser);
 
-  const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
   const searches = searchParams.get("search");
@@ -98,7 +90,7 @@ const ShopWrapper = ({
     }
   }, [allProducts, searchCategory]);
   useMemo(() => {
-    if (searches && searches != "") {
+    if (searches && searches !== "") {
       setCurrentPage(1);
       fetchsearchedProducts();
     } else {
@@ -118,8 +110,8 @@ const ShopWrapper = ({
       );
     }
     Object.keys(selectedBrand).map((brand) => {
-      let item = filteredProducts.find((product) => product.brand == brand);
-      if (item == undefined) {
+      let item = filteredProducts.find((product) => product.brand === brand);
+      if (item === undefined) {
         setSelectedBrand({});
       }
     });
@@ -334,7 +326,7 @@ const ShopWrapper = ({
           </select>
 
           <div className="shop-wrapper-view-btn">
-            {view == "listview" && (
+            {view === "listview" && (
               <div
                 className=" grip-btn"
                 onClick={() => {
@@ -344,7 +336,7 @@ const ShopWrapper = ({
                 <FaGripHorizontal />
               </div>
             )}
-            {view == "grip" && (
+            {view === "grip" && (
               <div
                 className="list-btn"
                 onClick={() => {
@@ -356,8 +348,8 @@ const ShopWrapper = ({
             )}
           </div>
         </div>
-        {view == "grip" && <Grip {...{ paginatedProducts, user }} />}
-        {view == "listview" && <List {...{ paginatedProducts, user }} />}
+        {view === "grip" && <Grip {...{ paginatedProducts, user }} />}
+        {view === "listview" && <List {...{ paginatedProducts, user }} />}
         <Pagination
           items={products.length}
           currentPage={currentPage}

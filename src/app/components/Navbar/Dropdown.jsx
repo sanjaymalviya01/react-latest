@@ -1,14 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import sofa from "@/app/assets/images/icons/sofa.svg";
-import terrace from "@/app/assets/images/icons/terrace.svg";
-import bed from "@/app/assets/images/icons/bed.svg";
-import office from "@/app/assets/images/icons/office.svg";
-import outdoorCafe from "@/app/assets/images/icons/outdoor-cafe.svg";
-import bed2 from "@/app/assets/images/icons/bed-2.svg";
 import React, { useEffect, useState } from "react";
 import "./style.css";
-import { useRouter, useSearchParams } from "next/navigation";
 
 const Dropdown = () => {
   const [categories, setCategories] = useState([]);

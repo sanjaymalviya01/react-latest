@@ -1,9 +1,8 @@
 import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
 import ShopWrapper from "../../components/Wrapper/ShopWrapper/ShopWrapper";
 
-async function page({ searchParams }) {
+async function page() {
   let allpro, productsByCategory, productsByBrand, highestPrice, lowestPrice;
-  // if (!Object.keys(searchParams).length) {
   allpro = await fetchAllProducts();
   if (allpro) {
     productsByCategory = allpro.reduce((arrayCategory, product) => {
@@ -24,7 +23,6 @@ async function page({ searchParams }) {
     highestPrice = Math.max(...allpro.map((product) => product.price));
     lowestPrice = Math.min(...allpro.map((product) => product.price));
   }
-  // }
   return (
     <>
       <BreadCrumb />
@@ -49,6 +47,6 @@ export const fetchAllProducts = async () => {
     const data = await response.json();
     return data.products;
   } catch (error) {
-    //console.error("Error fetching products:", error);
+    console.error("Error fetching products:", error);
   }
 };
