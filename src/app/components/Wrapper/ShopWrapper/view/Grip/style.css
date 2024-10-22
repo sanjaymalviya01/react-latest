@@ -1,0 +1,99 @@
+.grip-grid {
+    @apply grid md:grid-cols-3 grid-cols-1 gap-6 shadow rounded
+}
+
+.shop-product-div {
+    @apply bg-white shadow rounded overflow-hidden
+}
+
+.shop-img-div {
+    @apply h-48 relative
+}
+
+.link-div {
+    @apply absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition
+}
+
+.view-product {
+    @apply text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition
+}
+
+.custom-wishlist-label {
+    @apply contents h-20 rounded-lg cursor-pointer
+}
+
+.custom-wishlist-label input {
+    @apply absolute -mr-11 w-9 h-9 opacity-0
+}
+
+.custom-wishlist-label span {
+    @apply bg-[#212121] rounded-lg flex justify-center items-center
+}
+
+.custom-wishlist-label input:checked~span {
+    @apply bg-primary
+}
+
+.heart-btn {
+    @apply text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition
+}
+
+.product-details {
+    @apply pt-4 pb-3 px-4
+}
+
+.brand-sku {
+    @apply flex items-baseline justify-between gap-2 text-xs text-gray-400 font-semibold
+}
+
+.product-title {
+    @apply uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition
+}
+
+.title-tooltip {
+    @apply relative m-1 flex justify-center
+}
+
+.tooltip-span {
+    @apply opacity-75 absolute top-0 scale-0 rounded bg-gray-800 p-2 text-sm text-white group-hover:scale-100
+}
+
+.shop-price-details {
+    @apply flex mb-1 space-x-2 justify-between items-center gap-2
+}
+
+.price-discount {
+    @apply text-sm text-gray-400 flex flex-col
+}
+
+.real-price {
+    @apply text-sm text-primary
+}
+
+.discounted-price {
+    @apply text-xl text-primary font-semibold
+}
+
+.stars-div {
+    @apply flex items-center justify-between gap-2
+}
+
+.stars-align {
+    @apply flex gap-1
+}
+
+.star-primary {
+    @apply flex gap-1 text-sm text-primary
+}
+
+.star-slate {
+    @apply flex gap-1 text-sm text-slate-400
+}
+
+.product-rating {
+    @apply text-xs text-gray-500 ml-3
+}
+
+.add-to-cart {
+    @apply block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition
+}

@@ -1,41 +1,30 @@
 import React from "react";
+import "./style.css";
 
 function ProductDescription({ product }) {
   return (
-    <div className="container pb-16">
-      <h3 className="border-b border-gray-200 font-roboto text-gray-800 pb-3 font-medium">
-        Product details
-      </h3>
-      <div className="w-3/5 pt-6">
+    <div className="product-desc-main">
+      <h3 className="product-desc-head">Product details</h3>
+      <div className="product-desc-details">
         <div className="text-gray-600">
           <p>{product.description}</p>
         </div>
 
-        <table className="table-auto border-collapse w-full text-left text-gray-600 text-sm mt-6">
+        <table className="product-desc-table">
           <tbody>
             <tr>
-              <th className="py-2 px-4 border border-gray-300 w-40 font-medium">
-                Brand
-              </th>
-              <th className="py-2 px-4 border border-gray-300 ">
-                {product.brand}
-              </th>
+              <th className="product-desc-table-head">Brand</th>
+              <th className="product-desc-table-data ">{product.brand}</th>
             </tr>
             <tr>
-              <th className="py-2 px-4 border border-gray-300 w-40 font-medium">
-                Warranty Information
-              </th>
-              <th className="py-2 px-4 border border-gray-300 ">
+              <th className="product-desc-table-head">Warranty Information</th>
+              <th className="product-desc-table-data ">
                 {product.warrantyInformation}
               </th>
             </tr>
             <tr>
-              <th className="py-2 px-4 border border-gray-300 w-40 font-medium">
-                Weight
-              </th>
-              <th className="py-2 px-4 border border-gray-300 ">
-                {product.weight} g
-              </th>
+              <th className="product-desc-table-head">Weight</th>
+              <th className="product-desc-table-data ">{product.weight} g</th>
             </tr>
           </tbody>
         </table>

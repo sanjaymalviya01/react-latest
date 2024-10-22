@@ -22,15 +22,6 @@ const generalValidationSchema = Yup.object().shape({
     .email()
     .matches(/^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/, "Not a valid email")
     .required("Email is required"),
-  // phoneNumber: Yup.string()
-  //   .matches(
-  //     /^[0-9]/,
-  //     // /^\+[1-9]{1}[0-9]{3,13}$/,
-  //     // /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
-  //     "Phone number is not valid"
-  //   )
-  //   .min(9, "Phone Number should be 10 digit long.No special character allowed")
-  //   .max(11, "Phone Number should be max 10 digit long"),
 });
 const addressValidationSchema = Yup.object().shape({
   billingaddress: Yup.string()
@@ -91,11 +82,9 @@ const paymentValidationSchema = Yup.object().shape({
     .test("valid-month", "Month must be between 01 and 12", (value) => {
       const [month, year] = value.split("/");
       return Number(month) >= 1 && Number(month) <= 12;
-      // Number(year) >= 1 && Number(month) <= 12;
     })
     .test("valid-year", "Year must be between 24 and 50", (value) => {
       const [month, year] = value.split("/");
-      // Number(month) >= 1 && Number(month) <= 12;
       return Number(year) >= 24 && Number(year) <= 50;
     })
     .required("CardExpiration is required"),
@@ -112,12 +101,6 @@ function Form() {
   ];
   const data = [
     [
-      // {
-      //   id: "useUserData",
-      //   name: "useUserData",
-      //   type: "checkbox",
-      //   label: "Cash On Delivery",
-      // },
       {
         id: "firstName",
         name: "firstName",
@@ -1508,7 +1491,6 @@ function Form() {
       code: "ZW",
     },
   ];
-  // console.log(selectCountryCodeOptions);
   const setselectCountryCodeHandler = (event) => {
     setselectCountryCode(event.target.value);
     console.log("User Selected Value - ", event.target.value);
@@ -1536,47 +1518,39 @@ function Form() {
   const generalValidationFunction = async () => {
     try {
       await generalValidationSchema.validate(formData, { abortEarly: false });
-      // //console.log("form is valid", formData);
       seterrors({});
-      // setIndex(index + 1);
     } catch (err) {
       const validationErrors = {};
       err.inner.forEach((error) => {
         validationErrors[error.path] = error.message;
       });
       seterrors(validationErrors);
-      //console.log("form is Invalid", validationErrors, index);
     }
   };
   const addressValidationFunction = async () => {
     try {
       await addressValidationSchema.validate(formData, { abortEarly: false });
-      //console.log("form is valid", formData);
+
       seterrors({});
-      // setIndex(index + 1);
     } catch (err) {
       const validationErrors = {};
       err.inner.forEach((error) => {
         validationErrors[error.path] = error.message;
       });
       seterrors(validationErrors);
-      //console.log("form is Invalid", validationErrors, index);
     }
   };
   const paymentValidationFunction = async () => {
     try {
       await paymentValidationSchema.validate(formData, { abortEarly: false });
-      //console.log("form is valid", formData);
       dispatch(updateCheckoutInfo(formData));
       seterrors({});
-      // setIndex(index + 1);
     } catch (err) {
       const validationErrors = {};
       err.inner.forEach((error) => {
         validationErrors[error.path] = error.message;
       });
       seterrors(validationErrors);
-      //console.log("form is Invalid", validationErrors, index);
     }
   };
 
@@ -1663,12 +1637,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["firstName"]: validationErrors.firstName,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         firstNamevalidationFunc();
@@ -1696,13 +1668,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["lastName"]: validationErrors.lastName,
             }));
-            //console.log("form is Invalid", validationErrors, index);
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         lastNamevalidationFunc();
@@ -1732,13 +1701,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["email"]: validationErrors.email,
             }));
-            //console.log("form is Invalid", validationErrors, index);
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         emailvalidationFunc();
@@ -1774,13 +1740,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["phoneNumber"]: validationErrors.phoneNumber,
             }));
-            //console.log("form is Invalid", validationErrors, index);
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         phoneNumbervalidationFunc();
@@ -1807,13 +1770,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["billingaddress"]: validationErrors.billingaddress,
             }));
-            //console.log("form is Invalid", validationErrors, index);
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         billingaddressvalidationFunc();
@@ -1841,12 +1801,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["billingcity"]: validationErrors.billingcity,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         billingcityvalidationFunc();
@@ -1874,12 +1832,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["billingstate"]: validationErrors.billingstate,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         billingstatevalidationFunc();
@@ -1897,7 +1853,6 @@ function Form() {
             await billingpostalCodeValidationSchema.validate(formData, {
               abortEarly: false,
             });
-            //console.log("form is valid", formData);
             let errorObj = errors;
             if (errorObj.billingpostalCode) {
               delete errorObj.billingpostalCode;
@@ -1939,12 +1894,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["billingcountry"]: validationErrors.billingcountry,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         billingcountryvalidationFunc();
@@ -1971,12 +1924,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["shippingaddress"]: validationErrors.shippingaddress,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         shippingaddressvalidationFunc();
@@ -2004,12 +1955,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["shippingcity"]: validationErrors.shippingcity,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         shippingcityvalidationFunc();
@@ -2037,12 +1986,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["shippingstate"]: validationErrors.shippingstate,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         shippingstatevalidationFunc();
@@ -2070,12 +2017,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["shippingpostalCode"]: validationErrors.shippingpostalCode,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         shippingpostalCodevalidationFunc();
@@ -2103,12 +2048,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["shippingcountry"]: validationErrors.shippingcountry,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         shippingcountryvalidationFunc();
@@ -2135,12 +2078,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["creditCardNumber"]: validationErrors.creditCardNumber,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         creditCardNumbervalidationFunc();
@@ -2167,12 +2108,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["cardSecurityCode"]: validationErrors.cardSecurityCode,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         cardSecurityCodevalidationFunc();
@@ -2187,11 +2126,9 @@ function Form() {
             .test("valid-month", "Month must be between 01 and 12", (value) => {
               const [month, year] = value.split("/");
               return Number(month) >= 1 && Number(month) <= 12;
-              // Number(year) >= 1 && Number(month) <= 12;
             })
             .test("valid-year", "Year must be between 24 and 50", (value) => {
               const [month, year] = value.split("/");
-              // Number(month) >= 1 && Number(month) <= 12;
               return Number(year) >= 24 && Number(year) <= 50;
             })
             .required("Card Expiration is required"),
@@ -2211,12 +2148,10 @@ function Form() {
             err.inner.forEach((error) => {
               validationErrors[error.path] = error.message;
             });
-            // seterrors(validationErrors);
             seterrors((prevData) => ({
               ...prevData,
               ["CardExpiration"]: validationErrors.CardExpiration,
             }));
-            //console.log("form is Invalid", validationErrors, index);
           }
         }
         CardExpirationvalidationFunc();
@@ -2228,7 +2163,6 @@ function Form() {
   };
   const nextHandler = (e) => {
     e.preventDefault();
-    // //console.log(titleData[index]);
     switch (titleData[index]) {
       case "General Details":
         generalValidationFunction();
@@ -2270,9 +2204,6 @@ function Form() {
           dispatch(updateCheckoutInfo(formData));
           setIndex(index + 1);
         }
-        // if (Object.keys(errors).length) {
-        //   setIndex(index + 1);
-        // }
         break;
 
       default:
@@ -2287,7 +2218,6 @@ function Form() {
     setRefreshErrors(refreshErrors + 1);
     if (lastUpdateField) {
       validationHandler(lastUpdateField);
-      // console.log("errors : ", errors);
     }
   }, [formData, showNext]);
   useEffect(() => {
@@ -2311,7 +2241,6 @@ function Form() {
       formData.billingpostalCode &&
       formData.billingstate &&
       formData.billingcountry &&
-      // shippingForm &&
       Object.keys(errors).length == 0
     ) {
       if (formData.makeThisAddressAsShippingAddress == true) {
@@ -2340,8 +2269,6 @@ function Form() {
       ) {
         setShowNext(true);
       } else {
-        // setShowNext(false);
-
         if (cashondelivery) {
           setShowNext(true);
         } else {
@@ -2350,9 +2277,6 @@ function Form() {
       }
     }
   }, [errors, shippingForm, cashondelivery, useUserData, refreshErrors]);
-
-  // console.log(errors);
-  // console.log(cashondelivery);
   return (
     <div className="container grid grid-cols-12 items-start pb-16 pt-4 gap-6">
       <div className="col-span-12 border border-gray-200 p-4 rounded">
@@ -2385,10 +2309,7 @@ function Form() {
                   >
                     {form.label}
                   </label>
-                  <div
-                    className={`${form.type == "number" && "flex"}`}
-                    // className={`${form.type == "number" && "relative"}`}
-                  >
+                  <div className={`${form.type == "number" && "flex"}`}>
                     {form.type == "number" && form.name == "phoneNumber" && (
                       <>
                         {selectCountryCodeMenu && (
@@ -2441,7 +2362,6 @@ function Form() {
                         <Link
                           href=""
                           class="select-none rounded-s-lg justify-self-start justify-end py-2 px-4 text-center text-sm text-gray-900 bg-white border border-gray-300 hover:bg-transparent hover:text-primary transition font-medium"
-                          // <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none text-sm text-gray-900"
                           onClick={() => {
                             selectCountryCodeMenu == false
                               ? setselectCountryCodeMenu(true)
@@ -2709,10 +2629,7 @@ function Form() {
             ) : (
               <>
                 {!showNext && Object.keys(errors).length != 0 ? (
-                  <button
-                    className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-gray-400 bg-white border border-white rounded-md hover:bg-transparent hover:text-gray-300 transition font-medium"
-                    // onClick={nextHandler}
-                  >
+                  <button className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-gray-400 bg-white border border-white rounded-md hover:bg-transparent hover:text-gray-300 transition font-medium">
                     Next
                   </button>
                 ) : (

@@ -1,77 +1,73 @@
 import Link from "next/link";
 import React from "react";
+import "./style.css";
 
 function page() {
   return (
-    <div className="contain py-16">
-      <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
-        <h2 className="text-2xl uppercase font-medium mb-1">
-          Create an account
-        </h2>
-        <p className="text-gray-600 mb-6 text-sm">Register for new cosutumer</p>
+    <div className="py-16">
+      <div className="register-main">
+        <h2 className="register-head">Create an account</h2>
+        <p className="register-msg">Register for new cosutumer</p>
         <form action="#" method="post" autoComplete="off">
           <div className="space-y-2">
             <div>
-              <label htmlFor="name" className="text-gray-600 mb-2 block">
+              <label htmlFor="name" className="register-input-label">
                 Full Name
               </label>
               <input
                 type="text"
                 name="name"
                 id="name"
-                className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                className="register-input"
                 placeholder="fulan fulana"
               />
             </div>
             <div>
-              <label htmlFor="email" className="text-gray-600 mb-2 block">
+              <label htmlFor="email" className="register-input-label">
                 Email address
               </label>
               <input
                 type="email"
                 name="email"
                 id="email"
-                className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                className="register-input"
                 placeholder="youremail.@domain.com"
               />
             </div>
             <div>
-              <label htmlFor="password" className="text-gray-600 mb-2 block">
+              <label htmlFor="password" className="register-input-label">
                 Password
               </label>
               <input
                 type="password"
                 name="password"
                 id="password"
-                className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                className="register-input"
                 placeholder="*******"
               />
             </div>
             <div>
-              <label htmlFor="confirm" className="text-gray-600 mb-2 block">
+              <label htmlFor="confirm" className="register-input-label">
                 Confirm password
               </label>
               <input
                 type="password"
                 name="confirm"
                 id="confirm"
-                className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                className="register-input"
                 placeholder="*******"
               />
             </div>
           </div>
           <div className="mt-6">
-            <div className="flex items-center">
+            <div className="register-check-div">
               <input
                 type="checkbox"
                 name="aggrement"
                 id="aggrement"
-                className="text-primary focus:ring-0 rounded-sm cursor-pointer"
+                className="register-check"
               />
-              <label
-                htmlFor="aggrement"
-                className="text-gray-600 ml-3 cursor-pointer"
-              >
+              <label htmlFor="aggrement" className="register-check-label">
                 I have read and agree to the{" "}
                 <Link href="#" className="text-primary">
                   terms & conditions
@@ -80,37 +76,26 @@ function page() {
             </div>
           </div>
           <div className="mt-4">
-            <button
-              type="submit"
-              className="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
-            >
+            <button type="submit" className="register-submit-btn">
               create account
             </button>
           </div>
         </form>
 
-        <div className="mt-6 flex justify-center relative">
-          <div className="text-gray-600 uppercase px-3 bg-white z-10 relative">
-            Or signup with
-          </div>
-          <div className="absolute left-0 top-3 w-full border-b-2 border-gray-200"></div>
+        <div className="or-signup-with-div">
+          <div className="or-signup-with">Or signup with</div>
+          <div className="or-signup-with-border"></div>
         </div>
-        <div className="mt-4 flex gap-4">
-          <Link
-            href="#"
-            className="w-1/2 py-2 text-center text-white bg-blue-800 rounded uppercase font-roboto font-medium text-sm hover:bg-blue-700"
-          >
+        <div className="register-social-links">
+          <Link href="#" className="register-fb-link">
             facebook
           </Link>
-          <Link
-            href="#"
-            className="w-1/2 py-2 text-center text-white bg-red-600 rounded uppercase font-roboto font-medium text-sm hover:bg-red-500"
-          >
+          <Link href="#" className="register-google-link">
             google
           </Link>
         </div>
 
-        <p className="mt-4 text-center text-gray-600">
+        <p className="already-have-account">
           Already have account?{" "}
           <Link href="/login" className="text-primary">
             Login now

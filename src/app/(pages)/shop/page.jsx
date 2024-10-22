@@ -1,5 +1,5 @@
 import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
-import ShopWrapper from "../../components/Wrapper/ShopWrapper";
+import ShopWrapper from "../../components/Wrapper/ShopWrapper/ShopWrapper";
 
 async function page({ searchParams }) {
   let allpro, productsByCategory, productsByBrand, highestPrice, lowestPrice;

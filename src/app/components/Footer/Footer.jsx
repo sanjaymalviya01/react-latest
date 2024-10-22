@@ -7,30 +7,31 @@ import Logo from "@/app/assets/images/logo.svg";
 import { FaFacebook, FaGithub, FaTwitter } from "react-icons/fa";
 import { CiInstagram } from "react-icons/ci";
 import Copyright from "../Copyright/Copyright";
+import "./style.css";
 
 const Footer = () => {
   return (
-    <footer className="bg-white pt-16 border-t border-gray-100">
-      <div className="container grid grid-cols-1 ">
-        <div className="col-span-1 space-y-4">
+    <footer className="footer-main">
+      <div className="footer-grid">
+        <div className="footer-logo-div">
           <Image src={Logo} alt="logo" className="w-30" />
           <div className="mr-2">
-            <p className="text-gray-500">
+            <p className="footer-logo-para">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia,
               hic?
             </p>
           </div>
-          <div className="flex space-x-5">
-            <Link href="#" className="text-gray-400 hover:text-gray-500">
+          <div className="footer-social-div">
+            <Link href="#" className="footer-social-link">
               <FaFacebook />
             </Link>
-            <Link href="#" className="text-gray-400 hover:text-gray-500">
+            <Link href="#" className="footer-social-link">
               <CiInstagram />
             </Link>
-            <Link href="#" className="text-gray-400 hover:text-gray-500">
+            <Link href="#" className="footer-social-link">
               <FaTwitter />
             </Link>
-            <Link href="#" className="text-gray-400 hover:text-gray-500">
+            <Link href="#" className="footer-social-link">
               <FaGithub />
             </Link>
           </div>

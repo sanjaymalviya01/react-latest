@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import * as yup from "yup";
 import { navigate } from "./actions";
+import "./style.css";
 
 const loginSchema = yup.object({
   username: yup
@@ -28,7 +29,7 @@ function Index() {
 
     try {
       await loginSchema.validate(newLogin, { abortEarly: false });
-      //console.log("form is valid", newLogin);
+      console.log("form is valid", newLogin);
       setErrors({});
     } catch (err) {
       const validationErrors = {};
@@ -36,7 +37,7 @@ function Index() {
         validationErrors[error.path] = error.message;
       });
       setErrors(validationErrors);
-      //console.log("form is Invalid", validationErrors);
+      console.log("form is Invalid", validationErrors);
     }
   };
 
@@ -44,14 +45,14 @@ function Index() {
     handleSubmit();
   }, [username, password]);
   return (
-    <div className="contain py-16">
-      <div className="max-w-lg mx-auto shadow px-6 py-7 rounded overflow-hidden">
-        <h2 className="text-2xl uppercase font-medium mb-1">Login</h2>
-        <p className="text-gray-600 mb-6 text-sm">welcome back customer</p>
+    <div className="py-16">
+      <div className="login-main-div">
+        <h2 className="login-heading">Login</h2>
+        <p className="login-welcome">welcome back customer</p>
         <form action={navigate} method="post" autoComplete="off">
           <div className="space-y-2">
             <div>
-              <label htmlFor="email" className="text-gray-600 mb-2 block">
+              <label htmlFor="username" className="login-input-label">
                 Username
               </label>
               <input
@@ -60,7 +61,7 @@ function Index() {
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                className="login-input"
                 placeholder="Enter Your Username"
               />
               {errors.username && (
@@ -68,7 +69,7 @@ function Index() {
               )}
             </div>
             <div>
-              <label htmlFor="password" className="text-gray-600 mb-2 block">
+              <label htmlFor="password" className="login-input-label">
                 Password
               </label>
               <input
@@ -77,26 +78,23 @@ function Index() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
+                className="login-input"
                 placeholder="*******"
               />
               {errors.password && (
-                <p style={{ color: "red" }}>{errors.password}</p>
+                <p className="text-red-500">{errors.password}</p>
               )}
             </div>
           </div>
-          <div className="flex items-center justify-between mt-6">
-            <div className="flex items-center">
+          <div className="login-check-fogot">
+            <div className="login-check-div">
               <input
                 type="checkbox"
                 name="remember"
                 id="remember"
-                className="text-primary focus:ring-0 rounded-sm cursor-pointer"
+                className="login-check-input"
               />
-              <label
-                htmlFor="remember"
-                className="text-gray-600 ml-3 cursor-pointer"
-              >
+              <label htmlFor="remember" className="login-check-label">
                 Remember me
               </label>
             </div>
@@ -105,37 +103,26 @@ function Index() {
             </Link>
           </div>
           <div className="mt-4">
-            <button
-              type="submit"
-              className="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium"
-            >
+            <button type="submit" className="login-submit-button">
               Login
             </button>
           </div>
         </form>
 
-        <div className="mt-6 flex justify-center relative">
-          <div className="text-gray-600 uppercase px-3 bg-white z-10 relative">
-            Or login with
-          </div>
-          <div className="absolute left-0 top-3 w-full border-b-2 border-gray-200"></div>
+        <div className="or-login-with-main">
+          <div className="or-login-with">Or login with</div>
+          <div className="or-login-with-border"></div>
         </div>
-        <div className="mt-4 flex gap-4">
-          <Link
-            href="#"
-            className="w-1/2 py-2 text-center text-white bg-blue-800 rounded uppercase font-roboto font-medium text-sm hover:bg-blue-700"
-          >
+        <div className="login-link-div">
+          <Link href="#" className="login-fb-link">
             facebook
           </Link>
-          <Link
-            href="#"
-            className="w-1/2 py-2 text-center text-white bg-red-600 rounded uppercase font-roboto font-medium text-sm hover:bg-red-500"
-          >
+          <Link href="#" className="login-google-link">
             google
           </Link>
         </div>
 
-        <p className="mt-4 text-center text-gray-600">
+        <p className="dont-have-account">
           Do not have account?{" "}
           <Link href="/register" className="text-primary">
             Register now

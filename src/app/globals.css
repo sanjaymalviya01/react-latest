@@ -1856,38 +1856,6 @@ h6 {
   }
 }
 
-.custom-wishlist-label {
-  display: contents;
-  height: 80px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.custom-wishlist-label input {
-  position: absolute;
-  margin-right: -45px;
-  width: 35px;
-  height: 35px;
-  opacity: 0;
-}
-
-.custom-wishlist-label span {
-  background-color: #212121;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.custom-wishlist-label input:checked~span {
-  background-color: #fd3d57;
-}
-
-.custom-wishlist-label input:checked~span i {
-  filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 10px #fff) drop-shadow(0 0 15px #fff);
-}
-
-
 /* cart */
 
 .custom-cart-label {

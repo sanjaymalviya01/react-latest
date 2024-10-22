@@ -13,6 +13,7 @@ import {
 import { addToCart, addToWishList, setCartQuantity } from "@/redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import "./style.css";
 
 function ProductDetail({ product }) {
   const dispatch = useDispatch();
@@ -33,9 +34,9 @@ function ProductDetail({ product }) {
     }
   }, [loggedInUser]);
   return (
-    <div className="container grid grid-cols-2 gap-6">
+    <div className="product-detail-grid">
       <div>
-        <div style={{ height: "400px", position: "relative" }}>
+        <div className="product-detail-img-div">
           <Image
             fill={true}
             sizes="(max-width: 768px)"
@@ -45,11 +46,11 @@ function ProductDetail({ product }) {
             className="w-full"
           />
         </div>
-        <div className="grid grid-cols-5 gap-4 mt-4">
+        <div className="product-detail-more-img-div">
           {product.images.map((img, index) => (
             <div
               key={`optionalImage-${index}`}
-              style={{ height: "100px", position: "relative" }}
+              className="product-detail-more-img"
             >
               <Image
                 fill={true}
@@ -57,7 +58,7 @@ function ProductDetail({ product }) {
                 priority={false}
                 src={img}
                 alt={product.title}
-                className="product-img w-full cursor-pointer border"
+                className="product-img"
                 onClick={() => {
                   setImgIndex(index);
                 }}
@@ -68,9 +69,9 @@ function ProductDetail({ product }) {
       </div>
 
       <div>
-        <h2 className="text-3xl font-medium uppercase mb-2">{product.title}</h2>
-        <div className="flex items-center mb-4 gap-1">
-          <div className="flex gap-1 text-sm text-primary">
+        <h2 className="product-detail-title">{product.title}</h2>
+        <div className="product-detail-star">
+          <div className="product-detail-star-primary">
             {Array.from({ length: product.rating }, (_, index) => (
               <>
                 <span>
@@ -79,7 +80,7 @@ function ProductDetail({ product }) {
               </>
             ))}
           </div>
-          <div className="flex gap-1 text-sm text-slate-400">
+          <div className="product-detail-star-slate">
             {Array.from(
               { length: 5 - Math.floor(product.rating) },
               (_, index) => (
@@ -91,12 +92,12 @@ function ProductDetail({ product }) {
               )
             )}
           </div>
-          <div className="text-xs text-gray-500 ml-3">
+          <div className="product-detail-review">
             ({product.reviews.length} Reviews)
           </div>
         </div>
         <div className="space-y-2">
-          <p className="text-gray-800 font-semibold space-x-2">
+          <p className="product-detail-availablity">
             <span>Availability: </span>
             {product.availabilityStatus == "Low Stock" && (
               <span className="text-orange-600">
@@ -110,37 +111,35 @@ function ProductDetail({ product }) {
             )}
           </p>
           <p className="space-x-2">
-            <span className="text-gray-800 font-semibold">Brand: </span>
+            <span className="product-detail-mini-heads">Brand: </span>
             <span className="text-gray-600">{product.brand}</span>
           </p>
           <p className="space-x-2">
-            <span className="text-gray-800 font-semibold">Category: </span>
+            <span className="product-detail-mini-heads">Category: </span>
             <span className="text-gray-600">{product.category}</span>
           </p>
           <p className="space-x-2">
-            <span className="text-gray-800 font-semibold">SKU: </span>
+            <span className="product-detail-mini-heads">SKU: </span>
             <span className="text-gray-600">{product.sku}</span>
           </p>
         </div>
-        <div className="flex items-baseline mb-1 space-x-2 font-roboto mt-4">
-          <p className="text-xl text-primary font-semibold">
+        <div className="product-detail-price">
+          <p className="product-detail-price-real">${product.price}</p>
+          <p className="product-detail-price-discounted">
             $
             {(
               product.price -
               [(product.discountPercentage / 100) * product.price]
             ).toFixed(2)}
           </p>
-          <p className="text-base text-gray-400 line-through">
-            ${product.price}
-          </p>
         </div>
 
-        <p className="mt-4 text-gray-600">{product.description}</p>
+        <p className="product-detail-desc">{product.description}</p>
         <div className="mt-4">
-          <h3 className="text-sm text-gray-800 uppercase mb-1">Quantity</h3>
-          <div className="flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max">
+          <h3 className="product-detail-quantity-head">Quantity</h3>
+          <div className="product-detail-quantity-btn-div">
             <div
-              className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none"
+              className="product-detail-quantity-btn"
               onClick={() => {
                 if (productQuantity > 1) {
                   setProductQuantity(productQuantity - 1);
@@ -149,11 +148,9 @@ function ProductDetail({ product }) {
             >
               -
             </div>
-            <div className="h-8 w-8 text-base flex items-center justify-center">
-              {productQuantity}
-            </div>
+            <div className="product-detail-quantity">{productQuantity}</div>
             <div
-              className="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none"
+              className="product-detail-quantity-btn"
               onClick={() => {
                 if (productQuantity < product.stock) {
                   setProductQuantity(productQuantity + 1);
@@ -165,7 +162,7 @@ function ProductDetail({ product }) {
           </div>
         </div>
 
-        <div className="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
+        <div className="product-detail-action-div">
           <button
             onClick={() => {
               if (
@@ -178,7 +175,7 @@ function ProductDetail({ product }) {
                 router.push(`/login`);
               }
             }}
-            className="bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition"
+            className="product-detail-add-to-cart"
           >
             <FaShoppingBag /> Add to cart
           </button>
@@ -186,29 +183,20 @@ function ProductDetail({ product }) {
             onClick={() => {
               dispatch(addToWishList(product));
             }}
-            className="border border-gray-300 text-gray-600 px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition"
+            className="product-detail-wishlist"
           >
             <FaHeart /> Wishlist
           </button>
         </div>
 
-        <div className="flex gap-3 mt-4">
-          <Link
-            href="#"
-            className="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center"
-          >
+        <div className="product-detail-social-div">
+          <Link href="#" className="product-detail-social-link">
             <FaFacebook />
           </Link>
-          <Link
-            href="#"
-            className="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center"
-          >
+          <Link href="#" className="product-detail-social-link">
             <FaTwitter />
           </Link>
-          <Link
-            href="#"
-            className="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center"
-          >
+          <Link href="#" className="product-detail-social-link">
             <FaInstagram />
           </Link>
         </div>

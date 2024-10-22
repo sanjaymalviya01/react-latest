@@ -41,7 +41,6 @@ export const userSlice = createSlice({
         },
         addToWishList: (state, action) => {
             const obj = state.loggedInUser
-            // const Product = action.payload
             const cartProduct = obj.cart.find((product) => product.id === action.payload.id)
             if (Object.keys(obj).length !== 0) {
 
@@ -51,13 +50,11 @@ export const userSlice = createSlice({
                     state.loggedInUser.wishlist.push(newProduct)
                 } else {
                     if (state.loggedInUser.wishlist == undefined || state.loggedInUser.wishlist.length == 0) {
-                        // state.loggedInUser['wishlist'] = [action.payload]
                         const newProduct = Object.assign({}, action.payload)
                         state.loggedInUser['wishlist'] = [newProduct]
                     }
                     const existingProduct = obj.wishlist.find((product) => product.id === action.payload.id)
                     if (existingProduct == undefined || existingProduct.id != action.payload.id) {
-                        // state.loggedInUser.wishlist.push(action.payload)
                         const newProduct = Object.assign({}, action.payload)
                         state.loggedInUser.wishlist.push(newProduct)
                     }
@@ -68,10 +65,10 @@ export const userSlice = createSlice({
             state.loggedInUser.wishlist = state.loggedInUser.wishlist.filter((product) => product.id !== action.payload.id)
         },
         addToCart: (state, action) => {
+            debugger
             if (Object.keys(state.loggedInUser).length !== 0 && action.payload.stock > 0) {
                 const existingProduct = state.loggedInUser.cart.find((product) => product.id === action.payload.id)
                 let wishlistProduct = state.loggedInUser.wishlist.find((product) => product.id === action.payload.id)
-                // debugger
                 if (existingProduct == undefined) {
                     const newProduct = Object.assign({}, action.payload, { quantity: 1, stock: action.payload.stock - 1 })
                     state.loggedInUser.cart.push(newProduct)
@@ -79,15 +76,11 @@ export const userSlice = createSlice({
                     if (existingProduct.stock > 0) {
                         existingProduct.quantity = existingProduct.quantity + 1
                         existingProduct.stock = existingProduct.stock - 1
-                    } else {
-                        existingProduct.quantity = existingProduct.stock
-                        existingProduct.stock = 0
                     }
                 }
                 if (wishlistProduct != undefined) {
                     const cartProduct = state.loggedInUser.cart.find((product) => product.id === action.payload.id)
                     wishlistProduct.stock = cartProduct.stock
-                    // wishlistProduct.stock = wishlistProduct.stock - cartProduct.quantity
                 }
             }
         },

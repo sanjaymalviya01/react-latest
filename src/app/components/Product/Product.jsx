@@ -4,14 +4,14 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { GiMagnifyingGlass } from "react-icons/gi";
 import { FaHeart, FaStar } from "react-icons/fa";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/userSlice";
+import "./style.css";
 
 const Product = ({ data }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [RecomndedProduct, setRecomndedProduct] = useState();
   useEffect(() => {
     setRecomndedProduct(data);
@@ -19,19 +19,20 @@ const Product = ({ data }) => {
   return (
     <>
       {RecomndedProduct && (
-        <div className="container pb-16" key={`RecomndedProduct-heading`}>
-          <h2 className="text-2xl font-medium text-gray-800 uppercase mb-6">
-            recomended for you
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="recomnded-product" key={`RecomndedProduct-heading`}>
+          <h2 className="heading">recomended for you</h2>
+          <div className="recomnded-product-grid">
             {RecomndedProduct.map((product, index) => (
               <div
                 // key={`RecomndedProduct-${product.id}`}
                 key={product.sku}
-                className="bg-white shadow rounded overflow-hidden group"
+                className="product-div group"
               >
                 <div className="relative">
-                  <div style={{ height: "200px" }}>
+                  <div
+                    className="img"
+                    // style={{ height: "200px" }}
+                  >
                     <Image
                       fill={true}
                       src={product.images[0]}
@@ -39,59 +40,44 @@ const Product = ({ data }) => {
                       className="w-full"
                     />
                   </div>
-                  <div
-                    className="absolute inset-0 bg-black bg-opacity-40 flex items-center 
-                    justify-center gap-2 opacity-0 group-hover:opacity-100 transition"
-                  >
+                  <div className="link-div group-hover:opacity-100">
                     <Link
                       href="#"
-                      className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
+                      className="product-link"
                       title="view product"
                     >
                       <GiMagnifyingGlass />
                     </Link>
                     <Link
                       href="#"
-                      className="text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition"
+                      className="product-link"
                       title="add to wishlist"
                     >
                       <FaHeart />
                     </Link>
                   </div>
                 </div>
-                <div className="pt-4 pb-3 px-4">
+                <div className="product-details">
                   <Link
                     href={{
                       pathname: "/product",
                       query: { productId: product.id },
                     }}
                   >
-                    <h4
-                      className=" product-title uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition"
-                      style={{
-                        height: "22px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {product.title}
-                    </h4>
+                    <h4 className="product-title">{product.title}</h4>
                   </Link>
-                  <div className="flex items-baseline mb-1 space-x-2">
-                    <p className="text-xl text-primary font-semibold">
-                      ${product.price}
-                    </p>
-                    <p className="text-sm text-gray-400 line-through">
+                  <div className="product-price">
+                    <p className="product-discounted-price">
                       $
                       {(
                         product.price -
                         [(product.discountPercentage / 100) * product.price]
                       ).toFixed(2)}
                     </p>
+                    <p className="product-real-price">${product.price}</p>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <div className="flex gap-1 text-sm text-primary">
+                  <div className="rating">
+                    <div className="rated">
                       {Array.from({ length: product.rating }, (_, index) => (
                         <>
                           <span>
@@ -100,7 +86,7 @@ const Product = ({ data }) => {
                         </>
                       ))}
                     </div>
-                    <div className="flex gap-1 text-sm text-slate-400">
+                    <div className="unrated">
                       {Array.from(
                         { length: 5 - Math.floor(product.rating) },
                         (_, index) => (
@@ -112,7 +98,7 @@ const Product = ({ data }) => {
                         )
                       )}
                     </div>
-                    <div className="text-xs text-gray-500 ml-3">
+                    <div className="reviews">
                       ({product.reviews.length} reviews)
                     </div>
                   </div>
@@ -130,7 +116,7 @@ const Product = ({ data }) => {
                       router.push(`/login`);
                     }
                   }}
-                  className="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition"
+                  className="add-to-cart"
                 >
                   Add to cart
                 </button>

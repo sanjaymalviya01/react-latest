@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import banner from "@/app/assets/images/banner-bg.jpg";
 import Link from "next/link";
+import "./Style.css";
 
 const Banner = () => {
   const [token, settoken] = useState(false);
@@ -12,11 +13,11 @@ const Banner = () => {
   }, []);
   return (
     <div
-      className="bg-cover bg-no-repeat bg-center py-36"
+      className="banner-image"
       style={{ backgroundImage: `url(${banner.src})` }}
     >
       <div className="container">
-        <h1 className="text-6xl text-gray-800 font-medium mb-4 capitalize">
+        <h1 className="heading">
           best collection for <br /> home decoration
         </h1>
         <p>
@@ -27,21 +28,13 @@ const Banner = () => {
         </p>
         {!token ? (
           <div className="mt-12">
-            <Link
-              href="/login"
-              className="bg-primary border border-primary text-white px-8 py-3 font-medium 
-                    rounded-md hover:bg-transparent hover:text-primary"
-            >
+            <Link href="/login" className="shopping-btn">
               Login & Start Shopping
             </Link>
           </div>
         ) : (
           <div className="mt-12">
-            <Link
-              href="/shop"
-              className="bg-primary border border-primary text-white px-8 py-3 font-medium 
-                    rounded-md hover:bg-transparent hover:text-primary"
-            >
+            <Link href="/shop" className="shopping-btn">
               Let's Start Shopping
             </Link>
           </div>

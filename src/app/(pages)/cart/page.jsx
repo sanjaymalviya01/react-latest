@@ -1,6 +1,6 @@
 "use client";
 import BreadCrumb from "@/app/components/Breadcrumb/Breadcrumb";
-import AcountWrapper from "@/app/components/Wrapper/AcountWrapper";
+import AcountWrapper from "@/app/components/Wrapper/AcountWrapper/AcountWrapper";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

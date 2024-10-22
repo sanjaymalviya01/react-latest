@@ -3,25 +3,29 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { GiMagnifyingGlass } from "react-icons/gi";
 import debounce from "lodash.debounce";
+import "./style.css";
 const Search = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [query, setQuery] = useState("");
-  useEffect(() => {
+
+  const updateQuery = (e) => setQuery(e?.target?.value);
+
+  const debouncedOnChange = debounce(updateQuery, 2000);
+  const queryFunction = () => {
     if (query) {
       router.push(`/shop?search=${query}`);
     } else {
       router.push(`${pathname}`);
     }
+  };
+  useEffect(() => {
+    queryFunction();
   }, [query]);
 
-  const updateQuery = (e) => setQuery(e?.target?.value);
-
-  const debouncedOnChange = debounce(updateQuery, 2000);
-
   return (
-    <div className="w-full max-w-xl relative flex">
-      <span className="absolute left-4 top-4 text-lg text-gray-400">
+    <div className="search-main">
+      <span className="search-magnifying-glass">
         <GiMagnifyingGlass />
       </span>
       <input
@@ -29,8 +33,7 @@ const Search = () => {
         name="search"
         onChange={debouncedOnChange}
         id="search"
-        className="w-full border border-primary
-         pl-12 py-3 pr-3 rounded focus:outline-none"
+        className="w-full border border-primary pl-12 py-3 pr-3 rounded focus:outline-none"
         placeholder="Search your Products here"
       />
     </div>

@@ -1,0 +1,67 @@
+.listview-grid {
+    @apply grid md:grid-cols-1 grid-cols-1 gap-6 shadow rounded
+}
+
+.listview-product-div {
+    @apply flex items-center justify-between border gap-6 p-4 border-gray-200 rounded
+}
+
+.listview-product-img-div {
+    @apply w-28 h-24 relative
+}
+
+.listview-product-brand {
+    @apply text-xs text-gray-400 font-semibold
+}
+
+.listview-product-title {
+    @apply text-gray-800 text-xl font-medium uppercase
+}
+
+.listview-product-sku-div {
+    @apply flex justify-between flex-col
+}
+
+.listview-product-sku {
+    @apply text-xs text-gray-400 font-semibold
+}
+
+.listview-product-star {
+    @apply flex flex-col
+}
+
+.listview-product-star-center {
+    @apply flex items-center
+}
+
+.listview-product-star-gap {
+    @apply flex gap-1
+}
+
+.listview-product-star-primary {
+    @apply flex gap-1 text-sm text-primary
+}
+
+.listview-product-star-slate {
+    @apply flex gap-1 text-sm text-slate-400
+}
+
+.listview-product-rating {
+    @apply text-xs text-gray-500 ml-3
+}
+
+.listview-product-percent-off {
+    @apply text-xs text-gray-400 font-semibold
+}
+
+.listview-product-real-price {
+    @apply text-xs text-gray-400 font-semibold
+}
+
+.listview-product-discounted-price {
+    @apply text-primary text-lg font-semibold
+}
+
+.listview-product-add-to-cart {
+    @apply whitespace-nowrap px-6 py-2 text-center text-sm text-primary border border-primary rounded hover:text-white hover:bg-primary active:bg-white transition uppercase font-medium
+}

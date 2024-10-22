@@ -1,0 +1,44 @@
+.footer-main {
+    @apply bg-white pt-16 border-t border-gray-100
+}
+
+.footer-grid {
+    @apply container grid grid-cols-1
+}
+
+.footer-logo-div {
+    @apply col-span-1 space-y-4
+}
+
+.footer-logo-para {
+    @apply text-gray-500
+}
+
+.footer-social-div {
+    @apply flex space-x-5
+}
+
+.footer-social-link {
+    @apply text-gray-400 hover:text-gray-500
+}
+
+.footerlinks-main {
+    @apply col-span-2 grid grid-cols-2 gap-4
+}
+
+.footerlinks-grid {
+    @apply grid grid-cols-2 gap-8
+}
+
+
+.footerlinks-head {
+    @apply text-sm font-semibold text-gray-400 uppercase tracking-wider
+}
+
+.footerlinks-link-div {
+    @apply mt-4 space-y-4
+}
+
+.footerlinks-link {
+    @apply text-base text-gray-500 hover:text-gray-900 block
+}

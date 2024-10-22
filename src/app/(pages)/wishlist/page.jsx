@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import AcountWrapper from "../../components/Wrapper/AcountWrapper";
+import AcountWrapper from "../../components/Wrapper/AcountWrapper/AcountWrapper";
 import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
 import { useRouter, useSearchParams } from "next/navigation";
 import { checkData } from "../login/actions";
@@ -10,7 +10,7 @@ import { onUerLogOut } from "@/redux/userSlice";
 function page() {
   const [loggedInUser, setLoggedInUser] = useState(true);
   const router = useRouter();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     // const request1 = checkData(token);

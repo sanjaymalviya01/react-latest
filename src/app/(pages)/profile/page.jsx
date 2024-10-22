@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
-import AcountWrapper from "../../components/Wrapper/AcountWrapper";
+import AcountWrapper from "../../components/Wrapper/AcountWrapper/AcountWrapper";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";

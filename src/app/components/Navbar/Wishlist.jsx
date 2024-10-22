@@ -1,35 +1,27 @@
 "use client";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { CiHeart, CiShoppingCart } from "react-icons/ci";
 import { PiGear } from "react-icons/pi";
 import { MdLogout } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { ImProfile } from "react-icons/im";
 import { FaUserAlt } from "react-icons/fa";
-import { onUerLogOut } from "@/redux/userSlice";
-import debounce from "lodash.debounce";
 
 const Wishlist = ({}) => {
-  const searchParams = useSearchParams();
   const [wishlistCount, setwishlistCount] = useState(0);
   const [moreMenu, setMoreMenu] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [token, setToken] = useState("");
   const router = useRouter();
-  const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.userReducer.loggedInUser);
+  const sessionStorageToken = sessionStorage.getItem("token");
   useEffect(() => {
-    debounce(() => {
-      if (!sessionStorage.getItem("token")) {
-        // router.push("/login");
-        router.push("/login");
-      } else {
-        setToken(sessionStorage.getItem("token"));
-      }
-    }, 2000);
-  }, [sessionStorage.getItem("token")]);
+    if (sessionStorageToken) {
+      setToken(sessionStorageToken);
+    }
+  }, [sessionStorageToken]);
 
   useEffect(() => {
     if (loggedInUser.wishlist != undefined) {
@@ -44,126 +36,76 @@ const Wishlist = ({}) => {
     }
   }, [loggedInUser]);
   return (
-    <>
-      <div className="flex items-stretch space-x-4">
-        <Link
-          href={`/wishlist`}
-          className="text-center text-gray-700 hover:text-primary transition relative"
-        >
-          <div className="text-2xl flex items-center justify-center">
-            <CiHeart className="text-white" />
+    <div className="nav-wishlist">
+      <Link href={`/wishlist`} className="nav-wishlist-link">
+        <div className="nav-wishlist-link-icon">
+          <CiHeart />
+        </div>
+        <div className="nav-wishlist-link-name">Wishlist</div>
+        {wishlistCount != 0 && (
+          <div className="nav-wishlist-link-wishlist-count">
+            {wishlistCount}
           </div>
-          <div className="text-white text-xs leading-3">Wishlist</div>
-          {wishlistCount != 0 && (
-            <div className="absolute right-0 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
-              {wishlistCount}
+        )}
+      </Link>
+      <Link href={`/cart`} className="nav-wishlist-link">
+        <div className="nav-wishlist-link-icon">
+          <CiShoppingCart />
+        </div>
+        <div className="nav-wishlist-link-name">Cart</div>
+        {cartCount != 0 && (
+          <div className="nav-wishlist-link-cart-count">{cartCount}</div>
+        )}
+      </Link>
+      <div className="nav-wishlist-morebtn">
+        <div>
+          <Link
+            href="#"
+            className="nav-wishlist-link"
+            onClick={() => {
+              moreMenu == false ? setMoreMenu(true) : setMoreMenu(false);
+            }}
+          >
+            <div className="nav-wishlist-link-icon">
+              <PiGear />
             </div>
-          )}
-        </Link>
-        <Link
-          href={`/cart`}
-          className="text-center text-gray-700 hover:text-primary transition relative"
-        >
-          <div className="text-2xl flex items-center justify-center">
-            <CiShoppingCart className="text-white" />
-          </div>
-          <div className="text-xs leading-3 text-white">Cart</div>
-          {cartCount != 0 && (
-            <div className="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
-              {cartCount}
-            </div>
-          )}
-        </Link>
-        <div className="relative inline-block text-left">
-          <div>
-            <Link
-              href="#"
-              type="button"
-              className="text-center text-gray-700 hover:text-primary transition relative"
-              id="menu-button"
-              aria-expanded="true"
-              aria-haspopup="true"
+            <div className="nav-wishlist-link-name">More</div>
+          </Link>
+          {moreMenu && (
+            <div
+              className="nav-wishlist-moremenu"
               onClick={() => {
-                moreMenu == false ? setMoreMenu(true) : setMoreMenu(false);
+                setMoreMenu(false);
               }}
             >
-              <div className="text-2xl">
-                <PiGear className="text-white" />
+              <div className="py-1" role="none">
+                <Link href={`/account`} className="nav-wishlist-moremenu-link">
+                  <FaUserAlt className="text-gray-700" />
+                  Account
+                </Link>
+                <Link
+                  href={`/profile?token=${token}`}
+                  className="nav-wishlist-moremenu-link"
+                >
+                  <ImProfile className="text-gray-700" />
+                  Profile
+                </Link>
+                <button
+                  className="nav-wishlist-moremenu-link"
+                  onClick={() => {
+                    sessionStorage.removeItem("token");
+                    router.push("/login");
+                  }}
+                >
+                  <MdLogout className="text-gray-700" />
+                  Log Out
+                </button>
               </div>
-              <div className="text-xs leading-3 text-white">More</div>
-            </Link>
-            {moreMenu && (
-              <div
-                className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="menu-button"
-                tabIndex="-1"
-                onClick={() => {
-                  setMoreMenu(false);
-                }}
-              >
-                <div className="py-1" role="none">
-                  <Link
-                    href={`/account`}
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    tabIndex="-1"
-                    id="menu-item-0"
-                    style={{
-                      display: "flex",
-                      gap: "5px",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <FaUserAlt className="text-gray-700" />
-                    Account
-                  </Link>
-                  <Link
-                    href={`/profile?token=${token}`}
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    tabIndex="-1"
-                    id="menu-item-0"
-                    style={{
-                      display: "flex",
-                      gap: "5px",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <ImProfile className="text-gray-700" />
-                    Profile
-                  </Link>
-                  <button
-                    // href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                    tabIndex="-1"
-                    id="menu-item-0"
-                    style={{
-                      display: "flex",
-                      gap: "5px",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                    }}
-                    onClick={() => {
-                      // sessionStorage.setItem("token", "");
-                      sessionStorage.removeItem("token");
-                      router.push("/login");
-                    }}
-                  >
-                    <MdLogout className="text-gray-700" />
-                    Log Out
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

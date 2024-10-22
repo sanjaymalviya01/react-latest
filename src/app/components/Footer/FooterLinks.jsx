@@ -3,120 +3,70 @@ import React from "react";
 
 const FooterLinks = () => {
   return (
-    <div className="col-span-2 grid grid-cols-2 gap-4">
-      <div className="grid grid-cols-2 gap-4 md:gap-8">
+    <div className="footerlinks-main">
+      <div className="footerlinks-grid">
         <div>
-          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-            Solutions
-          </h3>
-          <div className="mt-4 space-y-4">
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+          <h3 className="footerlinks-head">Solutions</h3>
+          <div className="footerlinks-link-div">
+            <Link href="#" className="footerlinks-link">
               Marketing
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               Analitycs
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               Commerce
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               Insights
             </Link>
           </div>
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-            Support
-          </h3>
-          <div className="mt-4 space-y-4">
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+          <h3 className="footerlinks-head">Support</h3>
+          <div className="footerlinks-link-div">
+            <Link href="#" className="footerlinks-link">
               Pricing
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               Guides
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               API Status
             </Link>
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-8">
+      <div className="footerlinks-grid">
         <div>
-          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-            Solutions
-          </h3>
-          <div className="mt-4 space-y-4">
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+          <h3 className="footerlinks-head">Solutions</h3>
+          <div className="footerlinks-link-div">
+            <Link href="#" className="footerlinks-link">
               Marketing
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               Analitycs
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               Commerce
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               Insights
             </Link>
           </div>
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-            Support
-          </h3>
-          <div className="mt-4 space-y-4">
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+          <h3 className="footerlinks-head">Support</h3>
+          <div className="footerlinks-link-div">
+            <Link href="#" className="footerlinks-link">
               Pricing
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               Guides
             </Link>
-            <Link
-              href="#"
-              className="text-base text-gray-500 hover:text-gray-900 block"
-            >
+            <Link href="#" className="footerlinks-link">
               API Status
             </Link>
           </div>

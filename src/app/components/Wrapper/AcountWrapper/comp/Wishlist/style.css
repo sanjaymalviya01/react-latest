@@ -1,0 +1,43 @@
+.wishlist-col {
+    @apply col-span-9 space-y-4
+}
+
+.no-data {
+    @apply grid place-content-center
+}
+
+.product-div {
+    @apply flex items-center justify-between border gap-6 p-4 border-gray-200 rounded
+}
+
+.img-div {
+    @apply w-28 h-24 relative
+}
+
+.product-title {
+    @apply text-gray-800 text-xl font-medium uppercase
+}
+
+.product-fields {
+    @apply text-gray-500 text-sm
+}
+
+.product-price {
+    @apply text-primary text-lg font-semibold
+}
+
+.add-to-cart {
+    @apply whitespace-nowrap px-6 py-2 text-center text-sm border rounded transition uppercase font-medium
+}
+
+.enabled-add-to-cart {
+    @apply text-primary border-primary hover:text-white hover:bg-primary active:bg-white
+}
+
+.disabled-add-to-cart {
+    @apply text-gray-300 border-gray-300
+}
+
+.remove-btn {
+    @apply text-gray-600 cursor-pointer hover:text-primary p-2 active:bg-primary active:text-white
+}

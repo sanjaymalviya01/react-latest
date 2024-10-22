@@ -31,7 +31,7 @@ export const fetchRecomndedProduct = async () => {
     const data = await response.json();
     return data.products;
   } catch (error) {
-    //console.error("Error fetching products:", error);
+    console.error("Error fetching products:", error);
   }
 };
 export const fetchProductCotegories = async () => {
@@ -40,6 +40,6 @@ export const fetchProductCotegories = async () => {
     const data = await response.json();
     return data;
   } catch (error) {
-    //console.error("Error fetching products:", error);
+    console.error("Error fetching products:", error);
   }
 };

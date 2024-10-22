@@ -4,10 +4,11 @@ import Image from "next/image";
 import logo from "@/app/assets/images/logo.svg";
 import Link from "next/link";
 import Search from "./Search";
+import "./style.css";
 function Header() {
   return (
-    <header className="py-4 shadow-sm bg-white">
-      <div className="container flex items-center justify-between">
+    <header className="header-main">
+      <div className="header-logo-div">
         <Link href="/">
           <Image src={logo} alt="Logo" className="w-32" />
         </Link>
