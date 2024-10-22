@@ -1,0 +1,43 @@
+.side-nav-grid {
+    @apply container grid grid-cols-12 items-start gap-6 pt-4 pb-16
+}
+
+.user-info {
+    @apply px-4 py-3 shadow flex items-center gap-4
+}
+
+.user-img-div {
+    @apply flex-shrink-0
+}
+
+.user-img {
+    @apply rounded-full w-14 h-14 border border-gray-200 p-1 object-cover
+}
+
+.greet-text {
+    @apply text-gray-600
+}
+
+.user-full-name {
+    @apply text-gray-800 font-medium
+}
+
+.side-nav-options {
+    @apply mt-6 bg-white shadow rounded p-4 divide-y divide-gray-200 space-y-4 text-gray-600
+}
+
+.wrapper-link-div {
+    @apply space-y-1 pl-8
+}
+
+.wrapper-link {
+    @apply relative hover:text-primary block capitalize transition
+}
+
+.active-wrapper-link {
+    @apply text-primary
+}
+
+.wrapper-link-icon {
+    @apply absolute -left-8 top-0 text-base
+}

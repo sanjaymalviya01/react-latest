@@ -1,0 +1,59 @@
+.no-data {
+    @apply grid place-content-center
+}
+
+.cart-col {
+    @apply col-span-9 flex
+}
+
+.product-div {
+    @apply flex mb-4 items-center justify-between border gap-6 p-4 border-gray-200 rounded hover:bg-gray-200
+}
+
+.img-div {
+    @apply w-28 h-24 relative
+}
+
+.product-title {
+    @apply text-gray-800 text-xl font-medium uppercase overflow-hidden text-wrap w-80 h-8 whitespace-nowrap text-ellipsis
+}
+
+.product-fields-div {
+    @apply flex justify-between
+}
+
+.product-fields {
+    @apply text-gray-500 text-sm
+}
+
+.price-div {
+    @apply text-primary text-2xl font-semibold flex items-baseline
+}
+
+.real-price {
+    @apply text-xs text-gray-400 font-normal mr-2
+}
+
+.btn-div {
+    @apply flex justify-around mt-2
+}
+
+.quantity-div {
+    @apply flex items-center content-center
+}
+
+.quantity-btn-wrapper {
+    @apply flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max
+}
+
+.quantity-btn {
+    @apply h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none active:bg-primary
+}
+
+.quantity-val {
+    @apply h-8 w-8 text-base flex items-center justify-center
+}
+
+.remove-btn {
+    @apply px-3 py-1 text-center text-sm text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary active:bg-primary transition uppercase font-medium
+}

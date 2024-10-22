@@ -1,0 +1,19 @@
+.price-details {
+    @apply border flex flex-col ml-6 w-80 items-center
+}
+
+.heading {
+    @apply text-gray-800 text-xl my-4 font-medium uppercase
+}
+
+.price-details-col {
+    @apply flex justify-between gap-10 my-2
+}
+
+.will-save {
+    @apply text-primary text-sm
+}
+
+.order-btn {
+    @apply m-4 px-6 py-2 text-center text-sm text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-medium
+}
