@@ -1,0 +1,15 @@
+.bread-crumb {
+    @apply container py-4 flex items-center gap-3 border
+}
+
+.bread-crumb-icon {
+    @apply text-primary text-base
+}
+
+.bread-crumb-right-icon {
+    @apply text-sm text-gray-400
+}
+
+.bread-crumb-pathname {
+    @apply text-gray-600 font-medium
+}

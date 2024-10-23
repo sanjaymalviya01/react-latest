@@ -1,0 +1,83 @@
+.navbar-main {
+    @apply bg-gray-800
+}
+
+.navbar-main-div {
+    @apply container flex
+}
+
+.navbar-dropdown-div {
+    @apply px-8 py-4 bg-primary md:flex items-center cursor-pointer relative hidden
+}
+
+.navbar-dropdown-span {
+    @apply text-white
+}
+
+.navbar-menu-div {
+    @apply flex items-center justify-between flex-grow md:pl-12 py-5
+}
+
+.nav-dropdown-main {
+    @apply absolute max-h-60 overflow-auto left-0 top-full bg-white shadow-md py-3 divide-y divide-gray-300 divide-dashed opacity-0 transition duration-300 invisible
+}
+
+.nav-category-link {
+    @apply flex items-center px-6 py-3 hover:bg-gray-100 transition
+}
+
+.nav-category-name {
+    @apply ml-6 text-gray-600 text-sm
+}
+
+.nav-category-img {
+    @apply w-5 h-5 object-contain
+}
+
+.nav-navmenu {
+    @apply flex items-center space-x-6 capitalize
+}
+
+.nav-navmenu-link {
+    @apply text-gray-200 hover:text-white transition
+}
+
+.nav-wishlist {
+    @apply flex items-stretch space-x-4
+}
+
+.nav-wishlist-link {
+    @apply text-center text-gray-700 hover:text-primary transition relative
+}
+
+.nav-wishlist-link-icon {
+    @apply text-2xl flex items-center justify-center text-white
+}
+
+.nav-wishlist-link-name {
+    @apply text-white text-xs leading-3
+}
+
+.nav-wishlist-link-wishlist-count {
+    @apply absolute right-0 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs
+}
+
+.nav-wishlist-link-cart-count {
+    @apply absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs
+}
+
+.nav-wishlist-morebtn {
+    @apply relative inline-block text-left
+}
+
+.nav-wishlist-moremenu {
+    @apply absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none
+}
+
+.nav-wishlist-moremenu-link {
+    @apply flex gap-2 items-center justify-start px-4 py-2 text-sm text-gray-700
+}
+
+.nav-login-reg {
+    @apply text-gray-200 hover:text-white transition
+}

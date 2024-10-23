@@ -1,0 +1,14 @@
+/* @layer components { */
+.banner-image {
+    @apply bg-cover bg-no-repeat bg-center py-36;
+}
+
+.heading {
+    @apply text-6xl text-gray-800 font-medium mb-4 capitalize
+}
+
+.shopping-btn {
+    @apply bg-primary border border-primary text-white px-8 py-3 font-medium rounded-md hover:bg-transparent hover:text-primary active:bg-primary
+}
+
+/* } */

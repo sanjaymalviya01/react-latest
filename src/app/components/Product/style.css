@@ -1,0 +1,71 @@
+.recomnded-product {
+    @apply container pb-16
+}
+
+.recomnded-product-heading {
+    @apply text-2xl font-medium text-gray-800 uppercase mb-6
+}
+
+.recomnded-product-grid {
+    @apply grid grid-cols-1 md:grid-cols-4 gap-6
+}
+
+.recomnded-product-div {
+    @apply bg-white shadow rounded overflow-hidden
+}
+
+.recomnded-product-img {
+    @apply h-52 relative
+}
+
+.recomnded-product-img img {
+    @apply relative
+}
+
+.recomnded-product-link-div {
+    @apply absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center gap-2 opacity-0 transition
+}
+
+.recomnded-product-link {
+    @apply text-white text-lg w-9 h-8 rounded-full bg-primary flex items-center justify-center hover:bg-gray-800 transition
+}
+
+.recomnded-product-details {
+    @apply pt-4 pb-3 px-4
+}
+
+.recomnded-product-title {
+    @apply uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition h-6 whitespace-nowrap overflow-hidden text-ellipsis
+}
+
+.recomnded-product-price {
+    @apply flex items-baseline mb-1 space-x-2
+}
+
+.recomnded-product-discounted-price {
+    @apply text-xl text-primary font-semibold
+}
+
+.recomnded-product-real-price {
+    @apply text-sm text-gray-400 line-through
+}
+
+.recomnded-product-rating {
+    @apply flex items-center gap-1
+}
+
+.recomnded-product-rated {
+    @apply flex gap-1 text-sm text-primary
+}
+
+.recomnded-product-unrated {
+    @apply flex gap-1 text-sm text-slate-400
+}
+
+.recomnded-product-reviews {
+    @apply text-xs text-gray-500 ml-3
+}
+
+.recomnded-product-add-to-cart {
+    @apply block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition
+}

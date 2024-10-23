@@ -1,0 +1,11 @@
+.copyright-main {
+    @apply bg-gray-800 py-4 container flex items-center justify-between
+}
+
+.copyright-img-div {
+    @apply flex items-end
+}
+
+.copyright-img {
+    @apply h-5 w-auto
+}

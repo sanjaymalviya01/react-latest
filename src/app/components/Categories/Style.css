@@ -1,0 +1,21 @@
+.shop-by-category-container {
+    @apply py-16 px-20
+}
+
+.shop-by-category {
+    @apply text-2xl font-medium text-gray-800 uppercase mb-6
+}
+
+.home-category-container {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-6
+}
+
+.category-img-div {
+    @apply relative rounded-sm overflow-hidden h-52 relative
+}
+
+.category-img-div-link {
+    @apply absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-medium transition
+}
+
+/* @apply w-10/12 grid grid-cols-1 md:grid-cols-3 gap-6 mx-auto justify-center */

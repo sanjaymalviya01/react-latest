@@ -1,0 +1,19 @@
+.header-main {
+    @apply py-4 shadow-sm bg-white
+}
+
+.header-logo-div {
+    @apply container flex items-center justify-between
+}
+
+.search-main {
+    @apply w-full max-w-xl relative flex
+}
+
+.search-magnifying-glass {
+    @apply absolute left-4 top-4 text-lg text-gray-400
+}
+
+.search-input {
+    @apply w-full border border-primary pl-12 py-3 pr-3 rounded focus:outline-none
+}

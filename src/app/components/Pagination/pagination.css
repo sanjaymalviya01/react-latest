@@ -1,0 +1,92 @@
+.pagination-outerdiv {
+    @apply p-4 flex items-center justify-around select-none
+}
+
+.page-ul {
+    @apply inline-flex -space-x-px text-base h-10 border rounded-lg
+}
+
+.prev-btn {
+    @apply w-32 flex items-center justify-center px-4 h-10 ms-0 leading-tight border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
+}
+
+.page-btn {
+    @apply flex items-center justify-center px-4 h-10 leading-tight bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
+}
+
+.disable-btn {
+    @apply bg-white text-gray-500
+}
+
+.enable-btn {
+    @apply bg-primary text-white
+}
+
+.next-btn {
+    @apply w-32 flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white
+}
+
+.container {
+    padding: 0 2rem;
+}
+
+.pagination {
+    /* border: 0.1rem solid gray; */
+    /* border-radius: 20px; */
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    list-style: none;
+}
+
+.pageLink {
+    cursor: pointer;
+}
+
+/* pagination pageItem */
+.pageItem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* width: 2rem;
+    height: 2rem; */
+    padding: 7px 15px;
+    border: 1px solid #eaeaea;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
+
+/* pagination page item when active */
+.pageItemActive {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* width: 2rem;
+    height: 2rem; */
+    padding: 7px 15px;
+    border: 1px solid #eaeaea;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background-color: #fd3d57;
+    /* #ff0044; */
+
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.buttonEnable {
+    background-color: #fd3d57;
+}
+
+.buttonDisable {
+    background-color: #eaeaea;
+    color: #8b8b8b;
+}

@@ -1,0 +1,123 @@
+.product-desc-main {
+    @apply container pb-16
+}
+
+.product-desc-head {
+    @apply border-b border-gray-200 text-gray-800 pb-3 font-medium
+}
+
+.product-desc-details {
+    @apply w-3/5 pt-6
+}
+
+.product-desc-table {
+    @apply table-auto border-collapse w-full text-left text-gray-600 text-sm mt-6
+}
+
+.product-desc-table-data {
+    @apply py-2 px-4 border border-gray-300
+}
+
+.product-desc-table-head {
+    @apply py-2 px-4 border border-gray-300 w-40 font-medium
+}
+
+.product-detail-grid {
+    @apply container grid grid-cols-2 gap-6
+}
+
+.product-detail-img-div {
+    @apply h-96 relative
+}
+
+.product-detail-more-img-div {
+    @apply grid grid-cols-5 gap-4 mt-4
+}
+
+.product-detail-more-img {
+    @apply h-24 relative
+}
+
+.product-detail-more-img img {
+    @apply w-full cursor-pointer border
+}
+
+.product-detail-title {
+    @apply text-3xl font-medium uppercase mb-2
+}
+
+.product-detail-star {
+    @apply flex items-center mb-4 gap-1
+}
+
+.product-detail-star-primary {
+    @apply flex gap-1 text-sm text-primary
+}
+
+.product-detail-star-slate {
+    @apply flex gap-1 text-sm text-slate-400
+}
+
+.product-detail-review {
+    @apply text-xs text-gray-500 ml-3
+}
+
+.product-detail-availablity {
+    @apply text-gray-800 font-semibold space-x-2
+}
+
+.product-detail-mini-heads {
+    @apply text-gray-800 font-semibold
+}
+
+.product-detail-price {
+    @apply flex items-baseline mb-1 space-x-2 mt-4
+}
+
+.product-detail-price-real {
+    @apply text-base text-gray-400 line-through
+}
+
+.product-detail-price-discounted {
+    @apply text-2xl text-primary font-semibold
+}
+
+.product-detail-desc {
+    @apply mt-4 text-gray-600
+}
+
+.product-detail-quantity-head {
+    @apply text-sm text-gray-800 uppercase mb-1
+}
+
+.product-detail-quantity-btn-div {
+    @apply flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max shadow-lg
+}
+
+.product-detail-quantity-btn {
+    @apply h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none
+}
+
+.product-detail-quantity {
+    @apply h-8 w-8 text-base flex items-center justify-center
+}
+
+.product-detail-action-div {
+    @apply mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5
+}
+
+.product-detail-add-to-cart {
+    @apply bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary active:bg-primary transition
+}
+
+.product-detail-wishlist {
+    @apply border border-gray-300 text-gray-600 px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition
+}
+
+.product-detail-social-div {
+    @apply flex gap-3 mt-4
+}
+
+.product-detail-social-link {
+    @apply text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center
+}
