@@ -3,30 +3,25 @@ import Image from "next/image";
 import sofa from "@/app/assets/images/icons/sofa.svg";
 import React, { useEffect, useState } from "react";
 import "./style.css";
+import { fetchProductCotegories } from "./fetchFile";
 
 const Dropdown = () => {
   const [categories, setCategories] = useState([]);
-  const fetchProductCotegories = async () => {
-    try {
-      const response = await fetch("https://dummyjson.com/products/categories");
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-  useEffect(async () => {
+  const fetch = async () => {
     const productCotegories = await fetchProductCotegories();
     if (productCotegories) {
       setCategories(productCotegories);
     }
+  };
+  useEffect(() => {
+    fetch();
   }, []);
 
   return (
     <div className="nav-dropdown-main group-hover:opacity-100 group-hover:visible">
-      {categories.map((category) => (
+      {categories.map((category, index) => (
         <Link
-          key={category.slug}
+          key={index}
           href={`/shop?category=${category.slug}`}
           className="nav-category-link"
         >

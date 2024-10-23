@@ -43,26 +43,24 @@ function OrderSummary() {
       </div>
       <hr />
       <div className="ordersummary-productdetails">
-        {cart.map((product) => (
-          <>
-            <div className="ordersummary-product">
-              <div>
-                <h5 className="ordersummary-product-titel">{product.title}</h5>
-              </div>
-              <p className="ordersummary-product-quantity">
-                ${product.price} X {product.quantity}
-              </p>
-              <p className="ordersummary-product-price">
-                $
-                {(
-                  (product.price -
-                    (product.discountPercentage / 100) * product.price) *
-                  product.quantity
-                ).toFixed(2)}
-              </p>
+        {cart.map((product, index) => (
+          <div key={index} className="ordersummary-product">
+            <div>
+              <h5 className="ordersummary-product-titel">{product.title}</h5>
             </div>
+            <p className="ordersummary-product-quantity">
+              ${product.price} X {product.quantity}
+            </p>
+            <p className="ordersummary-product-price">
+              $
+              {(
+                (product.price -
+                  (product.discountPercentage / 100) * product.price) *
+                product.quantity
+              ).toFixed(2)}
+            </p>
             <hr />
-          </>
+          </div>
         ))}
       </div>
       <div className="ordersummary-additional-rates">

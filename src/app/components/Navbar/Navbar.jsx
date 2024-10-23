@@ -16,18 +16,21 @@ const Navbar = () => {
   const [renderWishlist, setRenderWishlist] = useState(false);
   const searchParams = useSearchParams();
   const urlToken = searchParams.get("token");
+  const verifyOnAnyChange = async (token) => {
+    const request1 = await checkData(token);
+    Promise.all([request1]).then(([data1]) => {
+      if (data1.props.newData.message) {
+        setLoggedInUser(false);
+      } else {
+        setLoggedInUser(data1.props.newData);
+      }
+    });
+  };
   useEffect(() => {
     const token = sessionStorage.getItem("token") || urlToken;
     if (token) {
       setToken(token);
-      const request1 = checkData(token);
-      Promise.all([request1]).then(([data1]) => {
-        if (data1.props.newData.message) {
-          setLoggedInUser(false);
-        } else {
-          setLoggedInUser(data1.props.newData);
-        }
-      });
+      verifyOnAnyChange(token);
       setRenderWishlist(true);
     } else {
       setRenderWishlist(false);

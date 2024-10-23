@@ -11,7 +11,7 @@
 }
 
 .feature-container-img {
-    @apply w-12 h-12 object-contain
+    @apply w-auto h-auto object-contain
 }
 
 .feature-head {

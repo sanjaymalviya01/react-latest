@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import * as yup from "yup";
 import { navigate } from "./actions";
@@ -29,7 +29,6 @@ function Index() {
 
     try {
       await loginSchema.validate(newLogin, { abortEarly: false });
-      console.log("form is valid", newLogin);
       setErrors({});
     } catch (err) {
       const validationErrors = {};
@@ -37,19 +36,24 @@ function Index() {
         validationErrors[error.path] = error.message;
       });
       setErrors(validationErrors);
-      console.log("form is Invalid", validationErrors);
     }
   };
-
-  useEffect(() => {
+  const onChangeHandel = (e) => {
+    const targetId = e.target.id;
+    if (targetId == "username") {
+      setUsername(e.target.value);
+    }
+    if (targetId == "password") {
+      setPassword(e.target.value);
+    }
     handleSubmit();
-  }, [username, password]);
+  };
   return (
     <div className="py-16">
       <div className="login-main-div">
         <h2 className="login-heading">Login</h2>
         <p className="login-welcome">welcome back customer</p>
-        <form action={navigate} method="post" autoComplete="off">
+        <form action={navigate} autoComplete="off">
           <div className="space-y-2">
             <div>
               <label htmlFor="username" className="login-input-label">
@@ -59,8 +63,9 @@ function Index() {
                 type="text"
                 name="username"
                 id="username"
+                autoComplete="off"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={onChangeHandel}
                 className="login-input"
                 placeholder="Enter Your Username"
               />
@@ -76,8 +81,9 @@ function Index() {
                 type="password"
                 name="password"
                 id="password"
+                autoComplete="off"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={onChangeHandel}
                 className="login-input"
                 placeholder="*******"
               />

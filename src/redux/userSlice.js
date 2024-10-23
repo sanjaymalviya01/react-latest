@@ -86,8 +86,9 @@ export const userSlice = createSlice({
         },
         setCartQuantity: (state, action) => {
             const Product = state.loggedInUser.cart.find((product) => product.id === action.payload[0].id)
-            const stock = Product.stock + Product.quantity
+            let stock
             if (Product) {
+                stock = Product.stock + Product.quantity
                 Product.quantity = parseInt(action.payload[1])
                 Product.stock = stock - parseInt(action.payload[1])
             } else {
@@ -111,7 +112,6 @@ export const userSlice = createSlice({
 
         },
         onUerLogOut: (state, action) => {
-            // state.loggedInUser = {}
         }
     }
 })

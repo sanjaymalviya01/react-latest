@@ -1685,12 +1685,7 @@ function Form() {
       case "phoneNumber":
         const phoneNumberValidationSchema = Yup.object().shape({
           phoneNumber: Yup.string()
-            .matches(
-              /[0-9]{1,10}/,
-              // /^\+[1-9]{1}[0-9]{3,13}$/,
-              // /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
-              "Phone number is not valid"
-            )
+            .matches(/[0-9]{1,10}/, "Phone number is not valid")
             .min(
               10,
               "Phone Number should be 10 digit long.No special character allowed"
@@ -2199,10 +2194,10 @@ function Form() {
     }
     if (
       index === 0 &&
-      formData.firstName &&
-      formData.lastName &&
-      formData.phoneNumber &&
-      formData.email &&
+      formData.firstName.length !== 0 &&
+      formData.lastName.length !== 0 &&
+      formData.phoneNumber.length !== 0 &&
+      formData.email.length !== 0 &&
       Object.keys(errors).length === 0
     ) {
       setShowNext(true);
@@ -2259,7 +2254,7 @@ function Form() {
           <form className="checkoutform-main-form">
             <div className="checkoutform-main-form-grid">
               {forms[index].map((form, i) => (
-                <div key={form.label}>
+                <div key={i}>
                   <label
                     htmlFor={form.id}
                     className="checkoutform-main-form-grid-label"
@@ -2281,38 +2276,37 @@ function Form() {
                             }}
                           >
                             <div className="py-1" role="none">
-                              {selectCountryCodeOptions.map((option) => (
-                                <>
-                                  <Link
-                                    href=""
-                                    className="checkoutform-selectCountryCodeOptions"
-                                    role="menuitem"
+                              {selectCountryCodeOptions.map((option, index) => (
+                                <Link
+                                  key={index}
+                                  href=""
+                                  className="checkoutform-selectCountryCodeOptions"
+                                  role="menuitem"
+                                  title={option.dial_code}
+                                  onClick={(e) => {
+                                    setselectCountryCode(e.target.title);
+                                  }}
+                                >
+                                  <span
                                     title={option.dial_code}
-                                    onClick={(e) => {
-                                      setselectCountryCode(e.target.title);
-                                    }}
+                                    className=" text-right pr-4 w-16"
                                   >
-                                    <span
-                                      title={option.dial_code}
-                                      className=" text-right pr-4 w-16"
-                                    >
-                                      {option.dial_code}
-                                    </span>
-                                    <span
-                                      className="flex-1"
-                                      title={option.dial_code}
-                                    >
-                                      {option.name.split("(")[0]}
-                                    </span>
-                                  </Link>
-                                </>
+                                    {option.dial_code}
+                                  </span>
+                                  <span
+                                    className="flex-1"
+                                    title={option.dial_code}
+                                  >
+                                    {option.name.split("(")[0]}
+                                  </span>
+                                </Link>
                               ))}
                             </div>
                           </div>
                         )}
                         <Link
                           href=""
-                          class="checkoutform-selectCountryCode"
+                          className="checkoutform-selectCountryCode"
                           onClick={() => {
                             selectCountryCodeMenu === false
                               ? setselectCountryCodeMenu(true)
@@ -2327,6 +2321,7 @@ function Form() {
                       type={form.type}
                       id={form.id}
                       name={form.name}
+                      autoComplete="off"
                       placeholder={form.placeholder}
                       value={formData[form.name]}
                       checked={form.type === "checkbox" && formData[form.name]}
@@ -2369,18 +2364,18 @@ function Form() {
             </div>
             {index === 1 && (
               <>
-                <div class="checkoutform-shipping-div">
-                  <div class="checkoutform-shipping-border"></div>
-                  <span class="checkoutform-shipping">
+                <div className="checkoutform-shipping-div">
+                  <div className="checkoutform-shipping-border"></div>
+                  <span className="checkoutform-shipping">
                     Shipping Address details
                   </span>
-                  <div class="checkoutform-shipping-border"></div>
+                  <div className="checkoutform-shipping-border"></div>
                 </div>
 
                 <form className="checkoutform-shipping-form">
                   <div className="checkoutform-shipping-form-grid">
                     {shippingFormData.map((form, i) => (
-                      <div key={form.label}>
+                      <div key={i}>
                         <label
                           htmlFor={form.id}
                           className="checkoutform-shipping-form-label"
@@ -2391,6 +2386,7 @@ function Form() {
                           type={form.type}
                           id={form.id}
                           name={form.name}
+                          autoComplete="off"
                           placeholder={form.placeholder}
                           value={formData[form.id]}
                           onChange={onChangeHandler}
@@ -2411,17 +2407,17 @@ function Form() {
             )}
             {!cashondelivery && index === 2 && (
               <>
-                <div class="checkoutform-shipping-div">
-                  <div class="checkoutform-shipping-border"></div>
-                  <span class="checkoutform-shipping">
+                <div className="checkoutform-shipping-div">
+                  <div className="checkoutform-shipping-border"></div>
+                  <span className="checkoutform-shipping">
                     Debit or Credit Card details
                   </span>
-                  <div class="checkoutform-shipping-border"></div>
+                  <div className="checkoutform-shipping-border"></div>
                 </div>
                 <form className="checkoutform-shipping-form">
                   <div className="checkoutform-shipping-form-grid">
                     {paymentData.map((form, i) => (
-                      <div key={form.label}>
+                      <div key={i}>
                         <label
                           htmlFor={form.id}
                           className="checkoutform-shipping-form-label"
@@ -2432,6 +2428,7 @@ function Form() {
                           type={form.type}
                           id={form.id}
                           name={form.name}
+                          autoComplete="off"
                           placeholder={form.placeholder}
                           value={formData[form.id]}
                           onChange={onChangeHandler}
@@ -2587,18 +2584,18 @@ function Form() {
               </button>
             ) : (
               <>
-                {!showNext && Object.keys(errors).length !== 0 ? (
-                  <button className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-gray-400 bg-white border border-white rounded-md hover:bg-transparent hover:text-gray-300 transition font-medium">
-                    Next
-                  </button>
-                ) : (
+                {showNext && Object.keys(errors).length === 0 ? (
                   <button
                     className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-white bg-primary border border-primary rounded-md hover:bg-transparent hover:text-primary transition font-medium"
                     onClick={nextHandler}
                   >
                     Next
                   </button>
-                )}{" "}
+                ) : (
+                  <button className="mt-4 justify-self-start justify-end py-3 px-4 text-center text-gray-400 bg-white border border-white rounded-md hover:bg-transparent hover:text-gray-300 transition font-medium">
+                    Next
+                  </button>
+                )}
               </>
             )}
           </div>

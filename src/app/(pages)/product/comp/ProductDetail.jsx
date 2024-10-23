@@ -39,7 +39,7 @@ function ProductDetail({ product }) {
           <Image
             fill={true}
             sizes="(max-width: 768px)"
-            priority={false}
+            priority={true}
             src={product.images[imgIndex]}
             alt={product.title}
             className="w-full"
@@ -47,14 +47,11 @@ function ProductDetail({ product }) {
         </div>
         <div className="product-detail-more-img-div">
           {product.images.map((img, index) => (
-            <div
-              key={`optionalImage-${index}`}
-              className="product-detail-more-img"
-            >
+            <div key={index} className="product-detail-more-img">
               <Image
                 fill={true}
                 sizes="(max-width: 768px)"
-                priority={false}
+                priority={true}
                 src={img}
                 alt={product.title}
                 className="product-img"
@@ -72,22 +69,18 @@ function ProductDetail({ product }) {
         <div className="product-detail-star">
           <div className="product-detail-star-primary">
             {Array.from({ length: product.rating }, (_, index) => (
-              <>
-                <span>
-                  <FaStar />
-                </span>
-              </>
+              <span key={index}>
+                <FaStar />
+              </span>
             ))}
           </div>
           <div className="product-detail-star-slate">
             {Array.from(
               { length: 5 - Math.floor(product.rating) },
               (_, index) => (
-                <>
-                  <span>
-                    <FaStar />
-                  </span>
-                </>
+                <span key={index}>
+                  <FaStar />
+                </span>
               )
             )}
           </div>
@@ -165,7 +158,7 @@ function ProductDetail({ product }) {
           <button
             onClick={() => {
               if (
-                sessionStorage.getItem("token") !== null ||
+                sessionStorage.getItem("token") !== null &&
                 sessionStorage.getItem("token") !== ""
               ) {
                 dispatch(setCartQuantity([product, productQuantity]));

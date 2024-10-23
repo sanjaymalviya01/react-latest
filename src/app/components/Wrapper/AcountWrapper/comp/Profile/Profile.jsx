@@ -89,6 +89,7 @@ function Profile({ formData, setformData }) {
               type="email"
               name="email"
               id="email"
+              autoComplete="off"
               className="input-box"
               value={formData.email}
               onChange={(e) => {
@@ -105,6 +106,7 @@ function Profile({ formData, setformData }) {
               type="text"
               name="phone"
               id="phone"
+              autoComplete="off"
               value={formData.phone}
               onChange={(e) => {
                 setformData((prevData) => ({

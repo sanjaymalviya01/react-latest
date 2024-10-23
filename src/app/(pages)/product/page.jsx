@@ -2,10 +2,17 @@ import BreadCrumb from "../../components/Breadcrumb/Breadcrumb";
 import ProductDetail from "./comp/ProductDetail";
 import ProductDescription from "./comp/ProductDescription";
 import Product from "../../components/Product/Product";
+import { redirect } from "next/navigation";
 
 async function page({ searchParams }) {
   let productId = searchParams.productId;
-  let product = await productData(productId);
+  let product;
+  if (Object.keys(searchParams).length) {
+    product = await productData(productId);
+  } else {
+    redirect(`/shop`);
+  }
+  console.log(searchParams);
   return (
     <>
       {product && (

@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import page from '../profile/page';
 
 export async function navigate(data) {
+  console.log('data :', data)
   let username = '';
   for (let [key, value] of data.entries()) {
     if (key === 'username') {
@@ -46,7 +47,6 @@ export async function checkData(token) {
     credentials: "include",
   });
   const newData = await response.json();
-  // //console.log(newData)
   return <page newData={newData} />
 
 }

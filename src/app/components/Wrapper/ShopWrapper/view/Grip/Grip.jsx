@@ -18,14 +18,14 @@ function Grip({ paginatedProducts, user }) {
   return (
     <div className="grip-grid">
       {paginatedProducts.map((product, index) => (
-        <div key={`paginatedProducts-${index}`}>
+        <div key={index}>
           <div className="shop-product-div group">
             <div className="relative">
               <div className="shop-img-div">
                 <Image
                   fill={true}
                   sizes="(max-width: 768px)"
-                  priority={false}
+                  priority={true}
                   src={product.images[0]}
                   alt={product.title}
                   className="w-full"
@@ -44,11 +44,14 @@ function Grip({ paginatedProducts, user }) {
                     >
                       <GiMagnifyingGlass />
                     </Link>
-                    <label className="custom-wishlist-label" htmlFor="wishlist">
+                    <label
+                      className="custom-wishlist-label"
+                      htmlFor={`wishlist-${product.id}`}
+                    >
                       <input
                         type="checkbox"
                         name=""
-                        id="wishlist"
+                        id={`wishlist-${product.id}`}
                         checked={user.wishlist.find((item) =>
                           item.id === product.id ? true : false
                         )}
@@ -73,12 +76,7 @@ function Grip({ paginatedProducts, user }) {
                 <p className="brand">{product.brand}</p>
                 <p className="sku">sku-{product.sku}</p>
               </div>
-              <Link
-                href={{
-                  pathname: "/product",
-                  query: { productId: product.id },
-                }}
-              >
+              <Link href={`/product/${product.id}`}>
                 <h4 className="product-title">{product.title}</h4>
               </Link>
 
@@ -106,11 +104,9 @@ function Grip({ paginatedProducts, user }) {
                 <div className="stars-align">
                   <div className="star-primary">
                     {Array.from({ length: product.rating }, (_, index) => (
-                      <>
-                        <span>
-                          <FaStar />
-                        </span>
-                      </>
+                      <span key={index}>
+                        <FaStar />
+                      </span>
                     ))}
                   </div>
 
@@ -118,11 +114,9 @@ function Grip({ paginatedProducts, user }) {
                     {Array.from(
                       { length: 5 - Math.floor(product.rating) },
                       (_, index) => (
-                        <>
-                          <span>
-                            <FaStar />
-                          </span>
-                        </>
+                        <span key={index}>
+                          <FaStar />
+                        </span>
                       )
                     )}
                   </div>

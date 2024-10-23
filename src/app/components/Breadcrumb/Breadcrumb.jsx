@@ -26,9 +26,7 @@ const BreadCrumb = () => {
       <span className="bread-crumb-right-icon">
         <FaChevronRight />
       </span>
-      <p className="bread-crumb-pathname">
-        {pathname.replace("/", "")[0].toUpperCase() + pathname.slice(2)}
-      </p>
+      <p className="bread-crumb-pathname">{pathname}</p>
     </div>
   );
 };

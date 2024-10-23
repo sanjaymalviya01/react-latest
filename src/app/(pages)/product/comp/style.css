@@ -42,7 +42,7 @@
     @apply w-full cursor-pointer border
 }
 
-.product-desc-title {
+.product-detail-title {
     @apply text-3xl font-medium uppercase mb-2
 }
 

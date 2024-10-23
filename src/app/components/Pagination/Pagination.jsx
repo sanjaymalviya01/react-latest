@@ -45,9 +45,9 @@ function Pagination({ items, pageSize, currentPage, onPageChange }) {
               Previous
             </a>
           </li>
-          {visiblePages.map((page) => (
+          {visiblePages.map((page, index) => (
             <li
-              key={page}
+              key={index}
               className={
                 page === currentPage ? "text-primary" : "text-gray-500"
               }

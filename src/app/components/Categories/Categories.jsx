@@ -7,11 +7,11 @@ import "./Style.css";
 
 const Categories = ({ productCotegories }) => {
   return (
-    <div className="container py-16">
+    <div className="shop-by-category-container">
       <h2 className="shop-by-category">shop by category</h2>
       <div className="home-category-container">
         {productCotegories.map((category, index) => (
-          <div className="category-img-div group" key={category.slug}>
+          <div className="category-img-div group" key={index}>
             <Image src={category1} alt="category 1" className="w-full" />
             <Link
               href={`/shop?category=${category.slug}`}

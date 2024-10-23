@@ -4,14 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addToCart,
-  onUpdateUser,
-  removeFromCart,
-  removeFromWishlist,
-  setCartQuantity,
-} from "@/redux/userSlice";
+import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import {
   FaAddressCard,
@@ -29,7 +22,6 @@ import Cart from "./comp/Cart/Cart";
 const AcountWrapper = () => {
   const reduxUser = useSelector((state) => state.userReducer.loggedInUser);
   const router = useRouter();
-  const dispatch = useDispatch();
   const [profile, setprofile] = useState(false);
   const [account, setaccount] = useState(false);
   const [wishlist, setwishlist] = useState(false);
@@ -62,13 +54,15 @@ const AcountWrapper = () => {
           <div className="col-span-3">
             <div className="user-info">
               <div className="user-img-div">
-                <Image
-                  src={userData.image}
-                  width={100}
-                  height={100}
-                  alt="profile"
-                  className="user-img"
-                />
+                {userData && (
+                  <Image
+                    src={userData.image}
+                    width={100}
+                    height={100}
+                    alt="profile"
+                    className="user-img"
+                  />
+                )}
               </div>
               <div className="flex-grow">
                 <p className="greet-text">Hello,</p>

@@ -25,7 +25,6 @@ function page() {
         sessionStorage.setItem("token", token);
       }
     });
-    // router.refresh();
   }, []);
   return (
     <>

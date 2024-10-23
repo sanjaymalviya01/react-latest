@@ -19,79 +19,73 @@ const Product = ({ data }) => {
   return (
     <>
       {RecomndedProduct && (
-        <div className="recomnded-product" key={`RecomndedProduct-heading`}>
-          <h2 className="heading">recomended for you</h2>
+        <div className="recomnded-product">
+          <h2 className="recomnded-product-heading">recomended for you</h2>
           <div className="recomnded-product-grid">
             {RecomndedProduct.map((product, index) => (
-              <div key={product.sku} className="product-div group">
+              <div key={index} className="recomnded-product-div group">
                 <div className="relative">
-                  <div className="img">
+                  <div className="recomnded-product-img">
                     <Image
                       fill={true}
+                      sizes="(max-width: 768px)"
                       src={product.images[0]}
                       alt="product 1"
                       className="w-full"
                     />
                   </div>
-                  <div className="link-div group-hover:opacity-100">
+                  <div className="recomnded-product-link-div group-hover:opacity-100">
                     <Link
                       href="#"
-                      className="product-link"
+                      className="recomnded-product-link"
                       title="view product"
                     >
                       <GiMagnifyingGlass />
                     </Link>
                     <Link
                       href="#"
-                      className="product-link"
+                      className="recomnded-product-link"
                       title="add to wishlist"
                     >
                       <FaHeart />
                     </Link>
                   </div>
                 </div>
-                <div className="product-details">
-                  <Link
-                    href={{
-                      pathname: "/product",
-                      query: { productId: product.id },
-                    }}
-                  >
-                    <h4 className="product-title">{product.title}</h4>
+                <div className="recomnded-product-details">
+                  <Link href={`/product/${product.id}`}>
+                    <h4 className="recomnded-product-title">{product.title}</h4>
                   </Link>
-                  <div className="product-price">
-                    <p className="product-discounted-price">
+                  <div className="recomnded-product-price">
+                    <p className="recomnded-product-discounted-price">
                       $
                       {(
                         product.price -
                         [(product.discountPercentage / 100) * product.price]
                       ).toFixed(2)}
                     </p>
-                    <p className="product-real-price">${product.price}</p>
+                    <p className="recomnded-product-real-price">
+                      ${product.price}
+                    </p>
                   </div>
-                  <div className="rating">
-                    <div className="rated">
+                  <div className="recomnded-product-rating">
+                    <div className="recomnded-product-rated">
                       {Array.from({ length: product.rating }, (_, index) => (
-                        <>
-                          <span>
-                            <FaStar />
-                          </span>
-                        </>
+                        <span key={index}>
+                          <FaStar />
+                        </span>
                       ))}
                     </div>
-                    <div className="unrated">
+                    <div className="recomnded-product-unrated">
                       {Array.from(
                         { length: 5 - Math.floor(product.rating) },
                         (_, index) => (
-                          <>
-                            <span>
-                              <FaStar />
-                            </span>
-                          </>
+                          <span key={index}>
+                            <FaStar />
+                          </span>
                         )
                       )}
                     </div>
-                    <div className="reviews">
+                    <div className="recomnded-product-reviews">
                       ({product.reviews.length} reviews)
                     </div>
                   </div>
@@ -109,7 +103,7 @@ const Product = ({ data }) => {
                       router.push(`/login`);
                     }
                   }}
-                  className="add-to-cart"
+                  className="recomnded-product-add-to-cart"
                 >
                   Add to cart
                 </button>
